@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Evil: Laser Corridor (Complex Patterns)</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #050505; font-family: 'Segoe UI', sans-serif; }
+        #canvas-container { width: 100vw; height: 100vh; display: block; }
+        
+        #ui-layer {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: #ffffff;
+            pointer-events: none;
+            z-index: 10;
+            text-shadow: 0 0 5px rgba(0,0,0,0.8);
+        }
+        
+        h1 { 
+            margin: 0; 
+            font-size: 28px; 
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #00aaff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-box {
+            font-family: 'Courier New', Courier, monospace;
+            background: rgba(0, 20, 40, 0.7);
+            border: 1px solid #00aaff;
+            padding: 10px;
+            margin-top: 10px;
+            display: inline-block;
+            backdrop-filter: blur(4px);
+        }
+
+        .warning { color: #ff3333; font-weight: bold; animation: blink 0.4s infinite; display: none; }
+
+        #start-btn {
+            position: absolute;
+            top: 85%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 12px 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00aaff;
+            color: #00aaff;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 170, 255, 0.4);
+            transition: all 0.3s;
+            z-index: 20;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+        #start-btn:hover {
+            background: #00aaff;
+            color: #000;
+            box-shadow: 0 0 40px rgba(0, 170, 255, 0.8);
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+</head>
+<body>
+
+    <div id="ui-layer">
+        <h1>THE HIVE: ACCESS CORRIDOR</h1>
+        <div class="status-box">
+            <div id="status-text">SYSTEM STANDBY</div>
+            <div id="warning-text" class="warning">CRITICAL DAMAGE</div>
+        </div>
+    </div>
+    
+    <button id="start-btn">INITIATE SEQUENCE</button>
+    <div id="canvas-container"></div>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+        const CONFIG = {
+            laserColor: 0x00ccff, 
+            tunnelSize: { w: 6, h: 4.5, l: 80 }, 
+            voxelSize: 0.09, 
+            gravity: -18.0
+        };
+
+        let scene, camera, renderer, composer;
+        let clock;
+        let playerGroup, playerVoxels = [], bloodParticles = [];
+        let lasers = [];
+        let sequenceState = 'idle';
+        let sequenceTimer = 0;
+        let timeScale = 1.0, targetTimeScale = 1.0;
+        
+        let joints = {};
+
+        const uiStatus = document.getElementById('status-text');
+        const uiWarning = document.getElementById('warning-text');
+        const startBtn = document.getElementById('start-btn');
+
+        init();
+        animate();
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a0a); 
+            scene.fog = new THREE.Fog(0x0a0a0a, 10, 60);
+
+            camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 100);
+            camera.position.set(2.5, 1.8, 5.0); 
+            camera.lookAt(0, 1.2, -5);
+
+            renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: "high-performance" });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.8; 
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            const renderScene = new RenderPass(scene, camera);
+            const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85);
+            bloomPass.threshold = 0.2;
+            bloomPass.strength = 1.5; // Slightly stronger bloom for complex patterns
+            bloomPass.radius = 0.5;
+
+            composer = new EffectComposer(renderer);
+            composer.addPass(renderScene);
+            composer.addPass(bloomPass);
+
+            setupLighting();
+            createBrightTunnel();
+            createDetailedHuman();
+
+            window.addEventListener('resize', onWindowResize);
+            startBtn.addEventListener('click', startSequence);
+            clock = new THREE.Clock();
+        }
+
+        function setupLighting() {
+            const ambient = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);
+            scene.add(ambient);
+
+            const keyLight = new THREE.DirectionalLight(0xffffff, 1.5);
+            keyLight.position.set(5, 5, 5);
+            scene.add(keyLight);
+
+            const rimLight = new THREE.SpotLight(0x00aaff, 5.0);
+            rimLight.position.set(-5, 5, -5);
+            rimLight.lookAt(0, 0, 0);
+            scene.add(rimLight);
+
+            for(let z = 0; z > -CONFIG.tunnelSize.l; z -= 10) {
+                const strip = new THREE.PointLight(0xffffff, 0.8, 15);
+                strip.position.set(0, CONFIG.tunnelSize.h - 0.5, z);
+                scene.add(strip);
+            }
+        }
+
+        function createBrightTunnel() {
+            const wallMat = new THREE.MeshStandardMaterial({
+                color: 0x888888, 
+                roughness: 0.2, 
+                metalness: 0.5,
+                side: THREE.DoubleSide
+            });
+
+            const floorMat = new THREE.MeshStandardMaterial({
+                color: 0x555555, 
+                roughness: 0.1, 
+                metalness: 0.3
+            });
+
+            const geo = new THREE.PlaneGeometry(CONFIG.tunnelSize.w, CONFIG.tunnelSize.l);
+            
+            const floor = new THREE.Mesh(geo, floorMat);
+            floor.rotation.x = -Math.PI / 2;
+            floor.position.z = -CONFIG.tunnelSize.l/2 + 5;
+            scene.add(floor);
+
+            const ceiling = new THREE.Mesh(geo, wallMat);
+            ceiling.rotation.x = Math.PI / 2;
+            ceiling.position.y = CONFIG.tunnelSize.h;
+            ceiling.position.z = -CONFIG.tunnelSize.l/2 + 5;
+            scene.add(ceiling);
+
+            const wallGeo = new THREE.PlaneGeometry(CONFIG.tunnelSize.h, CONFIG.tunnelSize.l);
+            
+            const left = new THREE.Mesh(wallGeo, wallMat);
+            left.rotation.y = Math.PI / 2;
+            left.position.set(-CONFIG.tunnelSize.w/2, CONFIG.tunnelSize.h/2, -CONFIG.tunnelSize.l/2 + 5);
+            scene.add(left);
+
+            const right = new THREE.Mesh(wallGeo, wallMat);
+            right.rotation.y = -Math.PI / 2;
+            right.position.set(CONFIG.tunnelSize.w/2, CONFIG.tunnelSize.h/2, -CONFIG.tunnelSize.l/2 + 5);
+            scene.add(right);
+
+            const gridHelper = new THREE.GridHelper(CONFIG.tunnelSize.w, 20, 0x000000, 0x000000);
+            gridHelper.position.set(0, 0.01, -20);
+            gridHelper.scale.z = 8;
+            scene.add(gridHelper);
+        }
+
+        function createDetailedHuman() {
+            playerGroup = new THREE.Group();
+            
+            const matSkin = new THREE.MeshStandardMaterial({ color: 0xffccaa, roughness: 0.5 });
+            const matVest = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.7 }); 
+            const matPants = new THREE.MeshStandardMaterial({ color: 0x1a2b3c, roughness: 0.6 }); 
+            
+            const voxelGeo = new THREE.BoxGeometry(CONFIG.voxelSize, CONFIG.voxelSize, CONFIG.voxelSize);
+
+            function buildLimb(name, w, h, d, mat, posOffset) {
+                const g = new THREE.Group();
+                const voxelsX = Math.ceil(w / CONFIG.voxelSize);
+                const voxelsY = Math.ceil(h / CONFIG.voxelSize);
+                const voxelsZ = Math.ceil(d / CONFIG.voxelSize);
+                const centerOffset = new THREE.Vector3(w/2, h/2, d/2);
+
+                for(let x=0; x<voxelsX; x++) {
+                    for(let y=0; y<voxelsY; y++) {
+                        for(let z=0; z<voxelsZ; z++) {
+                            if ( (x===0 || x===voxelsX-1) && (z===0 || z===voxelsZ-1) ) continue;
+                            const m = new THREE.Mesh(voxelGeo, mat);
+                            m.position.set(
+                                x * CONFIG.voxelSize - centerOffset.x + CONFIG.voxelSize/2,
+                                y * CONFIG.voxelSize - centerOffset.y + CONFIG.voxelSize/2,
+                                z * CONFIG.voxelSize - centerOffset.z + CONFIG.voxelSize/2
+                            );
+                            m.userData.isLoose = false;
+                            m.userData.velocity = new THREE.Vector3();
+                            m.castShadow = true;
+                            m.receiveShadow = true;
+                            g.add(m);
+                            playerVoxels.push({ mesh: m, parent: g });
+                        }
+                    }
+                }
+                g.position.copy(posOffset);
+                return g;
+            }
+
+            const pelvis = new THREE.Group();
+            pelvis.position.y = 0.95;
+
+            const torso = buildLimb('torso', 0.35, 0.5, 0.25, matVest, new THREE.Vector3(0, 0.25, 0));
+            pelvis.add(torso);
+
+            const head = buildLimb('head', 0.2, 0.25, 0.22, matSkin, new THREE.Vector3(0, 0.65, 0));
+            torso.add(head);
+
+            const lArm = buildLimb('lArm', 0.12, 0.6, 0.12, matVest, new THREE.Vector3(-0.28, 0.1, 0));
+            torso.add(lArm);
+            const rArm = buildLimb('rArm', 0.12, 0.6, 0.12, matVest, new THREE.Vector3(0.28, 0.1, 0));
+            torso.add(rArm);
+
+            const lLeg = buildLimb('lLeg', 0.15, 0.9, 0.15, matPants, new THREE.Vector3(-0.15, -0.45, 0));
+            pelvis.add(lLeg);
+            const rLeg = buildLimb('rLeg', 0.15, 0.9, 0.15, matPants, new THREE.Vector3(0.15, -0.45, 0));
+            pelvis.add(rLeg);
+
+            joints = { pelvis, torso, head, lArm, rArm, lLeg, rLeg };
+            playerGroup.add(pelvis);
+            scene.add(playerGroup);
+        }
+
+        function spawnLaser(type, speed, zPos) {
+            const group = new THREE.Group();
+            const coreRadius = 0.04;
+            const glowRadius = 0.12;
+
+            const coreMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+            const glowMat = new THREE.MeshBasicMaterial({ 
+                color: CONFIG.laserColor, 
+                transparent: true, 
+                opacity: 0.6,
+                side: THREE.FrontSide
+            });
+
+            const createBeam = (p1, p2) => {
+                const dist = p1.distanceTo(p2);
+                const geo = new THREE.CylinderGeometry(coreRadius, coreRadius, dist, 8);
+                geo.translate(0, dist/2, 0);
+                geo.rotateX(Math.PI/2);
+                const mesh = new THREE.Mesh(geo, coreMat);
+                mesh.position.copy(p1);
+                mesh.lookAt(p2);
+
+                const gGeo = new THREE.CylinderGeometry(glowRadius, glowRadius, dist, 12);
+                gGeo.translate(0, dist/2, 0);
+                gGeo.rotateX(Math.PI/2);
+                const gMesh = new THREE.Mesh(gGeo, glowMat);
+                mesh.add(gMesh);
+
+                return mesh;
+            };
+
+            // --- COMPLEX LASER PATTERNS ---
+            if (type === 'low') {
+                group.add(createBeam(new THREE.Vector3(-3, 0.3, 0), new THREE.Vector3(3, 0.3, 0)));
+            } 
+            else if (type === 'mid') {
+                group.add(createBeam(new THREE.Vector3(-3, 1.2, 0), new THREE.Vector3(3, 1.2, 0)));
+            } 
+            else if (type === 'high') {
+                group.add(createBeam(new THREE.Vector3(-3, 1.7, 0), new THREE.Vector3(3, 1.7, 0)));
+            } 
+            else if (type === 'cross') {
+                // X-Shape
+                group.add(createBeam(new THREE.Vector3(-2.5, 0.2, 0), new THREE.Vector3(2.5, 2.5, 0)));
+                group.add(createBeam(new THREE.Vector3(-2.5, 2.5, 0), new THREE.Vector3(2.5, 0.2, 0)));
+            }
+            else if (type === 'verticals') {
+                // Moving vertical bars
+                group.add(createBeam(new THREE.Vector3(-1.0, 0, 0), new THREE.Vector3(-1.0, 3, 0)));
+                group.add(createBeam(new THREE.Vector3(1.0, 0, 0), new THREE.Vector3(1.0, 3, 0)));
+            }
+            else if (type === 'scatter') {
+                // Random lines
+                group.add(createBeam(new THREE.Vector3(-3, 0.5, 0), new THREE.Vector3(3, 2.0, 0)));
+                group.add(createBeam(new THREE.Vector3(-2, 2.5, 0), new THREE.Vector3(1, 0.2, 0)));
+                group.add(createBeam(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 3, 0)));
+            }
+            else if (type === 'box') {
+                // A Box Frame
+                group.add(createBeam(new THREE.Vector3(-1.2, 1.8, 0), new THREE.Vector3(1.2, 1.8, 0))); // Top
+                group.add(createBeam(new THREE.Vector3(-1.2, 0.4, 0), new THREE.Vector3(1.2, 0.4, 0))); // Bottom
+                group.add(createBeam(new THREE.Vector3(-1.2, 0.4, 0), new THREE.Vector3(-1.2, 1.8, 0))); // Left
+                group.add(createBeam(new THREE.Vector3(1.2, 0.4, 0), new THREE.Vector3(1.2, 1.8, 0))); // Right
+            }
+            else if (type === 'grid') {
+                // The Death Grid
+                for(let y = 0.2; y < 2.5; y += 0.5) {
+                    group.add(createBeam(new THREE.Vector3(-3, y, 0), new THREE.Vector3(3, y, 0)));
+                }
+                for(let x = -1.5; x <= 1.5; x += 0.6) {
+                    group.add(createBeam(new THREE.Vector3(x, 0, 0), new THREE.Vector3(x, 3, 0)));
+                }
+            }
+
+            group.position.z = zPos;
+            group.userData = { speed: speed, type: type, active: true };
+            
+            const light = new THREE.PointLight(CONFIG.laserColor, 2, 8);
+            group.add(light);
+
+            scene.add(group);
+            lasers.push(group);
+        }
+
+        function createBlood(pos) {
+            const count = 30;
+            const geo = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+            const velocities = [];
+            
+            for(let i=0; i<count; i++) {
+                positions[i*3] = pos.x + (Math.random()-0.5)*0.5;
+                positions[i*3+1] = pos.y + (Math.random()-0.5)*0.5;
+                positions[i*3+2] = pos.z;
+                
+                velocities.push(new THREE.Vector3(
+                    (Math.random()-0.5)*3,
+                    (Math.random())*4,
+                    (Math.random())*5 
+                ));
+            }
+            
+            geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const mat = new THREE.PointsMaterial({ color: 0xaa0000, size: 0.15, transparent: true });
+            const pts = new THREE.Points(geo, mat);
+            pts.userData = { vels: velocities, life: 1.0 };
+            scene.add(pts);
+            bloodParticles.push(pts);
+        }
+
+        function startSequence() {
+            startBtn.style.display = 'none';
+            uiStatus.innerText = "THREAT DETECTED - LOCKDOWN";
+            uiStatus.style.color = "#ffcc00";
+            
+            sequenceState = 'running';
+            sequenceTimer = 0;
+
+            const startPos = camera.position.clone();
+            const endPos = new THREE.Vector3(1.5, 1.2, 3.5);
+            
+            let t = 0;
+            const camAnim = setInterval(() => {
+                t += 0.01;
+                camera.position.lerpVectors(startPos, endPos, 0.05);
+                camera.lookAt(0, 1.0, -2);
+                if (t > 1) clearInterval(camAnim);
+            }, 16);
+        }
+
+        function triggerDeath() {
+            if (sequenceState === 'dead') return;
+            sequenceState = 'dead';
+            uiWarning.style.display = 'block';
+            uiStatus.innerText = "SUBJECT TERMINATED";
+            uiStatus.style.color = "red";
+
+            playerVoxels.forEach(pv => {
+                const mesh = pv.mesh;
+                const worldPos = new THREE.Vector3();
+                mesh.getWorldPosition(worldPos);
+                scene.attach(mesh);
+                
+                mesh.userData.isLoose = true;
+                mesh.userData.velocity.set(
+                    (Math.random()-0.5)*1,
+                    (Math.random())*2,
+                    2 + Math.random()*3 
+                );
+                mesh.userData.rotVel = new THREE.Vector3(Math.random(), Math.random(), Math.random());
+            });
+
+            createBlood(joints.pelvis.position);
+            createBlood(new THREE.Vector3(0, 1.5, 0));
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const rawDt = clock.getDelta();
+            
+            // Bullet Time Logic
+            let dangerDist = 100;
+            lasers.forEach(l => {
+                if (!l.userData.active) return;
+                const dist = l.position.z - playerGroup.children[0].position.z;
+                if (dist < 0 && dist > -5) {
+                    const d = Math.abs(dist);
+                    if (d < dangerDist) dangerDist = d;
+                }
+            });
+
+            if (dangerDist < 2.5) {
+                targetTimeScale = 0.05; 
+            } else {
+                targetTimeScale = 1.0;
+            }
+
+            timeScale = THREE.MathUtils.lerp(timeScale, targetTimeScale, 0.1);
+            const dt = rawDt * timeScale;
+
+            // --- 8 WAVE SEQUENCE (VARIED) ---
+            if (sequenceState === 'running') {
+                sequenceTimer += dt;
+
+                // Wave 1: Low (Jump)
+                if (sequenceTimer > 1 && sequenceTimer < 1.1 && lasers.length === 0) {
+                    spawnLaser('low', 12, -30);
+                    uiStatus.innerText = "WAVE 1/8: LOW";
+                }
+                // Wave 2: Cross (Duck/Slide)
+                if (sequenceTimer > 4 && sequenceTimer < 4.1) {
+                    spawnLaser('cross', 13, -30);
+                    uiStatus.innerText = "WAVE 2/8: X-PATTERN";
+                }
+                // Wave 3: High (Duck)
+                if (sequenceTimer > 7 && sequenceTimer < 7.1) {
+                    spawnLaser('high', 14, -30);
+                    uiStatus.innerText = "WAVE 3/8: HIGH";
+                }
+                // Wave 4: Verticals (Squeeze)
+                if (sequenceTimer > 9.5 && sequenceTimer < 9.6) {
+                    spawnLaser('verticals', 15, -35);
+                    uiStatus.innerText = "WAVE 4/8: VERTICALS";
+                }
+                // Wave 5: Scatter (Random)
+                if (sequenceTimer > 12 && sequenceTimer < 12.1) {
+                    spawnLaser('scatter', 16, -35);
+                    uiStatus.innerText = "WAVE 5/8: SCATTER";
+                }
+                // Wave 6: Box (Curl)
+                if (sequenceTimer > 14 && sequenceTimer < 14.1) {
+                    spawnLaser('box', 17, -40);
+                    uiStatus.innerText = "WAVE 6/8: ENCLOSURE";
+                }
+                // Wave 7: Low + High (Agility)
+                if (sequenceTimer > 16.5 && sequenceTimer < 16.6) {
+                    spawnLaser('low', 18, -40);
+                    uiStatus.innerText = "WAVE 7/8: EVADE";
+                }
+                // Wave 8: The Grid (Death)
+                if (sequenceTimer > 19 && sequenceTimer < 19.1) {
+                    spawnLaser('grid', 20, -50);
+                    uiStatus.innerText = "WAVE 8/8: NO ESCAPE";
+                    uiStatus.style.color = "red";
+                }
+            }
+
+            // Laser Interaction & Animation
+            lasers.forEach(l => {
+                l.position.z += l.userData.speed * dt;
+                const z = l.position.z;
+                
+                // --- AUTO-DODGE LOGIC ---
+                if (sequenceState === 'running' && z > -8 && z < 2) {
+                    const type = l.userData.type;
+
+                    if (type === 'low') {
+                        // Jump Logic
+                        joints.pelvis.position.y = THREE.MathUtils.lerp(joints.pelvis.position.y, 1.7, dt*6);
+                        joints.lLeg.rotation.x = -0.6;
+                        joints.rLeg.rotation.x = -0.4;
+                    } 
+                    else if (type === 'mid' || type === 'high') {
+                        // Standard Duck
+                        joints.pelvis.position.y = THREE.MathUtils.lerp(joints.pelvis.position.y, 0.6, dt*6);
+                        joints.torso.rotation.x = 1.2; 
+                    } 
+                    else if (type === 'cross') {
+                        // Crouch Deep (Slide under X center)
+                        joints.pelvis.position.y = THREE.MathUtils.lerp(joints.pelvis.position.y, 0.5, dt*8);
+                        joints.torso.rotation.x = 0.5;
+                        joints.lLeg.rotation.x = 1.5; // Kneel
+                        joints.rLeg.rotation.x = 1.0;
+                    }
+                    else if (type === 'verticals') {
+                        // Side turn / Arms in
+                        joints.torso.rotation.y = 1.5; // Turn sideways
+                        joints.lArm.rotation.z = 0.5;
+                        joints.rArm.rotation.z = -0.5;
+                    }
+                    else if (type === 'scatter') {
+                        // Desperate Dodge (Lean back)
+                        joints.pelvis.position.y = THREE.MathUtils.lerp(joints.pelvis.position.y, 0.8, dt*6);
+                        joints.torso.rotation.x = -0.5; // Matrix lean back
+                    }
+                    else if (type === 'box') {
+                        // Curl Up
+                        joints.pelvis.position.y = THREE.MathUtils.lerp(joints.pelvis.position.y, 1.1, dt*6);
+                        joints.lArm.rotation.z = 1.5;
+                        joints.rArm.rotation.z = -1.5;
+                        joints.lLeg.rotation.x = 0.2; // Floating
+                        joints.rLeg.rotation.x = 0.2;
+                    }
+                    else if (type === 'grid') {
+                        // Panic
+                        joints.pelvis.position.y = 1.0;
+                        joints.lArm.rotation.z = 2.5; 
+                        joints.rArm.rotation.z = -2.5;
+                        
+                        if (z > -0.2) triggerDeath();
+                    }
+                } 
+                else if (sequenceState === 'running') {
+                    // Reset Pose
+                    joints.pelvis.position.y = THREE.MathUtils.lerp(joints.pelvis.position.y, 0.95, dt*3);
+                    joints.torso.rotation.x = THREE.MathUtils.lerp(joints.torso.rotation.x, 0, dt*3);
+                    joints.torso.rotation.y = THREE.MathUtils.lerp(joints.torso.rotation.y, 0, dt*3);
+                    joints.head.rotation.x = THREE.MathUtils.lerp(joints.head.rotation.x, 0, dt*3);
+                    joints.lLeg.rotation.x = THREE.MathUtils.lerp(joints.lLeg.rotation.x, 0, dt*3);
+                    joints.rLeg.rotation.x = THREE.MathUtils.lerp(joints.rLeg.rotation.x, 0, dt*3);
+                    joints.lArm.rotation.z = THREE.MathUtils.lerp(joints.lArm.rotation.z, 0, dt*3);
+                    joints.rArm.rotation.z = THREE.MathUtils.lerp(joints.rArm.rotation.z, 0, dt*3);
+                }
+
+                if (z > 5) {
+                    l.userData.active = false;
+                    l.visible = false; 
+                }
+            });
+
+            // Physics Update (Death)
+            if (sequenceState === 'dead') {
+                playerVoxels.forEach(pv => {
+                    const m = pv.mesh;
+                    if (m.userData.isLoose) {
+                        m.userData.velocity.y += CONFIG.gravity * dt;
+                        m.position.addScaledVector(m.userData.velocity, dt);
+                        m.rotation.x += m.userData.rotVel.x * dt;
+                        m.rotation.y += m.userData.rotVel.y * dt;
+
+                        if (m.position.y < CONFIG.voxelSize/2) {
+                            m.position.y = CONFIG.voxelSize/2;
+                            m.userData.velocity.y *= -0.3;
+                            m.userData.velocity.x *= 0.8;
+                            m.userData.velocity.z *= 0.8;
+                        }
+                    }
+                });
+
+                bloodParticles.forEach(sys => {
+                    const vels = sys.userData.vels;
+                    const pos = sys.geometry.attributes.position;
+                    for(let i=0; i<pos.count; i++) {
+                        vels[i].y += CONFIG.gravity * dt * 0.3;
+                        pos.setXYZ(i, 
+                            pos.getX(i) + vels[i].x * dt,
+                            pos.getY(i) + vels[i].y * dt,
+                            pos.getZ(i) + vels[i].z * dt
+                        );
+                        if(pos.getY(i) < 0) vels[i].multiplyScalar(0);
+                    }
+                    pos.needsUpdate = true;
+                });
+            }
+
+            // Camera Shake
+            if (sequenceState === 'running') {
+                const shake = Math.sin(Date.now() * 0.01) * 0.005;
+                camera.position.y += shake;
+            }
+
+            composer.render();
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        }
+    </script>
+</body>
+</html>

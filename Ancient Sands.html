@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ancient Sunrise</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #1a1a24; /* Fallback */
+            font-family: sans-serif;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+
+        /* Pure CSS Audio Toggle - No Text */
+        #audio-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 165, 0, 0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        #audio-toggle:hover {
+            background: rgba(255, 165, 0, 0.1);
+            border-color: rgba(255, 165, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        /* Loading Animation (Pulse) */
+        @keyframes pulse-orange {
+            0% { box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 165, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 165, 0, 0); }
+        }
+
+        /* Loading State Class */
+        #audio-toggle.loading {
+            animation: pulse-orange 1.5s infinite;
+            border-color: rgba(255, 165, 0, 0.8);
+        }
+
+        /* Speaker Icon Construction */
+        .icon-speaker {
+            width: 8px;
+            height: 8px;
+            background: #e0c090;
+            position: relative;
+            left: -4px;
+            transition: background 0.3s;
+        }
+
+        .icon-speaker::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: -6px;
+            width: 0;
+            height: 0;
+            border-right: 12px solid #e0c090;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            transition: border-right-color 0.3s;
+        }
+
+        /* Sound Waves (visible when active) */
+        .wave {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            border: 2px solid transparent;
+            border-right: 2px solid #e0c090;
+            border-radius: 50%;
+            transform: translateY(-50%) rotate(-45deg);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .wave:nth-child(2) {
+            width: 16px;
+            height: 16px;
+            right: 4px;
+        }
+
+        /* Active State */
+        #audio-toggle.active .wave {
+            opacity: 1;
+        }
+
+        #audio-toggle.active {
+            border-color: rgba(255, 165, 0, 0.8);
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.4);
+            background: rgba(255, 165, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- EXTERNAL AUDIO SOURCE: Incompetech (Kevin MacLeod) -->
+    <!-- Track: "Desert City" by Kevin MacLeod -->
+    <audio id="bgm" loop preload="auto">
+        <source src="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Desert%20City.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <button id="audio-toggle" aria-label="Toggle Sound">
+        <div class="icon-speaker"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </button>
+
+    <div id="canvas-container"></div>
+
+    <!-- Three.js Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        // --- 1. Scene Setup ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+
+        // Cinematic Fog (Sunrise Haze)
+        const fogColor = new THREE.Color(0xdb9f7e); // Dusty pink/orange
+        scene.fog = new THREE.FogExp2(fogColor, 0.015);
+        scene.background = fogColor;
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.position.set(0, 15, 60);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
+        container.appendChild(renderer.domElement);
+
+        // --- 2. Procedural Texture Generation ---
+        function createSandstoneTexture(color1, color2, noiseScale = 1.0, numLayers = 0) {
+            const size = 1024;
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            // Base fill
+            ctx.fillStyle = color1;
+            ctx.fillRect(0, 0, size, size);
+
+            // Noise generation
+            const imageData = ctx.getImageData(0, 0, size, size);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                const grain = (Math.random() - 0.5) * 40 * noiseScale;
+                data[i] = Math.min(255, Math.max(0, data[i] + grain));
+                data[i + 1] = Math.min(255, Math.max(0, data[i + 1] + grain));
+                data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + grain));
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+
+            // Draw Horizontal Layers (Stone Blocks)
+            if (numLayers > 0) {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; // Slightly darker for sharper definition
+                const layerHeight = size / numLayers;
+                for (let i = 0; i < numLayers; i++) {
+                    const y = i * layerHeight;
+                    // Draw a groove
+                    ctx.fillRect(0, y, size, layerHeight * 0.15); 
+                }
+            }
+
+            // Erosion lines (Vertical)
+            ctx.strokeStyle = color2;
+            ctx.globalAlpha = 0.1;
+            for(let i=0; i<50; i++) {
+                ctx.lineWidth = Math.random() * 5;
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * size, 0);
+                ctx.lineTo(Math.random() * size, size);
+                ctx.stroke();
+            }
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            return texture;
+        }
+
+        const sandBase = '#d4b483';
+        const sandDark = '#a68a5b';
+        const pyramidBase = '#e8d0aa';
+        const pyramidDark = '#c4a676';
+
+        // Ground: No layers
+        const groundTexture = createSandstoneTexture(sandBase, sandDark, 1.2, 0);
+        groundTexture.repeat.set(20, 20);
+        
+        // Pyramid: 60 Layers
+        const pyramidTexture = createSandstoneTexture(pyramidBase, pyramidDark, 2.0, 60);
+        // Pyramid Bump: 60 Layers
+        const pyramidBump = createSandstoneTexture('#808080', '#000000', 3.0, 60);
+
+        // --- 3. Objects ---
+        
+        // NEW: Main Group to hold both Pyramid and Sphinx for synchronized rotation
+        const ancientGroup = new THREE.Group();
+        scene.add(ancientGroup);
+
+        // KHUFU PROPORTIONS
+        const pyramidGeometry = new THREE.ConeGeometry(28, 26, 4, 1);
+        
+        const pyramidMaterial = new THREE.MeshStandardMaterial({
+            map: pyramidTexture,
+            bumpMap: pyramidBump,
+            bumpScale: 2.5, 
+            roughness: 0.9,
+            metalness: 0.1,
+            flatShading: false 
+        });
+        
+        const pyramid = new THREE.Mesh(pyramidGeometry, pyramidMaterial);
+        // Position Y = Height / 2
+        pyramid.position.y = 13; 
+        pyramid.castShadow = true;
+        pyramid.receiveShadow = true;
+        pyramid.geometry.rotateY(Math.PI / 4);
+        
+        // Add Pyramid to the Group instead of Scene
+        ancientGroup.add(pyramid);
+
+        // --- DETAILED SPHINX (Humanoid Face V4 - The "Anti-Dog" Update) ---
+        function createSphinx() {
+            const sphinxGroup = new THREE.Group();
+            
+            // Re-use sandstone material
+            const mat = pyramidMaterial;
+            
+            // Darker material for headdress/details
+            const darkMat = new THREE.MeshStandardMaterial({ 
+                color: 0x5c4a3d, 
+                roughness: 0.9,
+                map: pyramidTexture
+            });
+
+            // ====================
+            // 1. BODY (Lion Body)
+            // ====================
+            
+            // Main Torso (Ribcage)
+            const torsoGeo = new THREE.CylinderGeometry(3.5, 4.2, 13, 16);
+            const torso = new THREE.Mesh(torsoGeo, mat);
+            torso.rotation.x = -Math.PI / 2; 
+            torso.scale.set(1, 1, 1.1);
+            torso.position.set(0, 3, 1);
+            torso.castShadow = true;
+            sphinxGroup.add(torso);
+
+            // Rear Haunches
+            const haunchGeo = new THREE.SphereGeometry(4.0, 16, 16);
+            const haunchL = new THREE.Mesh(haunchGeo, mat);
+            haunchL.position.set(-1.8, 2.5, -4);
+            haunchL.scale.set(0.8, 1, 1.5);
+            sphinxGroup.add(haunchL);
+
+            // Chest
+            const chestGeo = new THREE.SphereGeometry(4.2, 24, 24);
+            const chest = new THREE.Mesh(chestGeo, mat);
+            chest.position.set(0, 4.8, 6.5);
+            chest.scale.set(0.95, 1.1, 0.9);
+            chest.castShadow = true;
+            sphinxGroup.add(chest);
+
+            // ====================
+            // 2. PAWS
+            // ====================
+            const pawGeo = new THREE.BoxGeometry(2.5, 1.5, 10);
+            const pawL = new THREE.Mesh(pawGeo, mat);
+            pawL.position.set(-2.8, 0.75, 11);
+            pawL.castShadow = true;
+            sphinxGroup.add(pawL);
+
+            const pawR = new THREE.Mesh(pawGeo, mat);
+            pawR.position.set(2.8, 0.75, 11);
+            pawR.castShadow = true;
+            sphinxGroup.add(pawR);
+
+            const knuckleGeo = new THREE.CylinderGeometry(0.8, 0.8, 2.5, 8);
+            knuckleGeo.rotateZ(Math.PI / 2);
+            for(let side of [-2.8, 2.8]) {
+                for(let i=0; i<3; i++) {
+                    const toe = new THREE.Mesh(knuckleGeo, mat);
+                    toe.position.set(side - 0.7 + (i*0.7), 1.0, 15.5);
+                    toe.scale.set(1, 1, 1.5);
+                    sphinxGroup.add(toe);
+                }
+            }
+
+            // ==========================================
+            // 3. HUMAN HEAD (Scuplt V4)
+            // Goal: Flat face, square jaw, distinct features
+            // ==========================================
+            
+            const headRes = 128; 
+            const headGeo = new THREE.SphereGeometry(2.7, headRes, headRes);
+            const pos = headGeo.attributes.position;
+            const vector = new THREE.Vector3();
+
+            for (let i = 0; i < pos.count; i++) {
+                vector.set(pos.getX(i), pos.getY(i), pos.getZ(i));
+                
+                const x = vector.x;
+                const y = vector.y;
+                const z = vector.z;
+
+                // --- SCULPTING LOGIC ---
+
+                // 1. THE WALL: Drastic flattening of the face
+                // Unlike animals, human faces are flat planes relative to the skull
+                if (z > 0.3 && y > -2.0) {
+                    // Force Z to be nearly constant (flat plane)
+                    // The factor 0.3 preserves some curvature but very little
+                    vector.z = 0.5 + (z - 0.5) * 0.2; 
+                }
+
+                // 2. Square Jaw & Chin (The "Pharaoh" look)
+                if (y < 0.0 && z > -0.5) {
+                    // Widen the lower face to remove the "V" shape dog muzzle
+                    const squareness = Math.max(0, -y * 0.4);
+                    if (Math.abs(x) < 1.8) {
+                        vector.x *= (1.0 + squareness * 0.5);
+                    }
+                    
+                    // Jutting Chin
+                    if (y < -1.8 && Math.abs(x) < 0.8) {
+                        vector.z += 0.4; // Strong chin
+                        vector.y -= 0.1; // Longer face
+                    }
+                }
+                
+                // 3. Nose (Human Pyramid shape, not animal cone)
+                if (Math.abs(x) < 0.7 && y > -0.8 && y < 0.6 && z > 0) {
+                    // Triangle profile
+                    const noseW = Math.max(0, 1 - Math.abs(x)*1.8); 
+                    const noseH = Math.max(0, 1 - Math.abs(y + 0.2)*1.2); 
+                    const protrusion = noseW * noseH * 0.8; 
+                    
+                    vector.z += protrusion;
+                    
+                    // Nostrils (Wide and distinct)
+                    if (y < -0.4 && Math.abs(x) > 0.25) {
+                         vector.z -= 0.15; // Cut in
+                         vector.x *= 1.2; // Flare
+                    }
+                }
+
+                // 4. Eyes (Human placement)
+                // Animals have eyes on the side; Humans are front-facing
+                if (Math.abs(x) > 0.5 && Math.abs(x) < 1.7 && y > 0.0 && y < 0.6 && z > 0) {
+                    // Eye socket divot
+                    vector.z -= 0.15; 
+                    
+                    // Brow ridge (The "Wisdom" bump)
+                    if (y > 0.45) vector.z += 0.12;
+                    // Cheek bone (High cheekbones)
+                    if (y < 0.15 && Math.abs(x) > 1.0) vector.z += 0.08;
+                }
+
+                // 5. Mouth (Serious expression)
+                if (Math.abs(x) < 1.0 && y < -1.1 && y > -1.7 && z > 0) {
+                    // Philtrum indent
+                    if (Math.abs(x) < 0.25 && y > -1.3) vector.z -= 0.05;
+
+                    // Lips
+                    if (y > -1.4) vector.z += 0.15; // Upper
+                    else vector.z += 0.2; // Lower
+                }
+
+                pos.setXYZ(i, vector.x, vector.y, vector.z);
+            }
+
+            headGeo.computeVertexNormals();
+
+            const head = new THREE.Mesh(headGeo, mat);
+            head.position.set(0, 8.8, 7);
+            head.scale.set(0.95, 1.15, 1.0); 
+            head.castShadow = true;
+            sphinxGroup.add(head);
+
+
+            // ====================
+            // 4. EARS (New! Critical for "Human" look)
+            // ====================
+            const earGeo = new THREE.BoxGeometry(0.8, 1.5, 0.5);
+            // Sculpt ear slightly
+            
+            const earL = new THREE.Mesh(earGeo, mat);
+            earL.position.set(-2.5, 8.8, 7.5);
+            earL.rotation.y = -0.2;
+            earL.rotation.z = -0.1;
+            sphinxGroup.add(earL);
+
+            const earR = new THREE.Mesh(earGeo, mat);
+            earR.position.set(2.5, 8.8, 7.5);
+            earR.rotation.y = 0.2;
+            earR.rotation.z = 0.1;
+            sphinxGroup.add(earR);
+
+
+            // ====================
+            // 5. NEMES (Headdress) - Egyptian Style
+            // ====================
+            
+            // Top (Flatter top)
+            const nemesTopGeo = new THREE.CylinderGeometry(3.0, 3.0, 4.5, 32, 1, true, 0, Math.PI);
+            const nemesTop = new THREE.Mesh(nemesTopGeo, darkMat);
+            nemesTop.rotation.x = Math.PI / 2; 
+            nemesTop.rotation.z = Math.PI / 2;
+            nemesTop.scale.set(1, 0.7, 1.1); // Flatter
+            nemesTop.position.set(0, 8.8 + 0.6, 7 - 0.5);
+            sphinxGroup.add(nemesTop);
+
+            // Side Flaps (Bell Shape - NOT dog ears)
+            // Using a shape that flares OUT before coming down
+            const flapShape = new THREE.Shape();
+            flapShape.moveTo(0, 0);
+            flapShape.lineTo(1.5, 0); // Top width
+            flapShape.bezierCurveTo(3.0, -1.0, 3.5, -4.0, 3.0, -7.0); // Flare out wide then in
+            flapShape.lineTo(0.5, -7.0); 
+            flapShape.lineTo(0, 0); 
+
+            const extrudeSettings = { depth: 0.6, bevelEnabled: true, bevelSegments: 2, steps: 4, bevelSize: 0.1, bevelThickness: 0.1 };
+            const flapGeo = new THREE.ExtrudeGeometry(flapShape, extrudeSettings);
+            
+            const flapL = new THREE.Mesh(flapGeo, darkMat);
+            flapL.position.set(-2.6, 9.5, 7.5); // Push back behind ears
+            flapL.rotation.y = 0.6; // Angle back significantly
+            flapL.rotation.z = 0.1;
+            sphinxGroup.add(flapL);
+
+            const flapR = new THREE.Mesh(flapGeo, darkMat);
+            flapR.position.set(2.6, 9.5, 7.5);
+            flapR.rotation.y = -0.6; 
+            flapR.rotation.z = -0.1;
+            flapR.scale.x = -1; 
+            sphinxGroup.add(flapR);
+
+            // Uraeus (The Cobra on forehead) - NEW
+            const cobraGeo = new THREE.CylinderGeometry(0.1, 0.2, 0.8, 8);
+            const cobra = new THREE.Mesh(cobraGeo, new THREE.MeshStandardMaterial({color: 0xccaa33})); // Gold
+            cobra.position.set(0, 11.2, 9.3);
+            cobra.rotation.x = -0.5;
+            sphinxGroup.add(cobra);
+
+            // Beard
+            const beardGeo = new THREE.BoxGeometry(1.0, 3.5, 1.0); 
+            const beard = new THREE.Mesh(beardGeo, darkMat);
+            beard.position.set(0, 8.8 - 3.4, 7 + 1.0);
+            beard.rotation.x = 0.25;
+            beard.geometry.translate(0, -1, 0); 
+            sphinxGroup.add(beard);
+
+            return sphinxGroup;
+        }
+
+        const sphinx = createSphinx();
+        // Position Sphinx
+        sphinx.position.set(0, 0, 32);
+        
+        // Add Sphinx to the Group
+        ancientGroup.add(sphinx);
+
+
+        // Ground
+        const planeGeometry = new THREE.PlaneGeometry(500, 500);
+        const planeMaterial = new THREE.MeshStandardMaterial({
+            map: groundTexture,
+            roughness: 1,
+            metalness: 0,
+            color: 0xccaa88
+        });
+        
+        const ground = new THREE.Mesh(planeGeometry, planeMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // --- 4. Lighting ---
+        const ambientLight = new THREE.AmbientLight(0x404060, 0.6);
+        scene.add(ambientLight);
+
+        const sunLight = new THREE.DirectionalLight(0xffaa33, 1.5);
+        sunLight.position.set(50, 20, 50);
+        sunLight.castShadow = true;
+        
+        sunLight.shadow.mapSize.width = 2048;
+        sunLight.shadow.mapSize.height = 2048;
+        sunLight.shadow.camera.near = 0.5;
+        sunLight.shadow.camera.far = 200;
+        sunLight.shadow.bias = -0.0001;
+        const d = 50;
+        sunLight.shadow.camera.left = -d;
+        sunLight.shadow.camera.right = d;
+        sunLight.shadow.camera.top = d;
+        sunLight.shadow.camera.bottom = -d;
+
+        scene.add(sunLight);
+
+        const sunGeometry = new THREE.SphereGeometry(3, 32, 32);
+        const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa33 });
+        const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
+        sunMesh.position.copy(sunLight.position).multiplyScalar(4); 
+        scene.add(sunMesh);
+
+
+        // --- 5. Controls & Animation ---
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.maxPolarAngle = Math.PI / 2 - 0.05;
+        controls.minDistance = 20;
+        controls.maxDistance = 100;
+
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            
+            // Rotate the entire GROUP (Pyramid + Sphinx)
+            ancientGroup.rotation.y += 0.2 * delta;
+            
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+
+        // --- 6. Event Listeners ---
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ==========================================
+        // ROBUST AUDIO SYSTEM WITH LOADING FEEDBACK
+        // ==========================================
+        
+        const toggleBtn = document.getElementById('audio-toggle');
+        const bgm = document.getElementById('bgm');
+        
+        // Volume 
+        bgm.volume = 1.0;
+
+        // UI Update Logic based on AUDIO EVENTS (Single Source of Truth)
+        
+        // When audio is actually playing (buffering finished)
+        bgm.addEventListener('playing', () => {
+            toggleBtn.classList.remove('loading');
+            toggleBtn.classList.add('active');
+        });
+
+        // When audio is waiting for data (buffering)
+        bgm.addEventListener('waiting', () => {
+            if (!bgm.paused) {
+                toggleBtn.classList.add('loading');
+            }
+        });
+
+        // When audio is paused
+        bgm.addEventListener('pause', () => {
+            toggleBtn.classList.remove('active');
+            toggleBtn.classList.remove('loading');
+        });
+
+        // Error handling
+        bgm.addEventListener('error', (e) => {
+            console.error("Audio Load Error", e);
+            toggleBtn.classList.remove('loading');
+            toggleBtn.classList.remove('active');
+            // Visual error cue (optional): maybe shake the button?
+        });
+
+        // Click Handler (Simple Logic)
+        toggleBtn.addEventListener('click', () => {
+            if (bgm.paused) {
+                // User wants to play
+                toggleBtn.classList.add('loading'); // Show immediate feedback
+                bgm.play().catch(e => {
+                    console.warn("Play prevented/failed:", e);
+                    toggleBtn.classList.remove('loading');
+                });
+            } else {
+                // User wants to pause
+                bgm.pause();
+            }
+        });
+
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ancient Sunrise</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #1a1a24; /* Fallback */
+            font-family: sans-serif;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            display: block;
+        }
+
+        /* Pure CSS Audio Toggle - No Text */
+        #audio-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 165, 0, 0.3);
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        #audio-toggle:hover {
+            background: rgba(255, 165, 0, 0.1);
+            border-color: rgba(255, 165, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        /* Loading Animation (Pulse) */
+        @keyframes pulse-orange {
+            0% { box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 165, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 165, 0, 0); }
+        }
+
+        /* Loading State Class */
+        #audio-toggle.loading {
+            animation: pulse-orange 1.5s infinite;
+            border-color: rgba(255, 165, 0, 0.8);
+        }
+
+        /* Speaker Icon Construction */
+        .icon-speaker {
+            width: 8px;
+            height: 8px;
+            background: #e0c090;
+            position: relative;
+            left: -4px;
+            transition: background 0.3s;
+        }
+
+        .icon-speaker::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: -6px;
+            width: 0;
+            height: 0;
+            border-right: 12px solid #e0c090;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            transition: border-right-color 0.3s;
+        }
+
+        /* Sound Waves (visible when active) */
+        .wave {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            border: 2px solid transparent;
+            border-right: 2px solid #e0c090;
+            border-radius: 50%;
+            transform: translateY(-50%) rotate(-45deg);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .wave:nth-child(2) {
+            width: 16px;
+            height: 16px;
+            right: 4px;
+        }
+
+        /* Active State */
+        #audio-toggle.active .wave {
+            opacity: 1;
+        }
+
+        #audio-toggle.active {
+            border-color: rgba(255, 165, 0, 0.8);
+            box-shadow: 0 0 15px rgba(255, 165, 0, 0.4);
+            background: rgba(255, 165, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- EXTERNAL AUDIO SOURCE: Incompetech (Kevin MacLeod) -->
+    <!-- Track: "Desert City" by Kevin MacLeod -->
+    <audio id="bgm" loop preload="auto">
+        <source src="https://incompetech.com/music/royalty-free/mp3-royaltyfree/Desert%20City.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <button id="audio-toggle" aria-label="Toggle Sound">
+        <div class="icon-speaker"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </button>
+
+    <div id="canvas-container"></div>
+
+    <!-- Three.js Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        // --- 1. Scene Setup ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+
+        // Cinematic Fog (Sunrise Haze)
+        const fogColor = new THREE.Color(0xdb9f7e); // Dusty pink/orange
+        scene.fog = new THREE.FogExp2(fogColor, 0.015);
+        scene.background = fogColor;
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+        camera.position.set(0, 15, 60);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
+        container.appendChild(renderer.domElement);
+
+        // --- 2. Procedural Texture Generation ---
+        function createSandstoneTexture(color1, color2, noiseScale = 1.0, numLayers = 0) {
+            const size = 1024;
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            // Base fill
+            ctx.fillStyle = color1;
+            ctx.fillRect(0, 0, size, size);
+
+            // Noise generation
+            const imageData = ctx.getImageData(0, 0, size, size);
+            const data = imageData.data;
+
+            for (let i = 0; i < data.length; i += 4) {
+                const grain = (Math.random() - 0.5) * 40 * noiseScale;
+                data[i] = Math.min(255, Math.max(0, data[i] + grain));
+                data[i + 1] = Math.min(255, Math.max(0, data[i + 1] + grain));
+                data[i + 2] = Math.min(255, Math.max(0, data[i + 2] + grain));
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+
+            // Draw Horizontal Layers (Stone Blocks)
+            if (numLayers > 0) {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.35)"; // Slightly darker for sharper definition
+                const layerHeight = size / numLayers;
+                for (let i = 0; i < numLayers; i++) {
+                    const y = i * layerHeight;
+                    // Draw a groove
+                    ctx.fillRect(0, y, size, layerHeight * 0.15); 
+                }
+            }
+
+            // Erosion lines (Vertical)
+            ctx.strokeStyle = color2;
+            ctx.globalAlpha = 0.1;
+            for(let i=0; i<50; i++) {
+                ctx.lineWidth = Math.random() * 5;
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * size, 0);
+                ctx.lineTo(Math.random() * size, size);
+                ctx.stroke();
+            }
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            return texture;
+        }
+
+        const sandBase = '#d4b483';
+        const sandDark = '#a68a5b';
+        const pyramidBase = '#e8d0aa';
+        const pyramidDark = '#c4a676';
+
+        // Ground: No layers
+        const groundTexture = createSandstoneTexture(sandBase, sandDark, 1.2, 0);
+        groundTexture.repeat.set(20, 20);
+        
+        // Pyramid: 60 Layers
+        const pyramidTexture = createSandstoneTexture(pyramidBase, pyramidDark, 2.0, 60);
+        // Pyramid Bump: 60 Layers
+        const pyramidBump = createSandstoneTexture('#808080', '#000000', 3.0, 60);
+
+        // --- 3. Objects ---
+        
+        // NEW: Main Group to hold both Pyramid and Sphinx for synchronized rotation
+        const ancientGroup = new THREE.Group();
+        scene.add(ancientGroup);
+
+        // KHUFU PROPORTIONS
+        const pyramidGeometry = new THREE.ConeGeometry(28, 26, 4, 1);
+        
+        const pyramidMaterial = new THREE.MeshStandardMaterial({
+            map: pyramidTexture,
+            bumpMap: pyramidBump,
+            bumpScale: 2.5, 
+            roughness: 0.9,
+            metalness: 0.1,
+            flatShading: false 
+        });
+        
+        const pyramid = new THREE.Mesh(pyramidGeometry, pyramidMaterial);
+        // Position Y = Height / 2
+        pyramid.position.y = 13; 
+        pyramid.castShadow = true;
+        pyramid.receiveShadow = true;
+        pyramid.geometry.rotateY(Math.PI / 4);
+        
+        // Add Pyramid to the Group instead of Scene
+        ancientGroup.add(pyramid);
+
+        // --- DETAILED SPHINX (Humanoid Face V4 - The "Anti-Dog" Update) ---
+        function createSphinx() {
+            const sphinxGroup = new THREE.Group();
+            
+            // Re-use sandstone material
+            const mat = pyramidMaterial;
+            
+            // Darker material for headdress/details
+            const darkMat = new THREE.MeshStandardMaterial({ 
+                color: 0x5c4a3d, 
+                roughness: 0.9,
+                map: pyramidTexture
+            });
+
+            // ====================
+            // 1. BODY (Lion Body)
+            // ====================
+            
+            // Main Torso (Ribcage)
+            const torsoGeo = new THREE.CylinderGeometry(3.5, 4.2, 13, 16);
+            const torso = new THREE.Mesh(torsoGeo, mat);
+            torso.rotation.x = -Math.PI / 2; 
+            torso.scale.set(1, 1, 1.1);
+            torso.position.set(0, 3, 1);
+            torso.castShadow = true;
+            sphinxGroup.add(torso);
+
+            // Rear Haunches
+            const haunchGeo = new THREE.SphereGeometry(4.0, 16, 16);
+            const haunchL = new THREE.Mesh(haunchGeo, mat);
+            haunchL.position.set(-1.8, 2.5, -4);
+            haunchL.scale.set(0.8, 1, 1.5);
+            sphinxGroup.add(haunchL);
+
+            // Chest
+            const chestGeo = new THREE.SphereGeometry(4.2, 24, 24);
+            const chest = new THREE.Mesh(chestGeo, mat);
+            chest.position.set(0, 4.8, 6.5);
+            chest.scale.set(0.95, 1.1, 0.9);
+            chest.castShadow = true;
+            sphinxGroup.add(chest);
+
+            // ====================
+            // 2. PAWS
+            // ====================
+            const pawGeo = new THREE.BoxGeometry(2.5, 1.5, 10);
+            const pawL = new THREE.Mesh(pawGeo, mat);
+            pawL.position.set(-2.8, 0.75, 11);
+            pawL.castShadow = true;
+            sphinxGroup.add(pawL);
+
+            const pawR = new THREE.Mesh(pawGeo, mat);
+            pawR.position.set(2.8, 0.75, 11);
+            pawR.castShadow = true;
+            sphinxGroup.add(pawR);
+
+            const knuckleGeo = new THREE.CylinderGeometry(0.8, 0.8, 2.5, 8);
+            knuckleGeo.rotateZ(Math.PI / 2);
+            for(let side of [-2.8, 2.8]) {
+                for(let i=0; i<3; i++) {
+                    const toe = new THREE.Mesh(knuckleGeo, mat);
+                    toe.position.set(side - 0.7 + (i*0.7), 1.0, 15.5);
+                    toe.scale.set(1, 1, 1.5);
+                    sphinxGroup.add(toe);
+                }
+            }
+
+            // ==========================================
+            // 3. HUMAN HEAD (Scuplt V4)
+            // Goal: Flat face, square jaw, distinct features
+            // ==========================================
+            
+            const headRes = 128; 
+            const headGeo = new THREE.SphereGeometry(2.7, headRes, headRes);
+            const pos = headGeo.attributes.position;
+            const vector = new THREE.Vector3();
+
+            for (let i = 0; i < pos.count; i++) {
+                vector.set(pos.getX(i), pos.getY(i), pos.getZ(i));
+                
+                const x = vector.x;
+                const y = vector.y;
+                const z = vector.z;
+
+                // --- SCULPTING LOGIC ---
+
+                // 1. THE WALL: Drastic flattening of the face
+                // Unlike animals, human faces are flat planes relative to the skull
+                if (z > 0.3 && y > -2.0) {
+                    // Force Z to be nearly constant (flat plane)
+                    // The factor 0.3 preserves some curvature but very little
+                    vector.z = 0.5 + (z - 0.5) * 0.2; 
+                }
+
+                // 2. Square Jaw & Chin (The "Pharaoh" look)
+                if (y < 0.0 && z > -0.5) {
+                    // Widen the lower face to remove the "V" shape dog muzzle
+                    const squareness = Math.max(0, -y * 0.4);
+                    if (Math.abs(x) < 1.8) {
+                        vector.x *= (1.0 + squareness * 0.5);
+                    }
+                    
+                    // Jutting Chin
+                    if (y < -1.8 && Math.abs(x) < 0.8) {
+                        vector.z += 0.4; // Strong chin
+                        vector.y -= 0.1; // Longer face
+                    }
+                }
+                
+                // 3. Nose (Human Pyramid shape, not animal cone)
+                if (Math.abs(x) < 0.7 && y > -0.8 && y < 0.6 && z > 0) {
+                    // Triangle profile
+                    const noseW = Math.max(0, 1 - Math.abs(x)*1.8); 
+                    const noseH = Math.max(0, 1 - Math.abs(y + 0.2)*1.2); 
+                    const protrusion = noseW * noseH * 0.8; 
+                    
+                    vector.z += protrusion;
+                    
+                    // Nostrils (Wide and distinct)
+                    if (y < -0.4 && Math.abs(x) > 0.25) {
+                         vector.z -= 0.15; // Cut in
+                         vector.x *= 1.2; // Flare
+                    }
+                }
+
+                // 4. Eyes (Human placement)
+                // Animals have eyes on the side; Humans are front-facing
+                if (Math.abs(x) > 0.5 && Math.abs(x) < 1.7 && y > 0.0 && y < 0.6 && z > 0) {
+                    // Eye socket divot
+                    vector.z -= 0.15; 
+                    
+                    // Brow ridge (The "Wisdom" bump)
+                    if (y > 0.45) vector.z += 0.12;
+                    // Cheek bone (High cheekbones)
+                    if (y < 0.15 && Math.abs(x) > 1.0) vector.z += 0.08;
+                }
+
+                // 5. Mouth (Serious expression)
+                if (Math.abs(x) < 1.0 && y < -1.1 && y > -1.7 && z > 0) {
+                    // Philtrum indent
+                    if (Math.abs(x) < 0.25 && y > -1.3) vector.z -= 0.05;
+
+                    // Lips
+                    if (y > -1.4) vector.z += 0.15; // Upper
+                    else vector.z += 0.2; // Lower
+                }
+
+                pos.setXYZ(i, vector.x, vector.y, vector.z);
+            }
+
+            headGeo.computeVertexNormals();
+
+            const head = new THREE.Mesh(headGeo, mat);
+            head.position.set(0, 8.8, 7);
+            head.scale.set(0.95, 1.15, 1.0); 
+            head.castShadow = true;
+            sphinxGroup.add(head);
+
+
+            // ====================
+            // 4. EARS (New! Critical for "Human" look)
+            // ====================
+            const earGeo = new THREE.BoxGeometry(0.8, 1.5, 0.5);
+            // Sculpt ear slightly
+            
+            const earL = new THREE.Mesh(earGeo, mat);
+            earL.position.set(-2.5, 8.8, 7.5);
+            earL.rotation.y = -0.2;
+            earL.rotation.z = -0.1;
+            sphinxGroup.add(earL);
+
+            const earR = new THREE.Mesh(earGeo, mat);
+            earR.position.set(2.5, 8.8, 7.5);
+            earR.rotation.y = 0.2;
+            earR.rotation.z = 0.1;
+            sphinxGroup.add(earR);
+
+
+            // ====================
+            // 5. NEMES (Headdress) - Egyptian Style
+            // ====================
+            
+            // Top (Flatter top)
+            const nemesTopGeo = new THREE.CylinderGeometry(3.0, 3.0, 4.5, 32, 1, true, 0, Math.PI);
+            const nemesTop = new THREE.Mesh(nemesTopGeo, darkMat);
+            nemesTop.rotation.x = Math.PI / 2; 
+            nemesTop.rotation.z = Math.PI / 2;
+            nemesTop.scale.set(1, 0.7, 1.1); // Flatter
+            nemesTop.position.set(0, 8.8 + 0.6, 7 - 0.5);
+            sphinxGroup.add(nemesTop);
+
+            // Side Flaps (Bell Shape - NOT dog ears)
+            // Using a shape that flares OUT before coming down
+            const flapShape = new THREE.Shape();
+            flapShape.moveTo(0, 0);
+            flapShape.lineTo(1.5, 0); // Top width
+            flapShape.bezierCurveTo(3.0, -1.0, 3.5, -4.0, 3.0, -7.0); // Flare out wide then in
+            flapShape.lineTo(0.5, -7.0); 
+            flapShape.lineTo(0, 0); 
+
+            const extrudeSettings = { depth: 0.6, bevelEnabled: true, bevelSegments: 2, steps: 4, bevelSize: 0.1, bevelThickness: 0.1 };
+            const flapGeo = new THREE.ExtrudeGeometry(flapShape, extrudeSettings);
+            
+            const flapL = new THREE.Mesh(flapGeo, darkMat);
+            flapL.position.set(-2.6, 9.5, 7.5); // Push back behind ears
+            flapL.rotation.y = 0.6; // Angle back significantly
+            flapL.rotation.z = 0.1;
+            sphinxGroup.add(flapL);
+
+            const flapR = new THREE.Mesh(flapGeo, darkMat);
+            flapR.position.set(2.6, 9.5, 7.5);
+            flapR.rotation.y = -0.6; 
+            flapR.rotation.z = -0.1;
+            flapR.scale.x = -1; 
+            sphinxGroup.add(flapR);
+
+            // Uraeus (The Cobra on forehead) - NEW
+            const cobraGeo = new THREE.CylinderGeometry(0.1, 0.2, 0.8, 8);
+            const cobra = new THREE.Mesh(cobraGeo, new THREE.MeshStandardMaterial({color: 0xccaa33})); // Gold
+            cobra.position.set(0, 11.2, 9.3);
+            cobra.rotation.x = -0.5;
+            sphinxGroup.add(cobra);
+
+            // Beard
+            const beardGeo = new THREE.BoxGeometry(1.0, 3.5, 1.0); 
+            const beard = new THREE.Mesh(beardGeo, darkMat);
+            beard.position.set(0, 8.8 - 3.4, 7 + 1.0);
+            beard.rotation.x = 0.25;
+            beard.geometry.translate(0, -1, 0); 
+            sphinxGroup.add(beard);
+
+            return sphinxGroup;
+        }
+
+        const sphinx = createSphinx();
+        // Position Sphinx
+        sphinx.position.set(0, 0, 32);
+        
+        // Add Sphinx to the Group
+        ancientGroup.add(sphinx);
+
+
+        // Ground
+        const planeGeometry = new THREE.PlaneGeometry(500, 500);
+        const planeMaterial = new THREE.MeshStandardMaterial({
+            map: groundTexture,
+            roughness: 1,
+            metalness: 0,
+            color: 0xccaa88
+        });
+        
+        const ground = new THREE.Mesh(planeGeometry, planeMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // --- 4. Lighting ---
+        const ambientLight = new THREE.AmbientLight(0x404060, 0.6);
+        scene.add(ambientLight);
+
+        const sunLight = new THREE.DirectionalLight(0xffaa33, 1.5);
+        sunLight.position.set(50, 20, 50);
+        sunLight.castShadow = true;
+        
+        sunLight.shadow.mapSize.width = 2048;
+        sunLight.shadow.mapSize.height = 2048;
+        sunLight.shadow.camera.near = 0.5;
+        sunLight.shadow.camera.far = 200;
+        sunLight.shadow.bias = -0.0001;
+        const d = 50;
+        sunLight.shadow.camera.left = -d;
+        sunLight.shadow.camera.right = d;
+        sunLight.shadow.camera.top = d;
+        sunLight.shadow.camera.bottom = -d;
+
+        scene.add(sunLight);
+
+        const sunGeometry = new THREE.SphereGeometry(3, 32, 32);
+        const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa33 });
+        const sunMesh = new THREE.Mesh(sunGeometry, sunMaterial);
+        sunMesh.position.copy(sunLight.position).multiplyScalar(4); 
+        scene.add(sunMesh);
+
+
+        // --- 5. Controls & Animation ---
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.maxPolarAngle = Math.PI / 2 - 0.05;
+        controls.minDistance = 20;
+        controls.maxDistance = 100;
+
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const delta = clock.getDelta();
+            
+            // Rotate the entire GROUP (Pyramid + Sphinx)
+            ancientGroup.rotation.y += 0.2 * delta;
+            
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+
+        // --- 6. Event Listeners ---
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // ==========================================
+        // ROBUST AUDIO SYSTEM WITH LOADING FEEDBACK
+        // ==========================================
+        
+        const toggleBtn = document.getElementById('audio-toggle');
+        const bgm = document.getElementById('bgm');
+        
+        // Volume 
+        bgm.volume = 1.0;
+
+        // UI Update Logic based on AUDIO EVENTS (Single Source of Truth)
+        
+        // When audio is actually playing (buffering finished)
+        bgm.addEventListener('playing', () => {
+            toggleBtn.classList.remove('loading');
+            toggleBtn.classList.add('active');
+        });
+
+        // When audio is waiting for data (buffering)
+        bgm.addEventListener('waiting', () => {
+            if (!bgm.paused) {
+                toggleBtn.classList.add('loading');
+            }
+        });
+
+        // When audio is paused
+        bgm.addEventListener('pause', () => {
+            toggleBtn.classList.remove('active');
+            toggleBtn.classList.remove('loading');
+        });
+
+        // Error handling
+        bgm.addEventListener('error', (e) => {
+            console.error("Audio Load Error", e);
+            toggleBtn.classList.remove('loading');
+            toggleBtn.classList.remove('active');
+            // Visual error cue (optional): maybe shake the button?
+        });
+
+        // Click Handler (Simple Logic)
+        toggleBtn.addEventListener('click', () => {
+            if (bgm.paused) {
+                // User wants to play
+                toggleBtn.classList.add('loading'); // Show immediate feedback
+                bgm.play().catch(e => {
+                    console.warn("Play prevented/failed:", e);
+                    toggleBtn.classList.remove('loading');
+                });
+            } else {
+                // User wants to pause
+                bgm.pause();
+            }
+        });
+
+    </script>
+</body>
+</html>

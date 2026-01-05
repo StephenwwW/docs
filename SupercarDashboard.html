@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JDM Tuner Dashboard V2.4 (Cold Start Edition)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;500;700&family=Orbitron:wght@400;700;900&display=swap');
+
+        :root {
+            --primary: #00f3ff;
+            --secondary: #bc13fe;
+            --danger: #ff003c;
+            --bg-panel: rgba(10, 15, 20, 0.85);
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #050505;
+            font-family: 'Chakra Petch', sans-serif;
+            color: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+        }
+
+        /* 碳纖維背景紋理 */
+        .carbon-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                linear-gradient(27deg, #151515 5px, transparent 5px) 0 5px,
+                linear-gradient(207deg, #151515 5px, transparent 5px) 10px 0px,
+                linear-gradient(27deg, #222 5px, transparent 5px) 0px 10px,
+                linear-gradient(207deg, #222 5px, transparent 5px) 10px 5px,
+                linear-gradient(90deg, #1b1b1b 10px, transparent 10px),
+                linear-gradient(#1d1d1d 25%, #1a1a1a 25%, #1a1a1a 50%, transparent 50%, transparent 75%, #242424 75%, #242424);
+            background-color: #131313;
+            background-size: 20px 20px;
+            z-index: -3;
+            opacity: 1;
+        }
+
+        #bg-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            opacity: 0.6;
+            mix-blend-mode: screen;
+        }
+
+        /* 主控台容器 */
+        .dashboard-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 50px;
+            transform: rotateX(5deg);
+            transition: transform 0.1s;
+        }
+
+        .shaking {
+            animation: shake 0.1s infinite;
+        }
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .panel {
+            background: var(--bg-panel);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 0 20px rgba(0,0,0,0.8), inset 0 0 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        .panel::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0.5;
+        }
+
+        .center-cluster {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #gauge-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 500px; height: 500px;
+            filter: drop-shadow(0 0 15px var(--primary));
+            z-index: 1;
+        }
+
+        .digital-readout {
+            position: absolute;
+            z-index: 2;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,20,30,0.9) 0%, rgba(0,0,0,0) 70%);
+        }
+
+        .speed-val {
+            font-family: 'Orbitron';
+            font-size: 6rem;
+            line-height: 1;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 20px var(--primary);
+        }
+
+        .speed-unit {
+            font-size: 1.2rem;
+            color: var(--primary);
+            letter-spacing: 0.2em;
+            margin-top: -5px;
+            opacity: 0.8;
+        }
+
+        .gear-display {
+            margin-top: 15px;
+            width: 80px;
+            height: 60px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--primary);
+            color: #fff;
+            font-family: 'Orbitron';
+            font-size: 3rem;
+            line-height: 60px;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+            text-shadow: 0 0 10px var(--primary);
+            transition: all 0.1s;
+        }
+
+        .gear-display.redline {
+            background: var(--danger);
+            border-color: #fff;
+            box-shadow: 0 0 30px var(--danger);
+            animation: pulse-fast 0.1s infinite;
+        }
+
+        @keyframes pulse-fast {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+        }
+
+        .side-wing {
+            width: 300px;
+            height: 200px;
+            margin-bottom: 50px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .wing-left {
+            margin-right: -50px;
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+            transform: skewX(10deg);
+            text-align: right;
+            border-right: none;
+            padding-right: 60px;
+        }
+
+        .wing-right {
+            margin-left: -50px;
+            clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+            transform: skewX(-10deg);
+            text-align: left;
+            border-left: none;
+            padding-left: 60px;
+        }
+
+        .side-wing > div {
+            transform: skewX(var(--skew-fix));
+        }
+        .wing-left { --skew-fix: -10deg; }
+        .wing-right { --skew-fix: 10deg; }
+
+        .data-row {
+            margin-bottom: 15px;
+        }
+        .data-label {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+        .data-value {
+            font-family: 'Orbitron';
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .turbo-bar-container {
+            display: flex;
+            gap: 4px;
+            margin-top: 5px;
+            height: 15px;
+        }
+        .wing-left .turbo-bar-container { justify-content: flex-end; }
+        
+        .turbo-seg {
+            width: 12px; height: 100%;
+            background: #222;
+            transform: skewX(-20deg);
+            transition: background 0.05s;
+        }
+        .turbo-seg.lit {
+            background: var(--secondary);
+            box-shadow: 0 0 10px var(--secondary);
+        }
+        .turbo-seg.max {
+            background: var(--danger);
+            box-shadow: 0 0 10px var(--danger);
+        }
+
+        .warning-overlay {
+            position: absolute;
+            top: 10%;
+            width: 100%;
+            text-align: center;
+            font-family: 'Orbitron';
+            color: var(--danger);
+            font-size: 2rem;
+            letter-spacing: 10px;
+            opacity: 0;
+            pointer-events: none;
+            text-shadow: 0 0 20px var(--danger);
+            transition: opacity 0.2s;
+        }
+        .warning-overlay.active { opacity: 1; animation: blink 0.5s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        #start-screen {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .btn-neon {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: #fff;
+            padding: 20px 60px;
+            font-family: 'Orbitron';
+            font-size: 1.5rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+            box-shadow: 0 0 15px var(--primary);
+        }
+        .btn-neon:hover {
+            background: var(--primary);
+            color: #000;
+            box-shadow: 0 0 50px var(--primary);
+        }
+        .btn-neon:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #555;
+            box-shadow: none;
+        }
+        
+        /* 系統循環狀態顯示 */
+        #cycle-status {
+            position: absolute;
+            bottom: 20px;
+            font-family: 'Orbitron';
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="carbon-bg"></div>
+    <canvas id="bg-canvas"></canvas>
+
+    <div id="start-screen">
+        <h1 style="font-family:'Orbitron'; font-size: 4rem; margin-bottom: 2rem; color: #fff; text-shadow: 0 0 20px #00f3ff;">SYSTEM OFF</h1>
+        <button class="btn-neon" id="start-btn">START SEQUENCE</button>
+    </div>
+
+    <div class="warning-overlay" id="warning-text">SHIFT UP</div>
+    <div id="cycle-status">CYCLES: 0 / 3</div>
+
+    <div class="dashboard-wrapper" id="cockpit">
+        
+        <div class="panel side-wing wing-left">
+            <div class="data-row">
+                <div class="data-label">BOOST PRESSURE</div>
+                <div class="data-value" id="boost-text">0.0 PSI</div>
+                <div class="turbo-bar-container" id="boost-bar">
+                    </div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">OIL TEMP</div>
+                <div class="data-value">92°C</div>
+            </div>
+        </div>
+
+        <div class="center-cluster">
+            <canvas id="gauge-canvas" width="500" height="500"></canvas>
+            
+            <div class="digital-readout">
+                <div class="speed-val" id="speed-text">0</div>
+                <div class="speed-unit">KM/H</div>
+                <div class="gear-display" id="gear-text">N</div>
+            </div>
+        </div>
+
+        <div class="panel side-wing wing-right">
+            <div class="data-row">
+                <div class="data-label">G-FORCE (LAT)</div>
+                <div class="data-value" id="g-text">0.00 G</div>
+            </div>
+            <div class="data-row">
+                <div class="data-label">THROTTLE</div>
+                <div class="turbo-bar-container" id="throttle-bar">
+                    </div>
+            </div>
+             <div class="data-row" style="margin-top: auto;">
+                <div class="data-label">MODE</div>
+                <div class="data-value" style="font-size: 1.2rem; color: var(--secondary);" id="mode-text">HYPER CYCLE</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 設定與狀態 ---
+        const CONFIG = {
+            maxRpm: 10000, 
+            redline: 8500,
+            shiftRpm: 9200,
+            idleRpm: 1000,
+            maxSpeed: 500, 
+            cycleLimit: 5,
+            colors: {
+                normal: '#00f3ff',
+                warn: '#bc13fe',
+                danger: '#ff003c',
+                track: '#333'
+            }
+        };
+
+        const STATE = {
+            OFF: 0,
+            STARTING: 1, // 點火中
+            COLD_START: 8, // 新增：冷車空催模式
+            IDLE: 2,
+            ACCEL: 3,
+            SHIFTING: 4,
+            CRUISE: 5,
+            DECEL: 6,
+            WAITING: 7 // 循環結束等待
+        };
+
+        let car = {
+            state: STATE.OFF, 
+            rpm: 0,
+            speed: 0,
+            gear: 1,
+            throttle: 0,
+            boost: 0,
+            targetRpm: 0,
+            cycleCount: 0,
+            coldStartTimer: 0, // 暖車計時器
+            cycleFinished: false
+        };
+
+        // --- AUDIO ENGINE ---
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audio = {
+            ctx: null,
+            master: null,
+            // Nodes
+            engineOsc: null,
+            engineSub: null,
+            engineFilter: null,
+            engineGain: null,
+            distortion: null,
+            lfo: null,
+            lfoGain: null,
+            turboOsc: null,
+            turboNoise: null,
+            turboGain: null,
+            turboFilter: null,
+            // Starter Nodes
+            starterOsc: null,
+            starterGain: null
+        };
+
+        let lastOut = 0; 
+
+        function makeDistortionCurve(amount) {
+            const k = typeof amount === 'number' ? amount : 50;
+            const n_samples = 44100;
+            const curve = new Float32Array(n_samples);
+            const deg = Math.PI / 180;
+            for (let i = 0; i < n_samples; ++i) {
+                const x = i * 2 / n_samples - 1;
+                curve[i] = (3 + k) * x * 20 * deg / (Math.PI + k * Math.abs(x));
+            }
+            return curve;
+        }
+
+        function initAudioContext() {
+            if (!audio.ctx) {
+                audio.ctx = new AudioCtx();
+                const compressor = audio.ctx.createDynamicsCompressor();
+                compressor.threshold.value = -10;
+                compressor.knee.value = 40;
+                compressor.ratio.value = 12;
+                compressor.connect(audio.ctx.destination);
+
+                audio.master = audio.ctx.createGain();
+                audio.master.gain.value = 0.6;
+                audio.master.connect(compressor);
+            } else if (audio.ctx.state === 'suspended') {
+                audio.ctx.resume();
+            }
+        }
+
+        // 模擬啟動馬達聲音 (Cranking)
+        function triggerStarter() {
+            initAudioContext();
+            const t = audio.ctx.currentTime;
+            
+            // 啟動馬達高頻聲
+            const starterOsc = audio.ctx.createOscillator();
+            starterOsc.type = 'sawtooth';
+            starterOsc.frequency.setValueAtTime(100, t);
+            starterOsc.frequency.linearRampToValueAtTime(300, t + 1.0); // 轉速拉高
+            starterOsc.frequency.exponentialRampToValueAtTime(1200, t + 1.4); // 點火瞬間
+            
+            const starterGain = audio.ctx.createGain();
+            starterGain.gain.setValueAtTime(0.4, t);
+            starterGain.gain.linearRampToValueAtTime(0, t + 1.5); // 啟動後淡出
+
+            // 啟動馬達低頻脈衝
+            const lfo = audio.ctx.createOscillator();
+            lfo.type = 'square';
+            lfo.frequency.setValueAtTime(8, t); // 噠噠噠噠
+            lfo.frequency.linearRampToValueAtTime(15, t + 1.2);
+            const lfoGain = audio.ctx.createGain();
+            lfoGain.gain.value = 500;
+            
+            lfo.connect(lfoGain);
+            lfoGain.connect(starterOsc.frequency); // 調變頻率產生抖動
+
+            starterOsc.connect(starterGain);
+            starterGain.connect(audio.master);
+
+            starterOsc.start();
+            lfo.start();
+            starterOsc.stop(t + 1.6);
+            lfo.stop(t + 1.6);
+
+            // 延遲啟動主引擎聲音
+            setTimeout(() => {
+                startMainEngineAudio();
+            }, 1200);
+        }
+
+        // 啟動主引擎 Loop
+        function startMainEngineAudio() {
+            if (audio.engineOsc) return; // 已經在跑了
+            const t = audio.ctx.currentTime;
+
+            audio.engineOsc = audio.ctx.createOscillator();
+            audio.engineOsc.type = 'sawtooth';
+            audio.engineOsc.start();
+
+            audio.engineSub = audio.ctx.createOscillator();
+            audio.engineSub.type = 'square';
+            audio.engineSub.start();
+
+            const oscMix = audio.ctx.createGain();
+            audio.engineOsc.connect(oscMix);
+            audio.engineSub.connect(oscMix);
+
+            audio.distortion = audio.ctx.createWaveShaper();
+            audio.distortion.curve = makeDistortionCurve(400);
+            audio.distortion.oversample = '4x';
+            oscMix.connect(audio.distortion);
+
+            audio.engineFilter = audio.ctx.createBiquadFilter();
+            audio.engineFilter.type = 'lowpass';
+            audio.engineFilter.Q.value = 2;
+            audio.distortion.connect(audio.engineFilter);
+
+            audio.lfo = audio.ctx.createOscillator();
+            audio.lfo.type = 'sine';
+            audio.lfo.start();
+            
+            audio.lfoGain = audio.ctx.createGain();
+            audio.lfoGain.gain.value = 500;
+            audio.lfo.connect(audio.lfoGain);
+            audio.lfoGain.connect(audio.engineFilter.frequency);
+
+            audio.engineGain = audio.ctx.createGain();
+            audio.engineFilter.connect(audio.engineGain);
+            audio.engineGain.connect(audio.master);
+
+            // Turbo
+            audio.turboOsc = audio.ctx.createOscillator();
+            audio.turboOsc.type = 'sine';
+            audio.turboOsc.start();
+
+            const bufferSize = audio.ctx.sampleRate * 2;
+            const buffer = audio.ctx.createBuffer(1, bufferSize, audio.ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                data[i] = (lastOut + (0.02 * white)) / 1.02;
+                lastOut = data[i];
+                data[i] *= 3.5; 
+            }
+            audio.turboNoise = audio.ctx.createBufferSource();
+            audio.turboNoise.buffer = buffer;
+            audio.turboNoise.loop = true;
+            audio.turboNoise.start();
+
+            const turboMix = audio.ctx.createGain();
+            audio.turboOsc.connect(turboMix);
+            audio.turboNoise.connect(turboMix);
+
+            audio.turboFilter = audio.ctx.createBiquadFilter();
+            audio.turboFilter.type = 'bandpass';
+            audio.turboFilter.Q.value = 1;
+            turboMix.connect(audio.turboFilter);
+
+            audio.turboGain = audio.ctx.createGain();
+            audio.turboGain.gain.value = 0;
+            audio.turboFilter.connect(audio.turboGain);
+            audio.turboGain.connect(audio.master);
+        }
+
+        // 模擬關閉引擎 (Shutdown)
+        function triggerShutdown() {
+            if (!audio.engineOsc) return;
+            const t = audio.ctx.currentTime;
+
+            // 頻率驟降 (模擬慣性停止)
+            audio.engineOsc.frequency.cancelScheduledValues(t);
+            audio.engineOsc.frequency.setValueAtTime(audio.engineOsc.frequency.value, t);
+            audio.engineOsc.frequency.exponentialRampToValueAtTime(10, t + 0.5);
+
+            audio.engineSub.frequency.cancelScheduledValues(t);
+            audio.engineSub.frequency.setValueAtTime(audio.engineSub.frequency.value, t);
+            audio.engineSub.frequency.exponentialRampToValueAtTime(5, t + 0.5);
+
+            // 音量關閉
+            audio.engineGain.gain.cancelScheduledValues(t);
+            audio.engineGain.gain.setValueAtTime(audio.engineGain.gain.value, t);
+            audio.engineGain.gain.linearRampToValueAtTime(0, t + 0.5);
+
+            audio.turboGain.gain.cancelScheduledValues(t);
+            audio.turboGain.gain.linearRampToValueAtTime(0, t + 0.2);
+
+            // 0.6秒後停止所有節點並清理
+            setTimeout(() => {
+                if(audio.engineOsc) audio.engineOsc.stop();
+                if(audio.engineSub) audio.engineSub.stop();
+                if(audio.lfo) audio.lfo.stop();
+                if(audio.turboOsc) audio.turboOsc.stop();
+                if(audio.turboNoise) audio.turboNoise.stop();
+                
+                audio.engineOsc = null;
+                audio.engineSub = null;
+                // ... 其他清理
+            }, 600);
+        }
+
+        function playBOV() {
+            if(!audio.ctx) return;
+            const t = audio.ctx.currentTime;
+            const bufferSize = audio.ctx.sampleRate * 0.8;
+            const buffer = audio.ctx.createBuffer(1, bufferSize, audio.ctx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+            const noise = audio.ctx.createBufferSource();
+            noise.buffer = buffer;
+            const filter = audio.ctx.createBiquadFilter();
+            filter.type = 'highpass';
+            filter.frequency.setValueAtTime(1000, t);
+            filter.frequency.linearRampToValueAtTime(500, t + 0.3);
+            const gain = audio.ctx.createGain();
+            gain.gain.setValueAtTime(0.5, t);
+            gain.gain.linearRampToValueAtTime(0, t + 0.1);
+            gain.gain.linearRampToValueAtTime(0.3, t + 0.15);
+            gain.gain.linearRampToValueAtTime(0, t + 0.25);
+            gain.gain.linearRampToValueAtTime(0.2, t + 0.3);
+            gain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+            noise.connect(filter);
+            filter.connect(gain);
+            gain.connect(audio.master);
+            noise.start();
+        }
+
+        function updateAudio() {
+            if(!audio.ctx || !audio.engineOsc) return;
+            const t = audio.ctx.currentTime;
+            
+            const baseFreq = (car.rpm / 60) * 2; 
+            const jitter = Math.random() * 2;
+            audio.engineOsc.frequency.setTargetAtTime(baseFreq + jitter, t, 0.02);
+            audio.engineSub.frequency.setTargetAtTime((baseFreq + jitter) / 2, t, 0.02);
+            audio.lfo.frequency.setTargetAtTime(baseFreq / 4, t, 0.1); 
+            
+            // 冷車啟動時，filter 開大一點，讓補油門聲音更明顯
+            let filterMod = (car.state === STATE.COLD_START) ? 1.8 : 1.5;
+            const filterFreq = 200 + (car.rpm * filterMod) + (car.throttle * 2000);
+            audio.engineFilter.frequency.setTargetAtTime(filterFreq, t, 0.05);
+
+            let vol = 0.2;
+            if(car.throttle > 0.1 || car.state === STATE.COLD_START) vol = 0.5; // 冷車也大聲
+            if(car.state === STATE.SHIFTING) vol = 0.1;
+            vol += (car.rpm / CONFIG.maxRpm) * 0.3;
+            audio.engineGain.gain.setTargetAtTime(vol, t, 0.05);
+
+            let turboVol = 0;
+            // 冷車空催也有渦輪聲
+            if ((car.rpm > 2500 && car.throttle > 0) || (car.state === STATE.COLD_START && car.rpm > 3000)) {
+                const boostFactor = Math.min(1, (car.rpm - 2500) / 4000);
+                turboVol = boostFactor * 0.6;
+                if(car.throttle > 0) turboVol *= car.throttle;
+                else if(car.state === STATE.COLD_START) turboVol *= 0.5; // 冷車渦輪稍微小聲點
+
+                const turboFreq = 2000 + (boostFactor * 6000);
+                audio.turboOsc.frequency.setTargetAtTime(turboFreq, t, 0.1);
+                audio.turboFilter.frequency.setTargetAtTime(turboFreq, t, 0.1);
+            }
+            if((car.throttle < 0.1 && car.state !== STATE.COLD_START) || car.state === STATE.SHIFTING) {
+                turboVol = 0;
+            }
+            audio.turboGain.gain.setTargetAtTime(turboVol, t, 0.1);
+        }
+
+        // --- 視覺渲染 ---
+        const canvas = document.getElementById('gauge-canvas');
+        const ctx = canvas.getContext('2d');
+        const centerX = 250, centerY = 250, radius = 220;
+
+        function drawGauge() {
+            ctx.clearRect(0, 0, 500, 500);
+            const startAngle = 135 * Math.PI / 180;
+            const totalTicks = 50; // 0-10000rpm
+            const totalAngle = 270 * Math.PI / 180;
+            
+            // 外圈 RPM 標示
+            ctx.font = "bold 14px 'Orbitron'";
+            ctx.fillStyle = CONFIG.colors.normal;
+            ctx.textAlign = "center";
+            ctx.fillText("RPM x1000", centerX, centerY - 140);
+
+            for(let i=0; i<=totalTicks; i++) {
+                const pct = i / totalTicks;
+                const angle = startAngle + (pct * totalAngle);
+                const currentRpm = i * 200;
+                let color = CONFIG.colors.normal;
+                if(currentRpm >= CONFIG.redline) color = CONFIG.colors.danger;
+                const isActive = currentRpm <= car.rpm;
+                
+                // 大刻度
+                if(i % 5 === 0) {
+                    ctx.lineWidth = 4;
+                    const len = 30;
+                    ctx.strokeStyle = isActive ? color : '#1a2a33'; 
+                    if(isActive) { ctx.shadowBlur = 10; ctx.shadowColor = color; }
+                    else { ctx.shadowBlur = 0; }
+
+                    const x1 = centerX + Math.cos(angle) * (radius);
+                    const y1 = centerY + Math.sin(angle) * (radius);
+                    const x2 = centerX + Math.cos(angle) * (radius - len);
+                    const y2 = centerY + Math.sin(angle) * (radius - len);
+                    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+
+                    // 數字
+                    const textR = radius - 50;
+                    const tx = centerX + Math.cos(angle) * textR;
+                    const ty = centerY + Math.sin(angle) * textR;
+                    ctx.fillStyle = (isActive && currentRpm >= CONFIG.redline) ? '#fff' : '#4a5a66';
+                    if(isActive && currentRpm < CONFIG.redline) ctx.fillStyle = '#fff';
+                    ctx.font = "bold 20px 'Orbitron'";
+                    ctx.fillText(i/5, tx, ty);
+                } else {
+                    // 小刻度 (Ring Effect)
+                    ctx.lineWidth = 2;
+                    const len = 10;
+                    ctx.strokeStyle = isActive ? color : '#1a2a33'; 
+                    const x1 = centerX + Math.cos(angle) * (radius);
+                    const y1 = centerY + Math.sin(angle) * (radius);
+                    const x2 = centerX + Math.cos(angle) * (radius - len);
+                    const y2 = centerY + Math.sin(angle) * (radius - len);
+                    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+                }
+            }
+
+            // 動態外圈
+            const rpmPct = Math.min(car.rpm, CONFIG.maxRpm) / CONFIG.maxRpm;
+            const activeEndAngle = startAngle + (rpmPct * totalAngle);
+            
+            // 底圈
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius + 15, startAngle, startAngle + totalAngle);
+            ctx.strokeStyle = "#111";
+            ctx.lineWidth = 6;
+            ctx.stroke();
+
+            // 亮圈
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius + 15, startAngle, activeEndAngle);
+            ctx.strokeStyle = (car.rpm > CONFIG.redline) ? CONFIG.colors.danger : CONFIG.colors.primary;
+            ctx.lineWidth = 6;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = ctx.strokeStyle;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+
+        // --- 物理模擬 ---
+        // 5檔變速齒比 (針對 500KMH 優化)
+        const GEAR_RATIOS = [3.8, 2.6, 1.8, 1.2, 0.9]; 
+        
+        function updatePhysics(dt) {
+            
+            switch (car.state) {
+                case STATE.STARTING:
+                    // 啟動動畫中
+                    break;
+
+                // --- 2. 新增：冷車暖車模式 (10秒) ---
+                case STATE.COLD_START:
+                    car.coldStartTimer += dt;
+                    let t = car.coldStartTimer;
+                    let target = 1500; // 基礎高怠速
+
+                    // 冷車補油門邏輯 (Procedural Revving)
+                    if(t < 1.0) target = 2500 * (t/0.5); // 啟動瞬間拉轉
+                    else if(t < 2.0) target = 1800; // 回落
+                    else if(t >= 2.5 && t < 4.0) target = 1800 + Math.sin((t-2.5)*Math.PI)*2500; // 第一次補油 (4300rpm)
+                    else if(t >= 5.0 && t < 7.0) target = 1800 + Math.sin((t-5.0)*Math.PI)*5000; // 第二次大補油 (6800rpm)
+                    else if(t >= 8.0 && t < 9.0) target = 1800 + Math.sin((t-8.0)*Math.PI)*1500; // 第三次小補油 (3300rpm)
+                    
+                    // 平滑過渡
+                    car.rpm += (target - car.rpm) * 0.15;
+                    
+                    // 10秒後結束，進入怠速準備出發
+                    if(t > 15.0) {
+                        car.state = STATE.IDLE;
+                        car.coldStartTimer = 0;
+                        car.targetRpm = CONFIG.idleRpm;
+                    }
+                    break;
+                
+                case STATE.IDLE:
+                    car.throttle = 0;
+                    car.targetRpm = CONFIG.idleRpm + Math.random()*50;
+                    // 稍微等待一下再出發
+                    if (Math.random() > 0.99) car.state = STATE.ACCEL;
+                    break;
+
+                case STATE.ACCEL:
+                    car.throttle = 1;
+                    // 加速物理 (強化扭力以達到50秒內500KMH)
+                    // 基礎扭力係數提高
+                    let torque = (10000 - car.rpm) / 40 * (1.2 / car.gear); 
+                    // 高速空氣阻力
+                    torque -= (car.speed * car.speed) / 8000;
+                    
+                    if (torque < 10) torque = 10; // 確保極速推力
+
+                    car.speed += torque * dt * 0.15;
+                    
+                    // 計算 RPM
+                    car.rpm = car.speed * GEAR_RATIOS[car.gear-1] * 20; 
+                    
+                    // 換檔邏輯 (5檔)
+                    if(car.rpm > CONFIG.shiftRpm && car.gear < 5) {
+                        car.state = STATE.SHIFTING;
+                        playBOV();
+                    }
+                    
+                    // 到達 500 KM/H -> 減速
+                    if (car.speed >= CONFIG.maxSpeed) {
+                        car.state = STATE.DECEL;
+                    }
+                    break;
+
+                case STATE.SHIFTING:
+                    car.throttle = 0;
+                    car.rpm -= 5000 * dt; // 換檔掉轉快一點
+                    if(car.rpm < CONFIG.shiftRpm - 3000) {
+                        car.gear++;
+                        car.state = STATE.ACCEL;
+                    }
+                    break;
+
+                case STATE.CRUISE:
+                    car.state = STATE.DECEL;
+                    break;
+
+                case STATE.DECEL:
+                    car.throttle = 0;
+                    car.speed -= 80 * dt; // 煞車增強
+                    car.rpm = car.speed * GEAR_RATIOS[car.gear-1] * 20;
+                    
+                    // 自動退檔
+                    if (car.rpm < 4000 && car.gear > 1) {
+                        car.gear--;
+                        car.rpm += 2000; // 補油
+                        playBOV();
+                    }
+
+                    // 停止 -> 檢查循環
+                    if (car.speed <= 0) {
+                        car.speed = 0;
+                        car.rpm = CONFIG.idleRpm;
+                        car.gear = 1;
+                        car.cycleCount++;
+                        updateCycleStatus();
+                        
+                        if (car.cycleCount < CONFIG.cycleLimit) {
+                            car.state = STATE.IDLE; // 繼續下一圈
+                        } else {
+                            car.state = STATE.WAITING;
+                            initiateShutdownSequence();
+                        }
+                    }
+                    break;
+                case STATE.WAITING:
+                    break;
+            }
+
+            if(car.state === STATE.IDLE || car.state === STATE.WAITING) {
+                if (car.rpm > 0) car.rpm += (car.targetRpm - car.rpm) * 0.2;
+            }
+            if (car.rpm < 0) car.rpm = 0;
+
+            if(car.throttle > 0.5) car.boost += (2.0 - car.boost) * 0.1; // 增壓到 2.0 bar
+            else car.boost -= 0.1;
+            if(car.boost < 0) car.boost = 0;
+
+            if(car.speed > 350) {
+                document.getElementById('cockpit').classList.add('shaking');
+            } else {
+                document.getElementById('cockpit').classList.remove('shaking');
+            }
+        }
+
+        function initiateShutdownSequence() {
+            triggerShutdown(); // 播放熄火聲
+            car.targetRpm = 0; // 轉速歸零
+            document.getElementById('mode-text').innerText = "COOLING DOWN";
+            
+            // 5秒後重啟
+            setTimeout(() => {
+                car.cycleCount = 0;
+                updateCycleStatus();
+                startSequence();
+            }, 5000);
+        }
+
+        function startSequence() {
+            car.state = STATE.STARTING;
+            car.gear = 1;
+            car.speed = 0;
+            car.rpm = 0;
+            car.coldStartTimer = 0;
+            document.getElementById('mode-text').innerText = "WARM UP";
+            
+            triggerStarter(); // 播放啟動聲
+            
+            // 1.2秒後啟動引擎並進入冷車模式
+            setTimeout(() => {
+                car.state = STATE.COLD_START; // 直接進入冷車模式
+            }, 1200); 
+        }
+
+        // --- DOM 更新 ---
+        const boostContainer = document.getElementById('boost-bar');
+        const throttleContainer = document.getElementById('throttle-bar');
+        for(let i=0; i<15; i++) {
+            boostContainer.innerHTML += `<div class="turbo-seg"></div>`;
+            throttleContainer.innerHTML += `<div class="turbo-seg"></div>`;
+        }
+
+        function updateDOM() {
+            document.getElementById('speed-text').innerText = Math.floor(car.speed);
+            
+            const gearEl = document.getElementById('gear-text');
+            // 冷車或怠速顯示 N 檔
+            const isNeutral = (car.state === STATE.IDLE || car.state === STATE.WAITING || car.state === STATE.STARTING || car.state === STATE.COLD_START);
+            gearEl.innerText = isNeutral ? 'N' : car.gear;
+            
+            if(car.rpm > CONFIG.redline) gearEl.classList.add('redline');
+            else gearEl.classList.remove('redline');
+
+            const psi = (car.boost * 14.7).toFixed(1); // Bar to PSI roughly
+            document.getElementById('boost-text').innerText = psi + ' PSI';
+            
+            const bars = document.querySelectorAll('#boost-bar .turbo-seg');
+            const activeBars = Math.floor(car.boost * 7); // Scale visual
+            bars.forEach((b, i) => {
+                b.className = 'turbo-seg';
+                if(i < activeBars) {
+                    b.classList.add('lit');
+                    if(i > 10) b.classList.add('max');
+                }
+            });
+
+            let g = 0;
+            if(car.state === STATE.ACCEL) g = 1.2 + Math.random()*0.1; // G force increased
+            if(car.state === STATE.DECEL) g = -1.5;
+            document.getElementById('g-text').innerText = g.toFixed(2) + ' G';
+            
+            const warn = document.getElementById('warning-text');
+            if(car.rpm > CONFIG.shiftRpm) warn.classList.add('active');
+            else warn.classList.remove('active');
+            
+            if(car.state === STATE.COLD_START) {
+                 document.getElementById('mode-text').innerText = "WARM UP (COLD)";
+                 document.getElementById('mode-text').style.color = "#bc13fe";
+            } else if (car.state === STATE.ACCEL) {
+                 document.getElementById('mode-text').innerText = "HYPER CYCLE";
+                 document.getElementById('mode-text').style.color = "#00f3ff";
+            }
+        }
+
+        function updateCycleStatus() {
+            document.getElementById('cycle-status').innerText = `CYCLES: ${car.cycleCount} / ${CONFIG.cycleLimit}`;
+        }
+
+        // --- 背景動畫 ---
+        const bgCanvas = document.getElementById('bg-canvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        let width, height;
+        let stars = [];
+
+        function initStars() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            bgCanvas.width = width;
+            bgCanvas.height = height;
+            stars = [];
+            for(let i=0; i<200; i++) {
+                stars.push({
+                    x: Math.random() * width - width/2,
+                    y: Math.random() * height - height/2,
+                    z: Math.random() * width
+                });
+            }
+        }
+
+        function drawStars() {
+            bgCtx.fillStyle = "rgba(0,0,0,0.3)";
+            bgCtx.fillRect(0, 0, width, height);
+            
+            const cx = width/2;
+            const cy = height/2;
+            const speed = 5 + (car.speed * 0.8); // Speed visual faster
+
+            stars.forEach(star => {
+                star.z -= speed;
+                if(star.z <= 0) {
+                    star.z = width;
+                    star.x = Math.random() * width - width/2;
+                    star.y = Math.random() * height - height/2;
+                }
+                
+                const k = 128.0 / star.z;
+                const px = star.x * k + cx;
+                const py = star.y * k + cy;
+
+                if(px >= 0 && px <= width && py >=0 && py <= height) {
+                    const size = (1 - star.z / width) * 4;
+                    bgCtx.fillStyle = (car.speed > 400) ? "#ff0055" : "#00f3ff";
+                    bgCtx.beginPath();
+                    bgCtx.arc(px, py, size, 0, Math.PI*2);
+                    bgCtx.fill();
+                }
+            });
+        }
+        
+        window.addEventListener('resize', initStars);
+        initStars();
+
+        // --- Main Loop ---
+        let lastTime = 0;
+        let isRunning = false;
+
+        function loop(timestamp) {
+            if(!isRunning) return;
+            const dt = (timestamp - lastTime) / 1000 || 0.016;
+            lastTime = timestamp;
+
+            updatePhysics(dt);
+            updateAudio();
+            
+            drawGauge();
+            updateDOM();
+            drawStars();
+
+            requestAnimationFrame(loop);
+        }
+
+        document.getElementById('start-btn').addEventListener('click', () => {
+            document.getElementById('start-screen').style.display = 'none';
+            isRunning = true;
+            initAudioContext();
+            startSequence(); // 開始主循環
+            loop(0);
+        });
+
+    </script>
+</body>
+</html>
