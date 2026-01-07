@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>全球跨年煙火秀 - 極致仿真版</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000510;
+            font-family: 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+            touch-action: none;
+        }
+        #canvas-container {
+            width: 100%;
+            height: 100vh;
+            display: block;
+        }
+        /* UI Layer */
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            pointer-events: auto;
+            text-shadow: 0 0 10px rgba(0,0,0,0.9);
+        }
+        #location-info { text-align: left; color: white; }
+        h1 {
+            font-size: 2.5rem; margin: 0; font-weight: 800;
+            background: linear-gradient(to right, #fff, #ffd700);
+            -webkit-background-clip: text; color: transparent;
+        }
+        h2 { font-size: 1.2rem; margin: 5px 0 0 0; color: #ccc; }
+        
+        #bgm-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white; width: 40px; height: 40px;
+            border-radius: 50%; cursor: pointer;
+            backdrop-filter: blur(5px); font-size: 20px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        #timer-container {
+            position: absolute; top: 90px; left: 20px;
+            width: 200px; height: 3px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        #timer-bar {
+            height: 100%; background: #ffd700; width: 0%;
+            box-shadow: 0 0 8px #ffd700;
+        }
+
+        #controls {
+            position: absolute; bottom: 30px; right: 20px;
+            pointer-events: auto;
+        }
+        .btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white; padding: 10px 25px;
+            cursor: pointer; border-radius: 30px;
+            backdrop-filter: blur(4px); transition: 0.3s;
+        }
+        .btn:hover { background: rgba(255, 255, 255, 0.2); border-color: #fff; }
+
+        #start-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 100; color: white; text-align: center;
+        }
+        #start-btn {
+            margin-top: 30px; font-size: 1.2rem;
+            background: linear-gradient(90deg, #d4af37, #f7e98e, #d4af37);
+            color: #000; border: none; font-weight: bold;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+    <div id="start-overlay">
+        <h1 style="font-size: 3.5rem; -webkit-text-fill-color: transparent;">環球跨年煙火秀</h1>
+        <p style="color: #aaa; margin-top:10px;">極致音效版 - 歡樂頌特別篇</p>
+        <button id="start-btn" class="btn">開始體驗</button>
+    </div>
+
+    <div id="ui-layer">
+        <div class="top-bar">
+            <div id="location-info">
+                <h1 id="city-name">Loading...</h1>
+                <h2 id="country-name">World Tour</h2>
+            </div>
+            <button id="bgm-toggle">🔊</button>
+        </div>
+        <div id="timer-container"><div id="timer-bar"></div></div>
+        <div id="controls"><button class="btn" onclick="nextSceneForce()">下一站 >></button></div>
+    </div>
+
+    <div id="canvas-container"></div>
+
+<script>
+// --- Audio Engine: Procedural Music & Realistic Explosions ---
+// Volume Boosted Version
+var audio = {
+    ctx: null,
+    convolver: null,
+    isPlaying: false,
+    nextNoteTime: 0,
+    noteIndex: 0,
+    tempo: 120, // Slightly faster for Ode to Joy
+    timerID: null,
+
+    // Ode to Joy Melody (Ludwig van Beethoven)
+    // Notes relative to C4 (0), Duration in beats
+    melody: [
+        {n: 4, d: 1}, {n: 4, d: 1}, {n: 5, d: 1}, {n: 7, d: 1}, 
+        {n: 7, d: 1}, {n: 5, d: 1}, {n: 4, d: 1}, {n: 2, d: 1}, 
+        {n: 0, d: 1}, {n: 0, d: 1}, {n: 2, d: 1}, {n: 4, d: 1}, 
+        {n: 4, d: 1.5}, {n: 2, d: 0.5}, {n: 2, d: 2},
+        
+        {n: 4, d: 1}, {n: 4, d: 1}, {n: 5, d: 1}, {n: 7, d: 1}, 
+        {n: 7, d: 1}, {n: 5, d: 1}, {n: 4, d: 1}, {n: 2, d: 1}, 
+        {n: 0, d: 1}, {n: 0, d: 1}, {n: 2, d: 1}, {n: 4, d: 1}, 
+        {n: 2, d: 1.5}, {n: 0, d: 0.5}, {n: 0, d: 2}
+    ],
+
+    init: function() {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        this.ctx = new AudioContext();
+        this.createReverb();
+    },
+
+    resume: function() {
+        if(this.ctx && this.ctx.state === 'suspended') {
+            return this.ctx.resume();
+        }
+        return Promise.resolve();
+    },
+
+    createReverb: function() {
+        const rate = this.ctx.sampleRate;
+        const length = rate * 3.0; 
+        const decay = 2.0;
+        const impulse = this.ctx.createBuffer(2, length, rate);
+        const left = impulse.getChannelData(0);
+        const right = impulse.getChannelData(1);
+        for (let i = 0; i < length; i++) {
+            const n = length - i;
+            const multi = Math.pow(n / length, decay);
+            left[i] = (Math.random() * 2 - 1) * multi;
+            right[i] = (Math.random() * 2 - 1) * multi;
+        }
+        this.convolver = this.ctx.createConvolver();
+        this.convolver.buffer = impulse;
+        this.convolver.connect(this.ctx.destination);
+    },
+
+    freqFromNote: function(note) {
+        if(note === -100) return 0;
+        return 261.63 * Math.pow(2, note / 12); 
+    },
+
+    playNote: function(note, duration) {
+        if(note === -100 || !this.isPlaying) return;
+        const t = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        
+        osc.type = 'triangle'; // Triangle wave for a brighter, more brass-like sound for Ode to Joy
+        osc.frequency.value = this.freqFromNote(note);
+        
+        // BOOSTED VOLUME: 0.15 -> 0.3
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.3, t + 0.05); 
+        gain.gain.exponentialRampToValueAtTime(0.001, t + duration * (60/this.tempo)); 
+        
+        osc.connect(gain);
+        gain.connect(this.convolver);
+        osc.start(t);
+        osc.stop(t + 2);
+    },
+
+    scheduler: function() {
+        if(!this.isPlaying) return;
+        const scheduleAheadTime = 0.1;
+        while (this.nextNoteTime < this.ctx.currentTime + scheduleAheadTime) {
+            const noteData = this.melody[this.noteIndex];
+            this.playNote(noteData.n, noteData.d);
+            const secondsPerBeat = 60.0 / this.tempo;
+            this.nextNoteTime += noteData.d * secondsPerBeat;
+            this.noteIndex++;
+            if(this.noteIndex >= this.melody.length) this.noteIndex = 0;
+        }
+        this.timerID = setTimeout(() => this.scheduler(), 25);
+    },
+
+    toggleBGM: function() {
+        this.isPlaying = !this.isPlaying;
+        const btn = document.getElementById('bgm-toggle');
+        if(this.isPlaying) {
+            btn.innerText = "🔊";
+            this.nextNoteTime = this.ctx.currentTime + 0.1;
+            this.noteIndex = 0;
+            this.scheduler();
+        } else {
+            btn.innerText = "🔇";
+            clearTimeout(this.timerID);
+        }
+    },
+
+    playLaunch: function() {
+        if (!this.ctx) return;
+        const t = this.ctx.currentTime;
+        const bufferSize = this.ctx.sampleRate * 0.5;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for(let i=0; i<bufferSize; i++) data[i] = Math.random()*2 - 1;
+
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(200, t);
+        filter.frequency.linearRampToValueAtTime(600, t+0.5);
+
+        const gain = this.ctx.createGain();
+        // BOOSTED VOLUME: 0.2 -> 0.5
+        gain.gain.setValueAtTime(0.5, t); 
+        gain.gain.exponentialRampToValueAtTime(0.001, t+0.5);
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(this.ctx.destination);
+        noise.start(t);
+    },
+
+    playExplode: function(scale = 1) {
+        if (!this.ctx) return;
+        const t = this.ctx.currentTime;
+
+        // Crack
+        const osc = this.ctx.createOscillator();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(50, t);
+        osc.frequency.exponentialRampToValueAtTime(10, t + 0.1);
+        const oscGain = this.ctx.createGain();
+        // BOOSTED VOLUME: 0.4 -> 0.8
+        oscGain.gain.setValueAtTime(0.8 * scale, t);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+        osc.connect(oscGain);
+        oscGain.connect(this.convolver);
+
+        // Boom
+        const bufferSize = this.ctx.sampleRate * 2.0;
+        const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for(let i=0; i<bufferSize; i++) data[i] = Math.random() * 2 - 1;
+        
+        const noise = this.ctx.createBufferSource();
+        noise.buffer = buffer;
+        
+        const filter = this.ctx.createBiquadFilter();
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(300, t);
+        filter.frequency.exponentialRampToValueAtTime(50, t + 1.0);
+
+        const noiseGain = this.ctx.createGain();
+        // BOOSTED VOLUME: 1.5 -> 2.5
+        noiseGain.gain.setValueAtTime(2.5 * scale, t); 
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 1.5);
+
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(this.convolver);
+        
+        osc.start(t);
+        noise.start(t);
+    }
+};
+
+// --- Visual Engine ---
+var SCENE_DURATION = 15000;
+var locationsData = [];
+var currentSceneIndex = -1, sceneStartTime = 0;
+var scene, camera, renderer;
+var fireworks = [], particles = [], cityGroup;
+var textures = {}; 
+
+// Colors
+var C = { GOLD: 0xFFD700, RED: 0xFF2222, WHITE: 0xFFFFFF, BLUE: 0x4466FF, GREEN: 0x22AA44, CYAN: 0x00FFFF, PURPLE: 0x800080, ORANGE: 0xFFA500 };
+
+function createBuildingTexture() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 128; canvas.height = 256;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#050510'; ctx.fillRect(0,0,128,256);
+    ctx.fillStyle = '#fffec8';
+    for(let y=10; y<250; y+=12) {
+        if(Math.random() > 0.3) {
+            for(let x=10; x<118; x+=14) {
+                if(Math.random() > 0.4) {
+                    ctx.globalAlpha = 0.5; ctx.fillRect(x-1, y-1, 10, 10);
+                    ctx.globalAlpha = 1.0; ctx.fillRect(x, y, 8, 8);
+                }
+            }
+        }
+    }
+    const tex = new THREE.CanvasTexture(canvas);
+    return tex;
+}
+
+function createLatticeTexture(colorStr = '#4a3c31') {
+    const canvas = document.createElement('canvas');
+    canvas.width = 64; canvas.height = 64;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'rgba(0,0,0,0)'; ctx.fillRect(0,0,64,64);
+    ctx.strokeStyle = colorStr; ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(64,64); ctx.moveTo(64,0); ctx.lineTo(0,64); ctx.stroke();
+    ctx.strokeRect(0,0,64,64);
+    const tex = new THREE.CanvasTexture(canvas);
+    return tex;
+}
+
+locationsData = [
+    { name: "台北 101 (Taipei)", country: "台灣", type: "101", colors: [C.RED, C.GOLD, C.GREEN] },
+    { name: "香港 (Hong Kong)", country: "中國", type: "hk", colors: [C.RED, C.WHITE, C.GOLD] },
+    { name: "艾菲爾鐵塔 (Paris)", country: "法國", type: "eiffel", colors: [C.BLUE, C.WHITE, C.RED] },
+    { name: "舊金山金門大橋 (San Francisco)", country: "美國", type: "sf", colors: [C.RED, C.GOLD, C.WHITE] },
+    { name: "雪梨歌劇院 (Sydney)", country: "澳洲", type: "sydney", colors: [C.GOLD, C.BLUE, C.WHITE] },
+    { name: "西雅圖太空針塔 (Seattle)", country: "美國", type: "seattle", colors: [C.CYAN, C.WHITE, C.PURPLE] },
+    { name: "哈里發塔 (Dubai)", country: "阿聯酋", type: "burj", colors: [C.WHITE, C.GOLD, C.CYAN] },
+    { name: "紐約時代廣場 (NYC)", country: "美國", type: "nyc", colors: [C.WHITE, C.BLUE, C.PURPLE] },
+    { name: "柏林布蘭登堡門 (Berlin)", country: "德國", type: "berlin", colors: [C.GOLD, C.RED, 0x000000] },
+    { name: "倫敦大笨鐘 (London)", country: "英國", type: "bigben", colors: [C.RED, C.WHITE, C.BLUE] },
+    { name: "東京鐵塔 (Tokyo)", country: "日本", type: "tokyo", colors: [C.RED, C.WHITE] },
+    { name: "首爾樂天塔 (Seoul)", country: "韓國", type: "seoul", colors: [C.WHITE, C.BLUE, C.RED] },
+    { name: "吉隆坡雙峰塔 (KL)", country: "馬來西亞", type: "klcc", colors: [C.GOLD, C.WHITE, C.CYAN] },
+    { name: "濱海灣金沙 (Singapore)", country: "新加坡", type: "mbs", colors: [C.RED, C.WHITE, C.ORANGE] },
+    { name: "克里姆林宮 (Moscow)", country: "俄羅斯", type: "onion", colors: [C.RED, C.GOLD, C.BLUE] },
+    { name: "比薩斜塔 (Pisa)", country: "義大利", type: "pisa", colors: [C.WHITE, C.RED, C.GREEN] },
+    { name: "泰姬瑪哈陵 (Agra)", country: "印度", type: "taj", colors: [C.WHITE, C.GOLD] },
+    { name: "雅典衛城 (Athens)", country: "希臘", type: "greek", colors: [C.WHITE, C.BLUE] },
+    { name: "里約基督像 (Rio)", country: "巴西", type: "rio", colors: [C.GREEN, C.GOLD, C.BLUE] }
+];
+
+document.getElementById('start-btn').addEventListener('click', () => {
+    const overlay = document.getElementById('start-overlay');
+    overlay.style.opacity = '0';
+    setTimeout(() => { if(overlay) overlay.remove(); }, 500);
+    audio.init();
+    audio.resume().then(() => { audio.toggleBGM(); });
+    initThree();
+    animate();
+});
+
+document.getElementById('bgm-toggle').addEventListener('click', () => { audio.toggleBGM(); });
+
+function initThree() {
+    textures.building = createBuildingTexture();
+    textures.lattice = createLatticeTexture('#5a4a3a');
+    textures.redLattice = createLatticeTexture('#cc0000');
+
+    const container = document.getElementById('canvas-container');
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x020205);
+    scene.fog = new THREE.FogExp2(0x020205, 0.002);
+
+    camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 1, 3000);
+    camera.position.set(0, 40, 160);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
+
+    const ambient = new THREE.AmbientLight(0x333344, 1.2);
+    scene.add(ambient);
+    const dirLight = new THREE.DirectionalLight(0xfffaed, 1.2);
+    dirLight.position.set(50, 100, 50);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 1024;
+    dirLight.shadow.mapSize.height = 1024;
+    scene.add(dirLight);
+
+    const waterGeo = new THREE.PlaneGeometry(2000, 2000);
+    const waterMat = new THREE.MeshStandardMaterial({ 
+        color: 0x050510, roughness: 0.1, metalness: 0.9,
+        transparent: true, opacity: 0.9
+    });
+    const water = new THREE.Mesh(waterGeo, waterMat);
+    water.rotation.x = -Math.PI/2;
+    water.receiveShadow = true;
+    scene.add(water);
+
+    cityGroup = new THREE.Group();
+    scene.add(cityGroup);
+
+    initScene(0);
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth/window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+}
+
+function initScene(idx) {
+    if(idx >= locationsData.length) idx = 0;
+    currentSceneIndex = idx;
+    sceneStartTime = performance.now();
+    
+    const d = locationsData[idx];
+    document.getElementById('city-name').innerText = d.name;
+    document.getElementById('country-name').innerText = d.country;
+
+    buildCity(d.type);
+}
+
+window.nextSceneForce = function() { initScene(currentSceneIndex+1); };
+
+// MEMORY LEAK FIX: Dispose Function
+function disposeHierarchy(node) {
+    for (var i = node.children.length - 1; i >= 0; i--) {
+        var child = node.children[i];
+        disposeHierarchy(child);
+        if (child.geometry) child.geometry.dispose();
+        if (child.material) {
+            if (Array.isArray(child.material)) {
+                child.material.forEach(m => m.dispose());
+            } else {
+                child.material.dispose();
+            }
+        }
+        node.remove(child);
+    }
+}
+
+function buildCity(type) {
+    // FIX: Clean memory before rebuilding
+    disposeHierarchy(cityGroup);
+    
+    const mWin = new THREE.MeshStandardMaterial({ map: textures.building, roughness: 0.2, metalness: 0.6 });
+    const mConc = new THREE.MeshStandardMaterial({ color: 0x888888, roughness: 0.9 });
+    const mGold = new THREE.MeshStandardMaterial({ color: 0xD4AF37, metalness: 0.8, roughness: 0.2 });
+    const mWhite = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.5 });
+    const mRed = new THREE.MeshStandardMaterial({ color: 0xcc0000, roughness: 0.5 });
+    const mRedMetal = new THREE.MeshStandardMaterial({ color: 0xC0392B, roughness: 0.6 });
+
+    const landmark = new THREE.Group();
+
+    if (type === '101') {
+        const base = new THREE.Mesh(new THREE.BoxGeometry(20, 15, 20), mConc);
+        base.position.y = 7.5; base.castShadow = true; landmark.add(base);
+        const segGeo = new THREE.CylinderGeometry(13, 10, 8, 4);
+        segGeo.rotateY(Math.PI/4);
+        for(let i=0; i<8; i++) {
+            const y = 15 + i*8;
+            const seg = new THREE.Mesh(segGeo, new THREE.MeshPhysicalMaterial({
+                color: 0x66ccaa, metalness: 0.1, roughness: 0.1, transmission: 0.3, transparent: true 
+            }));
+            seg.position.y = y + 4; landmark.add(seg);
+            const ruyi = new THREE.Mesh(new THREE.CylinderGeometry(2,2,2,8), mGold);
+            const offsets = [[10.5, 10.5], [-10.5, 10.5], [10.5, -10.5], [-10.5, -10.5]];
+            offsets.forEach(off => { ruyi.position.set(off[0], y+7, off[1]); landmark.add(ruyi.clone()); });
+        }
+        const spire = new THREE.Mesh(new THREE.CylinderGeometry(1, 2, 15, 8), mConc);
+        spire.position.y = 15 + 64 + 7.5; landmark.add(spire);
+    } 
+    else if (type === 'eiffel') {
+        const mLattice = new THREE.MeshStandardMaterial({ map: textures.lattice, alphaTest: 0.3, side: THREE.DoubleSide, color: 0x5a4a3a });
+        const t1 = new THREE.Mesh(new THREE.CylinderGeometry(10, 24, 30, 4, 1, true), mLattice);
+        t1.position.y = 15; t1.rotateY(Math.PI/4); landmark.add(t1);
+        const t2 = new THREE.Mesh(new THREE.CylinderGeometry(4, 10, 30, 4, 1, true), mLattice);
+        t2.position.y = 45; t2.rotateY(Math.PI/4); landmark.add(t2);
+        const t3 = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 4, 40, 4, 1, true), mLattice);
+        t3.position.y = 80; t3.rotateY(Math.PI/4); landmark.add(t3);
+        const p1 = new THREE.Mesh(new THREE.BoxGeometry(25, 2, 25), mConc); p1.position.y = 30; landmark.add(p1);
+    }
+    else if (type === 'sydney') {
+        const mShell = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3, metalness: 0.1 });
+        const base = new THREE.Mesh(new THREE.BoxGeometry(60, 5, 40), mConc);
+        base.position.y = 2.5; landmark.add(base);
+        const addShell = (s, x, y, z, rotY) => {
+            const shell = new THREE.Mesh(new THREE.SphereGeometry(s, 32, 32, 0, Math.PI*2, 0, Math.PI/2.2), mShell);
+            shell.scale.set(1, 1, 2.5); shell.rotation.x = -Math.PI/2; shell.rotation.z = rotY;
+            shell.position.set(x, y, z); landmark.add(shell);
+        };
+        addShell(14, 0, 5, -5, 0); addShell(16, 0, 5, 5, 0.1); addShell(10, 0, 5, 20, -0.1);
+    }
+    else if (type === 'burj') {
+        let h = 0;
+        const mTower = new THREE.MeshStandardMaterial({color: 0xdddddd, metalness: 0.5, map: textures.building});
+        textures.building.repeat.set(1, 4);
+        const steps = [{r: 10, h: 30}, {r: 8, h: 25}, {r: 6, h: 20}, {r: 4, h: 20}, {r: 2, h: 15}];
+        steps.forEach(s => {
+            const cyl = new THREE.Mesh(new THREE.CylinderGeometry(s.r, s.r, s.h, 6), mTower);
+            cyl.position.y = h + s.h/2; landmark.add(cyl);
+            for(let k=0; k<3; k++) {
+                const sub = new THREE.Mesh(new THREE.CylinderGeometry(s.r/2, s.r/1.5, s.h*0.8, 3), mTower);
+                const angle = k * (Math.PI*2/3); sub.position.set(Math.cos(angle)*s.r, h + s.h*0.4, Math.sin(angle)*s.r); landmark.add(sub);
+            }
+            h += s.h;
+        });
+        const spire = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 2, 20), mConc); spire.position.y = h + 10; landmark.add(spire);
+        textures.building.repeat.set(1, 1);
+    }
+    else if (type === 'hk') {
+        // Bank of China Tower Style
+        const mGlass = new THREE.MeshPhysicalMaterial({ color: 0x88ccff, metalness: 0.9, roughness: 0.1, transmission: 0.2 });
+        const geo = new THREE.CylinderGeometry(3, 12, 60, 4);
+        geo.rotateY(Math.PI/4);
+        const tower = new THREE.Mesh(geo, mGlass);
+        tower.position.y = 30; landmark.add(tower);
+        // Cross bracing
+        const brace = new THREE.Mesh(new THREE.BoxGeometry(0.5, 60, 0.5), mWhite);
+        brace.rotation.z = 0.5; brace.position.set(6, 30, 6); landmark.add(brace);
+        const brace2 = new THREE.Mesh(new THREE.BoxGeometry(0.5, 60, 0.5), mWhite);
+        brace2.rotation.z = -0.5; brace2.position.set(6, 30, 6); landmark.add(brace2);
+    }
+    else if (type === 'sf') {
+        // Golden Gate Bridge Segment
+        const tower = new THREE.Mesh(new THREE.BoxGeometry(6, 60, 4), mRedMetal);
+        tower.position.set(-15, 30, 0); landmark.add(tower);
+        const tower2 = new THREE.Mesh(new THREE.BoxGeometry(6, 60, 4), mRedMetal);
+        tower2.position.set(15, 30, 0); landmark.add(tower2);
+        // Deck
+        const deck = new THREE.Mesh(new THREE.BoxGeometry(60, 2, 8), mConc);
+        deck.position.y = 20; landmark.add(deck);
+        // Cables
+        const cable = new THREE.Mesh(new THREE.TorusGeometry(20, 0.5, 8, 20, Math.PI), mRedMetal);
+        cable.position.set(0, 40, 0); cable.rotation.z = Math.PI; landmark.add(cable);
+    }
+    else if (type === 'seattle') {
+        // Space Needle
+        const legs = new THREE.Group();
+        for(let i=0; i<3; i++) {
+             const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 2, 40), mWhite);
+             const a = i * (Math.PI*2/3);
+             leg.position.set(Math.cos(a)*3, 20, Math.sin(a)*3);
+             leg.rotation.x = 0.1; // lean in
+             legs.add(leg);
+        }
+        landmark.add(legs);
+        const disc = new THREE.Mesh(new THREE.CylinderGeometry(10, 6, 4, 16), mWhite);
+        disc.position.y = 42; landmark.add(disc);
+        const top = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 10), mConc);
+        top.position.y = 49; landmark.add(top);
+    }
+    else if (type === 'berlin') {
+        // Brandenburg Gate
+        const roof = new THREE.Mesh(new THREE.BoxGeometry(30, 4, 8), mConc);
+        roof.position.y = 15; landmark.add(roof);
+        for(let i=0; i<6; i++) {
+            const col = new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, 15), mConc);
+            col.position.set(-12 + i*4.8, 7.5, 0); landmark.add(col);
+        }
+        // Quadriga placeholder
+        const quad = new THREE.Mesh(new THREE.BoxGeometry(6, 4, 4), mGold);
+        quad.position.y = 19; landmark.add(quad);
+    }
+    else if (type === 'seoul') {
+        // Lotte World Tower
+        const mTwr = new THREE.MeshPhysicalMaterial({ color: 0xeeeeff, metalness: 0.3, roughness: 0.2, transmission: 0.1, transparent:true });
+        const geo = new THREE.CylinderGeometry(2, 10, 70, 4); // Tapered square
+        geo.rotateY(Math.PI/4); // smooth curve simulation
+        const tower = new THREE.Mesh(geo, mTwr);
+        tower.position.y = 35; 
+        // Split top
+        landmark.add(tower);
+    }
+    else if (type === 'bigben') {
+        const tower = new THREE.Mesh(new THREE.BoxGeometry(8, 50, 8), mConc);
+        tower.position.y = 25; landmark.add(tower);
+        const clock = new THREE.Mesh(new THREE.BoxGeometry(9, 9, 9), mConc);
+        clock.position.y = 50; landmark.add(clock);
+        const face = new THREE.Mesh(new THREE.CircleGeometry(3.5, 32), mWhite);
+        face.position.set(0, 50, 4.6); landmark.add(face);
+        const roof = new THREE.Mesh(new THREE.ConeGeometry(5, 10, 4), mConc);
+        roof.position.y = 59.5; roof.rotateY(Math.PI/4); landmark.add(roof);
+    }
+    else if (type === 'tokyo') {
+        const mLatRed = new THREE.MeshStandardMaterial({ map: textures.redLattice, alphaTest: 0.3, side: THREE.DoubleSide });
+        const mLatWhite = new THREE.MeshStandardMaterial({ map: textures.lattice, alphaTest: 0.3, side: THREE.DoubleSide, color: 0xffffff });
+        const t1 = new THREE.Mesh(new THREE.CylinderGeometry(8, 20, 25, 4, 1, true), mLatRed);
+        t1.position.y = 12.5; t1.rotateY(Math.PI/4); landmark.add(t1);
+        const t2 = new THREE.Mesh(new THREE.CylinderGeometry(3, 8, 25, 4, 1, true), mLatWhite);
+        t2.position.y = 37.5; t2.rotateY(Math.PI/4); landmark.add(t2);
+        const t3 = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 3, 30, 4, 1, true), mLatRed);
+        t3.position.y = 65; t3.rotateY(Math.PI/4); landmark.add(t3);
+    }
+    else if (type === 'klcc') {
+        const mTwr = new THREE.MeshStandardMaterial({color: 0xcccccc, metalness: 0.6});
+        const t1 = new THREE.Mesh(new THREE.CylinderGeometry(3, 3, 50, 16), mTwr); t1.position.set(-5, 25, 0); landmark.add(t1);
+        const t2 = new THREE.Mesh(new THREE.CylinderGeometry(3, 3, 50, 16), mTwr); t2.position.set(5, 25, 0); landmark.add(t2);
+        const bridge = new THREE.Mesh(new THREE.BoxGeometry(8, 1, 2), mConc); bridge.position.set(0, 25, 0); landmark.add(bridge);
+        const s1 = new THREE.Mesh(new THREE.ConeGeometry(3, 10, 16), mTwr); s1.position.set(-5, 55, 0); landmark.add(s1);
+        const s2 = new THREE.Mesh(new THREE.ConeGeometry(3, 10, 16), mTwr); s2.position.set(5, 55, 0); landmark.add(s2);
+    }
+    else if (type === 'mbs') {
+        // 3 Towers
+        const mTwr = new THREE.MeshStandardMaterial({map: textures.building});
+        for(let i=-1; i<=1; i++) {
+             const t = new THREE.Mesh(new THREE.BoxGeometry(8, 45, 6), mTwr);
+             t.position.set(i*10, 22.5, 0); landmark.add(t);
+        }
+        // Boat
+        const boat = new THREE.Mesh(new THREE.BoxGeometry(35, 3, 8), mConc);
+        boat.position.set(0, 46.5, 0); 
+        // Curve
+        boat.geometry.vertices?.[0].setY(5); // Simple bend if supported or just flat
+        landmark.add(boat);
+    }
+    else if (type === 'onion') {
+        // Moscow
+        const base = new THREE.Mesh(new THREE.BoxGeometry(20, 15, 20), mRed);
+        base.position.y = 7.5; landmark.add(base);
+        for(let i=0; i<4; i++) {
+             const tower = new THREE.Mesh(new THREE.CylinderGeometry(2,2,10), mWhite);
+             const x = (i<2?1:-1)*6; const z = (i%2==0?1:-1)*6;
+             tower.position.set(x, 17.5, z); landmark.add(tower);
+             const dome = new THREE.Mesh(new THREE.SphereGeometry(2.5), new THREE.MeshStandardMaterial({color: Math.random()>0.5?C.GOLD:C.BLUE}));
+             dome.position.set(x, 24, z); 
+             // Make onion shape roughly
+             dome.scale.y = 1.3;
+             landmark.add(dome);
+        }
+    }
+    else if (type === 'pisa') {
+        const cyl = new THREE.Mesh(new THREE.CylinderGeometry(4, 4, 35, 16), mWhite);
+        cyl.position.set(0, 17.5, 0);
+        cyl.rotation.z = 0.1; // Lean
+        landmark.add(cyl);
+        // Rings
+        for(let i=1; i<7; i++) {
+            const ring = new THREE.Mesh(new THREE.TorusGeometry(4.2, 0.3, 8, 16), mConc);
+            ring.position.set(-i*0.5, i*5, 0);
+            ring.rotation.x = Math.PI/2;
+            ring.rotation.y = 0.1; 
+            landmark.add(ring);
+        }
+    }
+    else if (type === 'taj') {
+        const main = new THREE.Mesh(new THREE.BoxGeometry(15, 15, 15), mWhite);
+        main.position.y = 7.5; landmark.add(main);
+        const dome = new THREE.Mesh(new THREE.SphereGeometry(6, 16, 16, 0, Math.PI*2, 0, Math.PI/1.5), mWhite);
+        dome.position.y = 18; landmark.add(dome);
+        // Minarets
+        for(let i=0; i<4; i++) {
+            const m = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 20), mWhite);
+            const x = (i<2?1:-1)*12; const z = (i%2==0?1:-1)*12;
+            m.position.set(x, 10, z); landmark.add(m);
+        }
+    }
+    else if (type === 'greek') {
+        const base = new THREE.Mesh(new THREE.BoxGeometry(20, 2, 30), mConc); base.position.y=1; landmark.add(base);
+        for(let x=-8; x<=8; x+=4) {
+            for(let z of [-12, 12]) {
+                const col = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.8, 10), mWhite);
+                col.position.set(x, 7, z); landmark.add(col);
+            }
+        }
+        const roof = new THREE.Mesh(new THREE.ConeGeometry(14, 5, 4), mWhite);
+        roof.position.y = 14.5; roof.rotation.y = Math.PI/4; 
+        roof.scale.z = 1.5;
+        landmark.add(roof);
+    }
+    else if (type === 'rio') {
+         const hill = new THREE.Mesh(new THREE.ConeGeometry(20, 20, 32), new THREE.MeshStandardMaterial({color: 0x228B22}));
+         hill.position.y = 10; landmark.add(hill);
+         const body = new THREE.Mesh(new THREE.BoxGeometry(2, 8, 2), mWhite);
+         body.position.y = 24; landmark.add(body);
+         const arms = new THREE.Mesh(new THREE.BoxGeometry(8, 1, 1.5), mWhite);
+         arms.position.y = 27; landmark.add(arms);
+         const head = new THREE.Mesh(new THREE.SphereGeometry(1.2), mWhite);
+         head.position.y = 29; landmark.add(head);
+    }
+    else {
+        // NYC / Generic
+        const main = new THREE.Mesh(new THREE.BoxGeometry(10, 60, 10), mWin); main.position.y = 30; landmark.add(main);
+        const top = new THREE.Mesh(new THREE.ConeGeometry(5, 15, 4), mGold); top.position.y = 67.5; top.rotateY(Math.PI/4); landmark.add(top);
+        // Ads for Times Square look
+        if(type==='nyc') {
+            const ad = new THREE.Mesh(new THREE.BoxGeometry(10.2, 20, 10.2), new THREE.MeshBasicMaterial({color: 0xaa00ff}));
+            ad.position.y = 20; landmark.add(ad);
+        }
+    }
+    
+    // Cityscape
+    for(let i=0; i<40; i++) {
+        const h = 10 + Math.random()*30; const w = 4 + Math.random()*6;
+        const dist = 30 + Math.random()*100; const ang = Math.random() * Math.PI * 2;
+        const x = Math.cos(ang)*dist; const z = Math.sin(ang)*dist;
+        if(dist < 40 && Math.abs(x) < 15) continue;
+        const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, w), mWin);
+        b.position.set(x, h/2, z); b.castShadow = true; b.receiveShadow = true;
+        if(Math.random()>0.5) b.material = mConc;
+        landmark.add(b);
+    }
+    landmark.castShadow = true; landmark.receiveShadow = true;
+    landmark.scale.set(1.5, 1.5, 1.5);
+    cityGroup.add(landmark);
+}
+
+// --- Fireworks ---
+var Firework = class {
+    constructor(colors) {
+        this.done = false; this.exploded = false;
+        const spread = 80;
+        this.pos = new THREE.Vector3((Math.random()-0.5)*spread, 0, (Math.random()-0.5)*spread - 10);
+        this.vel = new THREE.Vector3(0, 2 + Math.random(), 0);
+        this.targetY = 60 + Math.random()*50;
+        this.colors = colors;
+        this.color = colors[Math.floor(Math.random()*colors.length)];
+        this.mesh = new THREE.Mesh(new THREE.SphereGeometry(0.3), new THREE.MeshBasicMaterial({color: 0xffffaa}));
+        this.mesh.position.copy(this.pos);
+        scene.add(this.mesh);
+        audio.playLaunch();
+    }
+    update(dt) {
+        if(this.exploded) return;
+        this.pos.add(this.vel.clone().multiplyScalar(dt * 30));
+        this.vel.y -= 0.02 * dt * 30;
+        this.mesh.position.copy(this.pos);
+        if(this.vel.y <= 0 || this.pos.y >= this.targetY) this.explode();
+    }
+    explode() {
+        this.exploded = true; this.done = true;
+        if(scene) scene.remove(this.mesh);
+        audio.playExplode(1);
+        const light = new THREE.PointLight(this.color, 10, 100);
+        light.position.copy(this.pos); 
+        if(scene) scene.add(light);
+        
+        setTimeout(()=>{
+            if(scene) scene.remove(light);
+        }, 150);
+        
+        const count = 100 + Math.random()*100;
+        for(let i=0; i<count; i++) particles.push(new Particle(this.pos, this.color));
+    }
+};
+
+var Particle = class {
+    constructor(pos, color) {
+        this.pos = pos.clone();
+        const angle = Math.random() * Math.PI * 2;
+        const phi = Math.random() * Math.PI;
+        const speed = 0.5 + Math.random();
+        this.vel = new THREE.Vector3(Math.sin(phi)*Math.cos(angle)*speed, Math.cos(phi)*speed, Math.sin(phi)*Math.sin(angle)*speed);
+        this.life = 1.0;
+        this.decay = 0.005 + Math.random()*0.01;
+        this.mesh = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.4), new THREE.MeshBasicMaterial({color: color}));
+        this.mesh.position.copy(this.pos);
+        scene.add(this.mesh);
+    }
+    update(dt) {
+        this.life -= this.decay * dt * 30;
+        if(this.life <= 0) { 
+            if(scene) scene.remove(this.mesh); 
+            return false; 
+        }
+        this.pos.add(this.vel.clone().multiplyScalar(dt*30));
+        this.vel.y -= 0.01 * dt * 30; 
+        this.vel.multiplyScalar(0.96); 
+        this.mesh.position.copy(this.pos);
+        this.mesh.scale.setScalar(this.life);
+        return true;
+    }
+};
+
+var clock = new THREE.Clock();
+function animate() {
+    requestAnimationFrame(animate);
+    const dt = clock.getDelta();
+    const now = performance.now();
+    if(now - sceneStartTime > SCENE_DURATION) initScene(currentSceneIndex+1);
+    document.getElementById('timer-bar').style.width = ((now - sceneStartTime) / SCENE_DURATION * 100) + '%';
+    const angle = now * 0.0001;
+    camera.position.x = Math.sin(angle) * 170; camera.position.z = Math.cos(angle) * 170; camera.lookAt(0, 50, 0);
+    if(Math.random() < 0.04) fireworks.push(new Firework(locationsData[currentSceneIndex].colors));
+    fireworks.forEach((f, i) => { f.update(dt); if(f.done) fireworks.splice(i,1); });
+    for(let i=particles.length-1; i>=0; i--) { if(!particles[i].update(dt)) particles.splice(i,1); }
+    renderer.render(scene, camera);
+}
+</script>
+</body>
+</html>

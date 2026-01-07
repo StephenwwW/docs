@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>蜘蛛人電影級上帝視角 - Cinematic God View</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #050510; font-family: 'Arial', sans-serif; }
+        canvas { display: block; }
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: rgba(255, 255, 255, 0.9);
+            pointer-events: none;
+            text-shadow: 0 2px 4px #000;
+        }
+        h1 { margin: 0; font-size: 1.4rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 800; }
+        p { margin: 5px 0 0; font-size: 0.9rem; opacity: 0.8; }
+        .tag {
+            display: inline-block;
+            background: #cc0000;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        #cinematic-bars-top, #cinematic-bars-bottom {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: black;
+            transition: height 1s;
+            z-index: 10;
+        }
+        #cinematic-bars-top { top: 0; height: 80px; }
+        #cinematic-bars-bottom { bottom: 0; height: 80px; }
+    </style>
+    <!-- Import Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+    <div id="cinematic-bars-top"></div>
+    <div id="cinematic-bars-bottom"></div>
+    <div id="ui">
+        <h1>SPIDER-MAN: GOD VIEW</h1>
+        <p>AI 自動導航 | 鎖定運鏡修正版</p>
+        <div class="tag">DIRECTOR MODE V2</div>
+    </div>
+
+    <script>
+        // --- 設定與初始化 ---
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x050510, 0.0012); 
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 4000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        document.body.appendChild(renderer.domElement);
+
+        // --- 燈光系統 ---
+        const ambientLight = new THREE.AmbientLight(0x404060, 2.5);
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xaaccff, 1.5);
+        dirLight.position.set(150, 300, 150);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        dirLight.shadow.camera.far = 2000;
+        dirLight.shadow.camera.left = -500;
+        dirLight.shadow.camera.right = 500;
+        dirLight.shadow.camera.top = 500;
+        dirLight.shadow.camera.bottom = -500;
+        scene.add(dirLight);
+
+        const cityLight = new THREE.PointLight(0xffaa00, 1.0, 400);
+        scene.add(cityLight);
+
+        // --- 材質 ---
+        function createBuildingTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128;
+            canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#050505'; 
+            ctx.fillRect(0, 0, 128, 256);
+            
+            for (let y = 0; y < 16; y++) {
+                for (let x = 0; x < 8; x++) {
+                    if (Math.random() > 0.35) {
+                        const hue = Math.random() > 0.85 ? 200 : 35; 
+                        const light = 50 + Math.random() * 50;
+                        ctx.fillStyle = `hsla(${hue}, 70%, ${light}%, 0.8)`;
+                        ctx.fillRect(x * 16 + 2, y * 16 + 2, 10, 12);
+                    }
+                }
+            }
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.magFilter = THREE.NearestFilter;
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            return texture;
+        }
+
+        const buildingMaterial = new THREE.MeshStandardMaterial({
+            color: 0x666666,
+            map: createBuildingTexture(),
+            roughness: 0.2,
+            metalness: 0.6
+        });
+
+        const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x080808, roughness: 0.8 });
+
+        // --- 城市系統 ---
+        const buildings = [];
+        const streetWidth = 50; 
+        const blockSize = 100;
+        let furthestZ = 0;
+
+        const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 40000), groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.position.y = -60;
+        scene.add(ground);
+
+        function createBuilding(zPos, isLeft) {
+            const width = 45 + Math.random() * 35;
+            const depth = 45 + Math.random() * 45;
+            const height = 180 + Math.random() * 300;
+            
+            const geo = new THREE.BoxGeometry(width, height, depth);
+            const mesh = new THREE.Mesh(geo, buildingMaterial);
+            
+            const xBase = (streetWidth / 2) + (width / 2);
+            const xRandom = (Math.random() * 30) - 5; 
+            const finalX = isLeft ? -xBase - xRandom : xBase + xRandom;
+
+            mesh.position.set(finalX, height / 2 - 60, zPos);
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            scene.add(mesh);
+            
+            buildings.push({ 
+                mesh, 
+                width, depth, height,
+                x: finalX, z: zPos,
+                minX: finalX - width/2, maxX: finalX + width/2,
+                minZ: zPos - depth/2, maxZ: zPos + depth/2
+            });
+        }
+
+        for (let i = -2; i < 40; i++) {
+            createBuilding(-i * blockSize, true);
+            createBuilding(-i * blockSize, false);
+            furthestZ = -i * blockSize;
+        }
+
+        // --- 角色 ---
+        const spideyGroup = new THREE.Group();
+        scene.add(spideyGroup);
+
+        const suitRed = new THREE.MeshStandardMaterial({ color: 0xff0000, roughness: 0.2, metalness: 0.3, emissive: 0x330000, emissiveIntensity: 0.2 });
+        const suitBlue = new THREE.MeshStandardMaterial({ color: 0x0000ff, roughness: 0.3, metalness: 0.3, emissive: 0x000033, emissiveIntensity: 0.2 });
+        const eyeMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+
+        const torso = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.15, 0.8, 8), suitBlue);
+        torso.position.y = 0.4;
+        const chest = new THREE.Mesh(new THREE.SphereGeometry(0.28, 12, 12), suitRed);
+        chest.scale.set(1, 0.7, 0.5);
+        chest.position.set(0, 0.2, 0.05);
+        torso.add(chest);
+
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 16), suitRed);
+        head.scale.set(0.9, 1.15, 1);
+        head.position.y = 0.6;
+        torso.add(head);
+
+        const leftEye = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), eyeMat);
+        leftEye.scale.set(1, 0.5, 0.2);
+        leftEye.position.set(-0.07, 0.02, 0.16);
+        leftEye.rotation.z = 0.35;
+        head.add(leftEye);
+        const rightEye = leftEye.clone();
+        rightEye.position.set(0.07, 0.02, 0.16);
+        rightEye.rotation.z = -0.35;
+        head.add(rightEye);
+
+        function createLimb(w, l, mat, x, y, z) {
+            const g = new THREE.Group();
+            g.position.set(x, y, z);
+            const m = new THREE.Mesh(new THREE.CylinderGeometry(w, w*0.7, l, 6), mat);
+            m.position.y = -l/2;
+            g.add(m);
+            return { g, m };
+        }
+
+        const armW = 0.06, armL = 0.65;
+        const leftArm = createLimb(armW, armL, suitBlue, -0.22, 0.35, 0);
+        const leftFore = createLimb(armW*0.8, armL, suitRed, 0, -armL, 0);
+        leftArm.g.add(leftFore.g);
+        torso.add(leftArm.g);
+
+        const rightArm = createLimb(armW, armL, suitBlue, 0.22, 0.35, 0);
+        const rightFore = createLimb(armW*0.8, armL, suitRed, 0, -armL, 0);
+        rightArm.g.add(rightFore.g);
+        torso.add(rightArm.g);
+
+        const legW = 0.08, legL = 0.8;
+        const leftLeg = createLimb(legW, legL, suitBlue, -0.1, -0.4, 0);
+        const leftShin = createLimb(legW*0.8, legL, suitRed, 0, -legL, 0);
+        leftLeg.g.add(leftShin.g);
+        torso.add(leftLeg.g);
+
+        const rightLeg = createLimb(legW, legL, suitBlue, 0.1, -0.4, 0);
+        const rightShin = createLimb(legW*0.8, legL, suitRed, 0, -legL, 0);
+        rightLeg.g.add(rightShin.g);
+        torso.add(rightLeg.g);
+
+        spideyGroup.add(torso);
+        spideyGroup.scale.set(2.5, 2.5, 2.5);
+
+        const webLine = new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]),
+            new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2, transparent: true, opacity: 0.9 })
+        );
+        webLine.frustumCulled = false;
+        scene.add(webLine);
+
+        // --- 物理系統 ---
+        const player = {
+            pos: new THREE.Vector3(0, 100, 20),
+            vel: new THREE.Vector3(0, -10, -50),
+            state: 'FALLING',
+            anchor: null,
+            ropeLen: 0,
+            lastSide: 1,
+            swingTime: 0 // 記錄擺盪時長，防止無限轉圈
+        };
+
+        const GRAVITY = 75;
+        const AIR_DRAG = 0.999;
+        const SWING_BOOST = 28; 
+        const JUMP_IMPULSE = 35;
+
+        // --- AI 邏輯 ---
+        function aiUpdate(dt) {
+            // 防卡死機制：如果速度太慢且在擺盪，強制脫離
+            if (player.state === 'SWINGING') {
+                player.swingTime += dt;
+                // 如果擺盪超過 4 秒，或者水平速度極低 (卡在原地打轉)
+                if (player.swingTime > 4.0 || (player.swingTime > 1.0 && Math.abs(player.vel.z) < 5)) {
+                    endSwing();
+                    // 給一個向前的推力，打破死循環
+                    player.vel.z = -40; 
+                    player.vel.y = 10;
+                }
+            }
+
+            if (player.state === 'FALLING') {
+                const shouldSwing = (player.pos.y < 60) || (player.vel.y < -20);
+
+                if (shouldSwing) {
+                    const preferredSide = -player.lastSide;
+                    const anchor = findSmartAnchor(preferredSide);
+
+                    if (anchor) {
+                        startSwing(anchor);
+                        player.lastSide = (anchor.x > 0) ? 1 : -1;
+                    } else {
+                        const panicAnchor = findSmartAnchor(0); 
+                        if (panicAnchor) {
+                            startSwing(panicAnchor);
+                            player.lastSide = (panicAnchor.x > 0) ? 1 : -1;
+                        }
+                    }
+                }
+            } else if (player.state === 'SWINGING') {
+                const isMovingUp = player.vel.y > 0;
+                if (isMovingUp && player.pos.y > player.anchor.y - 20) {
+                    endSwing();
+                } else if (player.pos.y > player.anchor.y) {
+                    endSwing();
+                }
+            }
+
+            if (player.state === 'FALLING') {
+                player.vel.x -= player.pos.x * 0.05 * 0.1; 
+            }
+        }
+
+        function findSmartAnchor(preferredSide) {
+            // 修正：搜尋範圍必須嚴格在前方 (Z 值比 player 小)
+            // 避免抓到頭頂或後方導致原地打轉
+            const minZ = player.pos.z - 250;
+            const maxZ = player.pos.z - 60; // 至少要在前方 60 單位
+            
+            let bestB = null;
+            let bestScore = -Infinity;
+
+            for (const b of buildings) {
+                if (b.z > minZ && b.z < maxZ) {
+                    let score = 0;
+                    const dist = Math.abs(b.z - player.pos.z);
+                    score -= Math.abs(dist - 140); // 最佳距離修正
+
+                    if (preferredSide !== 0) {
+                        if (Math.sign(b.x) === Math.sign(preferredSide)) score += 200;
+                    }
+                    if (b.height > player.pos.y + 20) score += 50;
+                    
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestB = b;
+                    }
+                }
+            }
+
+            if (bestB) {
+                const anchorX = bestB.x > 0 ? bestB.minX : bestB.maxX;
+                return new THREE.Vector3(anchorX, bestB.height, bestB.z);
+            }
+            return null;
+        }
+
+        function startSwing(anchor) {
+            player.state = 'SWINGING';
+            player.anchor = anchor;
+            player.ropeLen = player.pos.distanceTo(anchor);
+            player.vel.y += 5;
+            player.swingTime = 0; // 重置計時器
+        }
+
+        function endSwing() {
+            player.state = 'FALLING';
+            player.anchor = null;
+            player.vel.y += JUMP_IMPULSE;
+            player.vel.z -= JUMP_IMPULSE * 0.4;
+            player.vel.x *= 0.5;
+        }
+
+        function checkCollisions() {
+            const radius = 2.0;
+            for (const b of buildings) {
+                if (player.pos.y < b.height && 
+                    player.pos.z > b.minZ - radius && 
+                    player.pos.z < b.maxZ + radius &&
+                    player.pos.x > b.minX - radius && 
+                    player.pos.x < b.maxX + radius) {
+                    
+                    const toCenterX = player.pos.x - b.x;
+                    if (toCenterX > 0) player.pos.x = b.maxX + radius + 0.1;
+                    else player.pos.x = b.minX - radius - 0.1;
+                    
+                    player.vel.x *= -0.5;
+                    player.vel.z *= 0.9;
+                }
+            }
+            if (player.pos.y < -50) {
+                player.pos.y = -50;
+                player.vel.y = 0;
+                player.state = 'FALLING';
+                player.anchor = null;
+                player.vel.y = 50; 
+                player.vel.z -= 20; // 落地彈起後給予向前速度
+            }
+        }
+
+        // --- 虛擬導演系統 (The Director) ---
+        const director = {
+            mode: 0,
+            lastSwitchTime: 0,
+            switchInterval: 8,
+            // 相對於主角的位置偏移 (而非世界座標)
+            currentRelOffset: new THREE.Vector3(0, 80, 80), 
+            targetRelOffset: new THREE.Vector3(0, 80, 80),
+        };
+
+        function updateCamera(dt, time) {
+            // 1. 定時切換鏡位模式
+            if (time - director.lastSwitchTime > director.switchInterval) {
+                director.mode = (director.mode + 1) % 4;
+                director.lastSwitchTime = time;
+
+                // 修正：所有偏移量都是相對於主角 (Relative to Player)
+                // 確保主角永遠在視野中心附近
+                switch(director.mode) {
+                    case 0: // 【標準上帝視角】 (High Angle Follow)
+                        director.targetRelOffset.set(0, 100, 80); 
+                        break;
+                    case 1: // 【遠距側面】 (Wide Side)
+                        // 稍微偏一點點，但不要太側面以免被建築擋住
+                        director.targetRelOffset.set(60, 60, 60); 
+                        break;
+                    case 2: // 【超高空俯視】 (Top Down Drone)
+                        director.targetRelOffset.set(0, 150, 40); 
+                        break;
+                    case 3: // 【後方追蹤】 (Classic Chase)
+                        director.targetRelOffset.set(0, 50, 100); 
+                        break;
+                }
+            }
+
+            // 2. 平滑更新偏移量
+            director.currentRelOffset.lerp(director.targetRelOffset, dt * 0.5);
+
+            // 3. 計算目標相機位置
+            // 重點：相機位置 = 玩家位置 + 相對偏移
+            // 我們只跟隨玩家的 Z (前進) 和 Y (高度)，對 X (左右) 做平滑處理
+            const targetCamPos = player.pos.clone().add(director.currentRelOffset);
+            
+            // 為了避免左右擺盪時相機太暈，我們減少 X 軸的跟隨靈敏度
+            // 我們希望相機在 X 軸上是平穩的，像是在軌道上
+            // 所以我們使用一個阻尼很大的 Lerp 來跟隨 X
+            const dampFactor = 2.0 * dt;
+            camera.position.x += (targetCamPos.x - camera.position.x) * dampFactor;
+            camera.position.y += (targetCamPos.y - camera.position.y) * dampFactor;
+            camera.position.z += (targetCamPos.z - camera.position.z) * dampFactor * 2.0; // Z軸跟緊一點
+
+            // 4. 強制注視主角 (Focus on Player)
+            // 這是修正「運鏡失焦」的關鍵。我們不再預判太多，而是直接看主角。
+            // 但為了電影感，我們看向主角「前方一點點」的位置，而不是主角的腳下。
+            const lookTarget = player.pos.clone();
+            lookTarget.y += 5; // 看向身體
+            lookTarget.z -= 10; // 稍微看向前方，讓構圖留有前進空間
+            
+            // 平滑轉向 (Slerp-like behavior)
+            const currentLook = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).add(camera.position);
+            const smoothLook = new THREE.Vector3().lerpVectors(currentLook, lookTarget, dt * 4.0);
+            
+            camera.lookAt(smoothLook);
+        }
+
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const dt = Math.min(clock.getDelta(), 0.05);
+            const time = clock.getElapsedTime();
+
+            // AI & Physics
+            aiUpdate(dt); // 傳入 dt 用於計時
+            player.vel.y -= GRAVITY * dt;
+            player.vel.multiplyScalar(AIR_DRAG);
+
+            if (player.state === 'SWINGING') {
+                const toAnchor = new THREE.Vector3().subVectors(player.anchor, player.pos);
+                const dist = toAnchor.length();
+                const dir = toAnchor.normalize();
+
+                if (dist > player.ropeLen) {
+                    player.pos.add(dir.clone().multiplyScalar(dist - player.ropeLen));
+                    const vDotDir = player.vel.dot(dir);
+                    if (vDotDir < 0) player.vel.sub(dir.clone().multiplyScalar(vDotDir));
+                    player.vel.z -= SWING_BOOST * dt;
+                }
+            } 
+
+            player.pos.addScaledVector(player.vel, dt);
+            checkCollisions();
+
+            // City Gen
+            if (player.pos.z < furthestZ + 800) {
+                furthestZ -= blockSize;
+                createBuilding(furthestZ, true);
+                createBuilding(furthestZ, false);
+                if (buildings.length > 100) {
+                    const b1 = buildings.shift(); scene.remove(b1.mesh);
+                    const b2 = buildings.shift(); scene.remove(b2.mesh);
+                }
+            }
+
+            // Visuals
+            spideyGroup.position.copy(player.pos);
+            const targetLook = player.pos.clone().add(player.vel);
+            spideyGroup.lookAt(targetLook);
+            spideyGroup.rotateZ(-player.vel.x * 0.03); 
+
+            if (player.state === 'SWINGING') {
+                const isRightHand = player.anchor.x > player.pos.x;
+                if (isRightHand) {
+                    rightArm.g.rotation.x = -Math.PI + 0.5; rightArm.g.rotation.z = -0.5;
+                    leftArm.g.rotation.x = 0.5; leftArm.g.rotation.z = -0.5;
+                } else {
+                    leftArm.g.rotation.x = -Math.PI + 0.5; leftArm.g.rotation.z = 0.5;
+                    rightArm.g.rotation.x = 0.5; rightArm.g.rotation.z = 0.5;
+                }
+                leftLeg.g.rotation.x = -1.5; leftShin.g.rotation.x = 2.2;
+                rightLeg.g.rotation.x = -1.2; rightShin.g.rotation.x = 2.0;
+
+                const handPos = new THREE.Vector3();
+                (isRightHand ? rightFore.m : leftFore.m).getWorldPosition(handPos);
+                webLine.geometry.setFromPoints([handPos, player.anchor]);
+                webLine.visible = true;
+            } else {
+                webLine.visible = false;
+                spideyGroup.rotateX(Math.PI / 2);
+                leftArm.g.rotation.x = 0; leftArm.g.rotation.z = 0.5;
+                rightArm.g.rotation.x = 0; rightArm.g.rotation.z = -0.5;
+                leftLeg.g.rotation.x = 0.3; leftShin.g.rotation.x = 0.2;
+                rightLeg.g.rotation.x = -0.2; rightShin.g.rotation.x = 0.5;
+            }
+
+            // 更新電影級運鏡
+            updateCamera(dt, time);
+
+            cityLight.position.copy(player.pos);
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+
+    </script>
+</body>
+</html>
