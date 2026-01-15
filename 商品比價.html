@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多商品價格比較器</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        header {
+            text-align: center;
+            padding: 25px;
+            background-color: #007bff;
+            color: white;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+        .stores-container {
+            display: grid;
+            grid-template-columns: 1fr; /* 預設堆疊 */
+            gap: 0;
+        }
+        
+        /* 電腦版時並排 */
+        @media (min-width: 768px) {
+            .stores-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .store-box {
+            padding: 20px;
+        }
+        .store-box:first-child {
+            border-right: 1px solid #e0e0e0;
+        }
+        .store-box h2 {
+            text-align: center;
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .add-item-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .add-item-btn:hover {
+            background-color: #218838;
+        }
+        .add-item-btn:disabled {
+            background-color: #aaa;
+            cursor: not-allowed;
+        }
+
+        /* ----- 舊的樣式 (將被移除) ----- */
+        /*
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .item-row {
+            background: #fdfdfd;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px 12px;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .item-row-inputs {
+            display: flex;
+            gap: 10px;
+        }
+        .item-row-inputs input {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .item-name {
+            flex: 2 1 120px;
+        }
+        .item-price {
+            flex: 1 1 80px;
+        }
+        .item-weight {
+            flex: 1 1 80px;
+        }
+        .item-result {
+            margin-top: 8px;
+            background: #f1f1f1;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: right;
+        }
+        .item-result strong {
+            font-size: 1.1em;
+            color: #c9302c;
+        }
+        .item-result span {
+            font-size: 0.9em;
+            color: #555;
+            display: block;
+            margin-top: 5px;
+        }
+        .remove-item-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-weight: bold;
+            font-size: 13px;
+            line-height: 22px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .remove-item-btn:hover {
+            background: #c82333;
+        }
+        */
+
+        /* ----- 新的 Excel 表格樣式 ----- */
+        .table-wrapper {
+            overflow-x: auto; /* 讓表格可以在手機上水平捲動 */
+        }
+        .item-table {
+            width: 100%;
+            border-collapse: collapse; /* 關鍵：Excel 樣式 */
+            font-size: 14px;
+        }
+        .item-table th, 
+        .item-table td {
+            border: 1px solid #ddd;
+            padding: 6px 8px;
+            vertical-align: middle;
+        }
+        .item-table th {
+            background-color: #f4f7f6;
+            font-weight: 600;
+            text-align: left;
+            white-space: nowrap;
+        }
+        .item-table td input[type="text"],
+        .item-table td input[type="number"] {
+            width: 100%;
+            border: none;
+            padding: 4px 2px;
+            font-size: 1em;
+            box-sizing: border-box;
+            background-color: transparent;
+        }
+        .item-table td input:focus {
+            outline: 1px solid #007bff;
+            background-color: #fff;
+        }
+        .result-cell {
+            text-align: right;
+            white-space: nowrap;
+            font-size: 0.95em;
+        }
+        .result-cell .price-per-100g {
+            font-weight: bold;
+            color: #c9302c;
+        }
+        .result-cell .price-per-g {
+            font-size: 0.9em;
+            color: #777;
+            margin-left: 4px;
+        }
+        .action-cell {
+            text-align: center;
+        }
+        .remove-item-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            line-height: 20px;
+            text-align: center;
+            cursor: pointer;
+            padding: 0;
+            transition: background-color 0.3s ease;
+        }
+        .remove-item-btn:hover {
+            background: #c82333;
+        }
+        /* ----- 高亮樣式 (應用於 <tr>) ----- */
+        .item-cheapest {
+            background-color: #e6ffed; /* !important 不是必需的，但可以確保覆蓋 */
+        }
+        .item-cheapest td input { background-color: transparent; }
+        
+        .item-most-expensive {
+            background-color: #ffeeee;
+        }
+        .item-most-expensive td input { background-color: transparent; }
+        
+        /* 隱藏 number input 旁邊的上下箭頭 */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        /* ----- 移除多餘的舊樣式 ----- */
+        /*
+        .item-result {
+            margin-top: 8px;
+            background: #f1f1f1;
+            padding: 8px;
+            border-radius: 5px;
+            text-align: right;
+        }
+        .item-result strong {
+            font-size: 1.1em;
+            color: #c9302c;
+        }
+        .item-result span {
+            font-size: 0.9em;
+            color: #555;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .remove-item-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-weight: bold;
+            font-size: 13px;
+            line-height: 22px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .remove-item-btn:hover {
+            background: #c82333;
+        }
+        */
+
+        .summary-box {
+            background: #f0f4f8;
+            padding: 25px;
+            margin-top: 0;
+            border-top: 2px solid #0056b3;
+        }
+        .summary-box h2 {
+            text-align: center;
+            margin-top: 0;
+            color: #004a99;
+        }
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1em;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .summary-item strong {
+            font-size: 1.2em;
+        } /* <-- 補上遺漏的 '}' */
+
+        .summary-value {
+            text-align: right;
+        }
+        .summary-value span {
+            font-size: 0.9em;
+            opacity: 0.8;
+            display: block;
+        }
+        
+        /* 總結高亮 */
+        #summary-cheapest {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        #summary-most-expensive {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>商品價格比較器</h1>
+        </header>
+        
+        <div class="stores-container">
+            <!-- A 商家 -->
+            <div class="store-box">
+                <h2>A 商家</h2>
+                <button class="add-item-btn" data-store="a">新增 A 商家商品 (+)</button>
+                <div class="table-wrapper">
+                    <table class="item-table">
+                        <thead>
+                            <tr>
+                                <th>商品名稱</th>
+                                <th>價格(元)</th>
+                                <th>重量(g)</th>
+                                <th>每 1g</th>
+                                <th>每 100g</th>
+                                <th>刪除</th>
+                            </tr>
+                        </thead>
+                        <tbody class="item-list" id="item-list-a">
+                            <!-- 商品項目 (tr) 將動態添加到這裡 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- B 商家 -->
+            <div class="store-box">
+                <h2>B 商家</h2>
+                <button class="add-item-btn" data-store="b">新增 B 商家商品 (+)</button>
+                <div class="table-wrapper">
+                    <table class="item-table">
+                        <thead>
+                            <tr>
+                                <th>商品名稱</th>
+                                <th>價格(元)</th>
+                                <th>重量(g)</th>
+                                <th>每 1g</th>
+                                <th>每 100g</th>
+                                <th>刪除</th>
+                            </tr>
+                        </thead>
+                        <tbody class="item-list" id="item-list-b">
+                            <!-- 商品項目 (tr) 將動態添加到這裡 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 總結區 -->
+        <div class="summary-box">
+            <h2>總結</h2>
+            <div class="summary-item" id="summary-cheapest">
+                <label>總體最划算 (綠)</label>
+                <div class="summary-value">
+                    <strong id="overall-cheapest-price">N/A</strong>
+                    <span id="overall-cheapest-name">---</span>
+                </div>
+            </div>
+            <div class="summary-item" id="summary-most-expensive">
+                <label>總體最昂貴 (紅)</label>
+                <div class="summary-value">
+                    <strong id="overall-most-expensive-price">N/A</strong>
+                    <span id="overall-most-expensive-name">---</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 商品項目的 HTML 模板 (已更新為 <tr>) -->
+    <template id="item-template">
+        <tr class="item-row">
+            <td>
+                <input type="text" class="item-name" placeholder="商品名稱">
+            </td>
+            <td>
+                <input type="number" class="item-price" placeholder="價格" min="0" inputmode="decimal">
+            </td>
+            <td>
+                <input type="number" class="item-weight" placeholder="重量 (g)" min="0" inputmode="decimal">
+            </td>
+            <td class="result-cell">
+                <span class="price-per-g">-</span>
+            </td>
+            <td class="result-cell">
+                <strong><span class="price-per-100g">-</span></strong>
+            </td>
+            <td class="action-cell">
+                <button class="remove-item-btn" title="刪除此項目">×</button>
+            </td>
+        </tr>
+    </template>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const maxItemsPerStore = 10;
+            
+            // 獲取主要元素
+            const storesContainer = document.querySelector('.stores-container');
+            const itemTemplate = document.getElementById('item-template');
+            
+            // 總結區的元素
+            const overallCheapestPriceEl = document.getElementById('overall-cheapest-price');
+            const overallCheapestNameEl = document.getElementById('overall-cheapest-name');
+            const overallMostExpensivePriceEl = document.getElementById('overall-most-expensive-price');
+            const overallMostExpensiveNameEl = document.getElementById('overall-most-expensive-name');
+
+            // --- 事件監聽器 ---
+
+            storesContainer.addEventListener('click', (e) => {
+                // 監聽 "新增" 按鈕
+                if (e.target.classList.contains('add-item-btn')) {
+                    const storeId = e.target.dataset.store;
+                    addItem(storeId, e.target);
+                }
+                
+                // 監聽 "刪除" 按鈕
+                if (e.target.classList.contains('remove-item-btn')) {
+                    removeItem(e.target);
+                }
+            });
+
+            // 監聽 "輸入"
+            storesContainer.addEventListener('input', (e) => {
+                if (e.target.classList.contains('item-price') || e.target.classList.contains('item-weight')) {
+                    updateItemCalculation(e.target.closest('.item-row'));
+                    updateAllCalculations();
+                } else if (e.target.classList.contains('item-name')) {
+                    // 如果只改了名稱，也需要更新總結區的名稱
+                    updateAllCalculations();
+                }
+            });
+
+            // --- 功能函數 ---
+
+            /**
+             * 新增一個商品項目
+             */
+            function addItem(storeId, button) {
+                const list = document.getElementById(`item-list-${storeId}`);
+                if (list.children.length >= maxItemsPerStore) {
+                    alert(`一個商家最多只能新增 ${maxItemsPerStore} 個項目。`);
+                    return;
+                }
+                
+                const clone = itemTemplate.content.cloneNode(true);
+                list.appendChild(clone);
+                
+                // 檢查是否達到上限，並禁用按鈕
+                if (list.children.length >= maxItemsPerStore) {
+                    button.disabled = true;
+                }
+            }
+
+            /**
+             * 刪除一個商品項目
+             */
+            function removeItem(button) {
+                const itemRow = button.closest('.item-row');
+                const list = itemRow.parentElement;
+                const storeId = list.id.split('-')[2];
+                const addButton = document.querySelector(`.add-item-btn[data-store="${storeId}"]`);
+
+                itemRow.remove();
+                
+                // 既然刪除了一個，按鈕必定可用
+                addButton.disabled = false;
+                
+                updateAllCalculations(); // 重新計算
+            }
+
+            /**
+             * 更新單一商品的計算結果
+             */
+            function updateItemCalculation(itemRow) {
+                const priceInput = itemRow.querySelector('.item-price');
+                const weightInput = itemRow.querySelector('.item-weight');
+                const pricePerGEl = itemRow.querySelector('.price-per-g');
+                const pricePer100gEl = itemRow.querySelector('.price-per-100g');
+                
+                const price = parseFloat(priceInput.value);
+                const weight = parseFloat(weightInput.value);
+                
+                if (isNaN(price) || isNaN(weight) || price <= 0 || weight <= 0) {
+                    pricePerGEl.textContent = '-';
+                    pricePer100gEl.textContent = '-';
+                    itemRow.dataset.pricePer100g = ''; // 清除數據
+                    return;
+                }
+                
+                const pricePerG = price / weight;
+                const pricePer100g = pricePerG * 100;
+                
+                pricePerGEl.textContent = pricePerG.toFixed(4); // 顯示到小數點後 4 位
+                pricePer100gEl.textContent = pricePer100g.toFixed(2); // 顯示到小數點後 2 位
+                
+                // 將計算結果儲存在 DOM 元素上，方便後續比較
+                itemRow.dataset.pricePer100g = pricePer100g;
+            }
+
+            /**
+             * 更新所有計算和高亮
+             */
+            function updateAllCalculations() {
+                // 重置所有高亮
+                document.querySelectorAll('.item-cheapest, .item-most-expensive').forEach(el => {
+                    el.classList.remove('item-cheapest', 'item-most-expensive');
+                });
+                
+                let overallCheapest = { price: Infinity, element: null, name: '' };
+                let overallMostExpensive = { price: 0, element: null, name: '' };
+                
+                // 分別處理 A 和 B 商家
+                processStore('a', overallCheapest, overallMostExpensive);
+                processStore('b', overallCheapest, overallMostExpensive);
+                
+                // 更新總結區
+                updateSummary(overallCheapest, overallMostExpensive);
+            }
+
+            /**
+             * 處理單一商家的計算和高亮
+             */
+            function processStore(storeId, overallCheapest, overallMostExpensive) {
+                const list = document.getElementById(`item-list-${storeId}`);
+                const items = list.querySelectorAll('.item-row');
+                
+                if (items.length === 0) return;
+                
+                let storeCheapest = { price: Infinity, element: null };
+                let storeMostExpensive = { price: 0, element: null };
+
+                items.forEach(itemRow => {
+                    const pricePer100g = parseFloat(itemRow.dataset.pricePer100g);
+                    if (isNaN(pricePer100g)) return; // 跳過無效項目
+                    
+                    const itemName = itemRow.querySelector('.item-name').value || '未命名商品';
+                    const fullName = `[${storeId.toUpperCase()} 商家] ${itemName}`;
+                    
+                    // 1. 檢查商家內部
+                    if (pricePer100g < storeCheapest.price) {
+                        storeCheapest = { price: pricePer100g, element: itemRow };
+                    }
+                    if (pricePer100g > storeMostExpensive.price) {
+                        storeMostExpensive = { price: pricePer100g, element: itemRow };
+                    }
+                    
+                    // 2. 檢查總體
+                    if (pricePer100g < overallCheapest.price) {
+                        // 錯誤修復：直接修改傳入物件的屬性，而不是重新賦值
+                        overallCheapest.price = pricePer100g;
+                        overallCheapest.element = itemRow;
+                        overallCheapest.name = fullName;
+                    }
+                    if (pricePer100g > overallMostExpensive.price) {
+                        // 錯誤修復：直接修改傳入物件的屬性，而不是重新賦值
+                        overallMostExpensive.price = pricePer100g;
+                        overallMostExpensive.element = itemRow;
+                        overallMostExpensive.name = fullName;
+                    }
+                });
+
+                // 應用商家內部的高亮
+                // 只有在最貴和最便宜不是同一個商品時才高亮 (即至少有兩個有效商品)
+                if (storeCheapest.element && storeMostExpensive.element && storeCheapest.element !== storeMostExpensive.element) {
+                    storeCheapest.element.classList.add('item-cheapest');
+                    storeMostExpensive.element.classList.add('item-most-expensive');
+                } else if (items.length === 1 && storeCheapest.element) {
+                     // 如果只有一個商品，也標示為最便宜
+                     storeCheapest.element.classList.add('item-cheapest');
+                }
+            }
+
+            /**
+             * 更新總結區的顯示
+             */
+            function updateSummary(overallCheapest, overallMostExpensive) {
+                // 更新最划算
+                if (overallCheapest.price !== Infinity) {
+                    overallCheapestPriceEl.textContent = `${overallCheapest.price.toFixed(2)} 元 / 100g`;
+                    overallCheapestNameEl.textContent = overallCheapest.name;
+                } else {
+                    overallCheapestPriceEl.textContent = 'N/A';
+                    overallCheapestNameEl.textContent = '---';
+                }
+                
+                // 更新最昂貴
+                if (overallMostExpensive.price > 0) {
+                    overallMostExpensivePriceEl.textContent = `${overallMostExpensive.price.toFixed(2)} 元 / 100g`;
+                    overallMostExpensiveNameEl.textContent = overallMostExpensive.name;
+                } else {
+                    overallMostExpensivePriceEl.textContent = 'N/A';
+                    overallMostExpensiveNameEl.textContent = '---';
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
+
+
+
