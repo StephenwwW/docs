@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1/14 vs 1/15 天氣資料比對</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto space-y-8">
+        
+        <!-- Header -->
+        <header class="text-center space-y-2">
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900">1/14 vs 1/15 天氣資料比對</h1>
+            <p class="text-slate-500">時段：08:00 - 16:00</p>
+            <div class="flex justify-center gap-4 text-sm mt-2">
+                <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-orange-500"></span> 1/14 (週三)</div>
+                <div class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-blue-600"></span> 1/15 (週四)</div>
+            </div>
+        </header>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-orange-400">
+                <h3 class="text-sm font-semibold text-gray-500">溫度趨勢</h3>
+                <p class="mt-1">1/14 升溫較快且持續<br>1/15 下午降溫較明顯</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500">
+                <h3 class="text-sm font-semibold text-gray-500">濕度差異</h3>
+                <p class="mt-1">1/15 上午極度潮濕 (92%)<br>1/14 整體較乾爽</p>
+            </div>
+            <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-teal-500">
+                <h3 class="text-sm font-semibold text-gray-500">風力變化 (1/15)</h3>
+                <p class="mt-1">下午 15:00 後<br>風力增強至 3 級</p>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                溫度比對 (°C)
+            </h2>
+            <div class="h-64 md:h-80 w-full">
+                <canvas id="tempChart"></canvas>
+            </div>
+            <div class="mt-2 text-center text-xs text-gray-400">
+                * 實線：實際溫度 / 虛線：體感溫度
+            </div>
+        </div>
+
+        <div class="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-slate-100">
+            <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" /></svg>
+                濕度比對 (%)
+            </h2>
+            <div class="h-64 md:h-80 w-full">
+                <canvas id="humidityChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="p-4 md:p-6 border-b border-slate-100">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                    詳細數據表格
+                </h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-slate-500 uppercase bg-slate-50 border-b border-slate-100">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 font-bold">時間</th>
+                            <th scope="col" class="px-6 py-3 text-center text-orange-600 bg-orange-50">溫度 (14日/15日)</th>
+                            <th scope="col" class="px-6 py-3 text-center text-orange-600 bg-orange-50">體感 (14日/15日)</th>
+                            <th scope="col" class="px-6 py-3 text-center text-blue-600 bg-blue-50">濕度 (14日/15日)</th>
+                            <th scope="col" class="px-6 py-3 text-center text-teal-600 bg-teal-50">風級 (15日)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        <!-- 08:00 -->
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 font-medium text-slate-900">08:00</td>
+                            <td class="px-6 py-4 text-center">15° / 15°</td>
+                            <td class="px-6 py-4 text-center">16° / 15°</td>
+                            <td class="px-6 py-4 text-center"><span class="text-slate-400">69%</span> / <span class="font-bold text-blue-600">92%</span></td>
+                            <td class="px-6 py-4 text-center">2</td>
+                        </tr>
+                        <!-- 09:00 -->
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 font-medium text-slate-900">09:00</td>
+                            <td class="px-6 py-4 text-center"><span class="font-bold text-orange-500">18°</span> / 16°</td>
+                            <td class="px-6 py-4 text-center">18° / 16°</td>
+                            <td class="px-6 py-4 text-center">61% / <span class="font-bold text-blue-600">85%</span></td>
+                            <td class="px-6 py-4 text-center">2</td>
+                        </tr>
+                        <!-- 10:00 -->
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 font-medium text-slate-900">10:00</td>
+                            <td class="px-6 py-4 text-center"><span class="font-bold text-orange-500">20°</span> / 18°</td>
+                            <td class="px-6 py-4 text-center">20° / 18°</td>
+                            <td class="px-6 py-4 text-center">55% / <span class="font-bold text-blue-600">75%</span></td>
+                            <td class="px-6 py-4 text-center">2</td>
+                        </tr>
+                        <!-- 11:00 -->
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 font-medium text-slate-900">11:00</td>
+                            <td class="px-6 py-4 text-center">21° / 20°</td>
+                            <td class="px-6 py-4 text-center">21° / 20°</td>
+                            <td class="px-6 py-4 text-center">53% / 65%</td>
+                            <td class="px-6 py-4 text-center">2</td>
+                        </tr>
+                        <!-- 12:00 -->
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 font-medium text-slate-900">12:00</td>
+                            <td class="px-6 py-4 text-center">22° / 21°</td>
+                            <td class="px-6 py-4 text-center">22° / 21°</td>
+                            <td class="px-6 py-4 text-center">50% / 58%</td>
+                            <td class="px-6 py-4 text-center">2</td>
+                        </tr>
+                        <!-- 13:00 -->
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 font-medium text-slate-900">13:00</td>
+                            <td class="px-6 py-4 text-center">22° / 22°</td>
+                            <td class="px-6 py-4 text-center">22° / 21°</td>
+                            <td class="px-6 py-4 text-center">51% / 53%</td>
+                            <td class="px-6 py-4 text-center">2</td>
+                        </tr>
+                        <!-- 14:00 -->
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 font-medium text-slate-900">14:00</td>
+                            <td class="px-6 py-4 text-center">22° / 22°</td>
+                            <td class="px-6 py-4 text-center"><span class="font-bold text-orange-500">22°</span> / 20°</td>
+                            <td class="px-6 py-4 text-center">52% / 51%</td>
+                            <td class="px-6 py-4 text-center">2</td>
+                        </tr>
+                        <!-- 15:00 -->
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 font-medium text-slate-900">15:00</td>
+                            <td class="px-6 py-4 text-center">22° / 21°</td>
+                            <td class="px-6 py-4 text-center"><span class="font-bold text-orange-500">22°</span> / 20°</td>
+                            <td class="px-6 py-4 text-center">57% / 55%</td>
+                            <td class="px-6 py-4 text-center font-bold text-teal-600">3</td>
+                        </tr>
+                        <!-- 16:00 -->
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 font-medium text-slate-900">16:00</td>
+                            <td class="px-6 py-4 text-center"><span class="font-bold text-orange-500">22°</span> / 20°</td>
+                            <td class="px-6 py-4 text-center"><span class="font-bold text-orange-500">23°</span> / 19°</td>
+                            <td class="px-6 py-4 text-center">57% / 62%</td>
+                            <td class="px-6 py-4 text-center font-bold text-teal-600">3</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="bg-slate-50 p-4 text-xs text-slate-500 text-center">
+                * 數據來源：使用者提供之截圖識別整理
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const labels = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"];
+
+        // 溫度圖表配置
+        const ctxTemp = document.getElementById('tempChart').getContext('2d');
+        new Chart(ctxTemp, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    // 1/14 數據：暖色系 (Orange)
+                    {
+                        label: '1/14 實際溫度',
+                        data: [15, 18, 20, 21, 22, 22, 22, 22, 22],
+                        borderColor: 'rgb(249, 115, 22)', // Orange-500
+                        backgroundColor: 'rgb(249, 115, 22)',
+                        borderWidth: 4, // 加粗
+                        tension: 0.4
+                    },
+                    {
+                        label: '1/14 體感溫度',
+                        data: [16, 18, 20, 21, 22, 22, 22, 22, 23],
+                        borderColor: 'rgba(249, 115, 22, 0.6)', // 較淡
+                        borderWidth: 2, // 較細
+                        borderDash: [5, 5], // 虛線
+                        pointRadius: 3,
+                        pointStyle: 'circle',
+                        tension: 0.4
+                    },
+                    // 1/15 數據：冷色系 (Blue)
+                    {
+                        label: '1/15 實際溫度',
+                        data: [17, 19, 19, 20, 21, 21, 22, 21, 20],
+                        borderColor: 'rgb(37, 99, 235)', // Blue-600 (深藍)
+                        backgroundColor: 'rgb(37, 99, 235)',
+                        borderWidth: 4, // 加粗
+                        tension: 0.4
+                    },
+                    {
+                        label: '1/15 體感溫度',
+                        data: [17, 19, 19, 20, 20, 21, 20, 20, 19],
+                        borderColor: 'rgba(37, 99, 235, 0.6)', // 較淡
+                        borderWidth: 2, // 較細
+                        borderDash: [5, 5], // 虛線
+                        pointRadius: 3,
+                        pointStyle: 'circle',
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: { 
+                        callbacks: { label: (context) => `${context.dataset.label}: ${context.raw}°C` }
+                    }
+                },
+                scales: {
+                    y: { 
+                        title: { display: true, text: '溫度 (°C)' },
+                        min: 10
+                    }
+                }
+            }
+        });
+
+        // 濕度圖表配置
+        const ctxHum = document.getElementById('humidityChart').getContext('2d');
+        new Chart(ctxHum, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: '1/14 濕度',
+                        data: [69, 61, 55, 53, 50, 51, 52, 57, 57],
+                        borderColor: 'rgb(249, 115, 22)', // 使用 1/14 代表色 (Orange)
+                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: false
+                    },
+                    {
+                        label: '1/15 濕度',
+                        data: [90, 80, 78, 71, 64, 62, 51, 55, 62],
+                        borderColor: 'rgb(37, 99, 235)', // 使用 1/15 代表色 (Blue)
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true // 凸顯高濕度區塊
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: { 
+                        callbacks: { label: (context) => `${context.dataset.label}: ${context.raw}%` }
+                    }
+                },
+                scales: {
+                    y: { 
+                        title: { display: true, text: '相對濕度 (%)' },
+                        min: 40,
+                        max: 100
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
