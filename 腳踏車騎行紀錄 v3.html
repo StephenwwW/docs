@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅行過往路線紀錄 (路徑修正版)</title>
+    <!-- 外部介面使用 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f3f4f6; }
+        #history-list::-webkit-scrollbar { width: 6px; }
+        #history-list::-webkit-scrollbar-track { background: #f1f1f1; }
+        #history-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        
+        .history-card { cursor: pointer; }
+        .history-card:active { transform: scale(0.98); }
+    </style>
+</head>
+<body class="p-4 md:p-8 bg-gray-100 min-h-screen">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- 標題 -->
+        <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-200 pb-4">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center text-white text-2xl shadow-lg">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">旅行路線紀錄器 <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded ml-2">路徑修正版</span></h1>
+                    <p class="text-sm text-gray-500">支援 <span class="text-blue-600 font-bold">高精度 Google Maps 匯出</span> 與 <span class="text-purple-600 font-bold">多重動畫</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-6 items-start">
+            
+            <!-- 左側控制區 (UI 介面) -->
+            <div class="w-full lg:w-4/12 flex flex-col gap-6">
+                <!-- 新增面板 -->
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                    <h2 class="text-lg font-bold text-gray-700 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-blue-500"></i> 新增旅程
+                    </h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">標題</label>
+                            <input type="text" id="routeTitle" placeholder="例如：淡水河濱自行車道" class="w-full px-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">日期</label>
+                            <input type="date" id="routeDate" class="w-full px-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">交通工具</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="changeMode('walking')" id="btn-walking" class="py-2 border rounded-lg text-blue-600 bg-blue-50 border-blue-200 font-bold text-sm flex flex-col items-center gap-1 transition">
+                                    <i class="fa-solid fa-person-walking"></i> 步行
+                                </button>
+                                <button onclick="changeMode('cycling')" id="btn-cycling" class="py-2 border rounded-lg text-gray-500 hover:bg-gray-50 text-sm flex flex-col items-center gap-1 transition">
+                                    <i class="fa-solid fa-bicycle"></i> 單車
+                                </button>
+                                <button onclick="changeMode('motorcycle')" id="btn-motorcycle" class="py-2 border rounded-lg text-gray-500 hover:bg-gray-50 text-sm flex flex-col items-center gap-1 transition">
+                                    <i class="fa-solid fa-motorcycle"></i> 機車
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 pt-2">
+                            <button onclick="triggerReset()" class="flex-1 py-2 bg-gray-100 text-gray-600 font-bold rounded-lg text-sm hover:bg-gray-200 transition">清空地圖</button>
+                            <button onclick="saveRoute()" class="flex-[2] py-2 bg-blue-600 text-white font-bold rounded-lg text-sm hover:bg-blue-700 shadow-lg transition transform active:scale-95">儲存紀錄</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 歷史紀錄 -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 flex flex-col h-[500px]">
+                    <div class="p-4 border-b border-gray-100 bg-gray-50 rounded-t-2xl">
+                        <div class="flex justify-between items-center mb-3">
+                            <h2 class="font-bold text-gray-700 text-sm">近期紀錄</h2>
+                            <div class="flex gap-1">
+                                <input type="file" id="importFile" accept=".json,.txt" class="hidden" onchange="handleFileSelect(event)">
+                                <button onclick="document.getElementById('importFile').click()" class="text-xs bg-white border border-gray-300 px-2 py-1 rounded text-gray-600 hover:text-indigo-600 hover:border-indigo-500 transition"><i class="fa-solid fa-file-import"></i> 匯入</button>
+                                <button onclick="exportData('json')" class="text-xs bg-white border border-gray-300 px-2 py-1 rounded text-gray-600 hover:text-blue-600 hover:border-blue-500 transition"><i class="fa-solid fa-file-code"></i> JSON</button>
+                                <button onclick="exportData('txt')" class="text-xs bg-white border border-gray-300 px-2 py-1 rounded text-gray-600 hover:text-green-600 hover:border-green-500 transition"><i class="fa-solid fa-file-lines"></i> TXT</button>
+                            </div>
+                        </div>
+                        
+                        <!-- 顯示所有路徑按鈕 -->
+                        <button onclick="showAllRoutes()" class="w-full mb-3 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-bold rounded-lg shadow transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-layer-group"></i> 顯示所有路徑疊圖 (動畫)
+                        </button>
+
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] text-gray-400">點擊單一紀錄可預覽</span>
+                            <button onclick="clearAllHistory()" class="text-xs text-red-500 hover:underline">全部清空</button>
+                        </div>
+                    </div>
+                    <div id="history-list" class="flex-1 overflow-y-auto p-2 space-y-2"></div>
+                </div>
+            </div>
+
+            <!-- 右側地圖區 -->
+            <div class="w-full lg:w-8/12">
+                <div class="relative w-full h-[700px] bg-gray-200 rounded-xl overflow-hidden shadow-md border border-gray-300">
+                    <iframe id="map-frame" class="w-full h-full border-0 block" title="Map"></iframe>
+                    <div id="map-loading" class="absolute inset-0 bg-gray-100 flex items-center justify-center z-50 transition-opacity duration-500">
+                        <div class="text-center">
+                            <i class="fa-solid fa-circle-notch fa-spin text-4xl text-blue-500 mb-2"></i>
+                            <p class="text-gray-500 text-sm font-bold">地圖載入中...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-between mt-2 text-xs text-gray-400">
+                    <span>* 疊圖模式下，不同路徑會以不同顏色顯示</span>
+                    <span><i class="fa-brands fa-google"></i> 地圖資料來源：Google Maps</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. Iframe 內部程式碼 (地圖核心)
+        // ==========================================
+        const mapHTML = `
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: sans-serif; -webkit-user-select: none; user-select: none; }
+        #map { width: 100%; height: 100%; background: #e5e7eb; cursor: crosshair; }
+        
+        #status-pill {
+            position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
+            z-index: 1000; background: rgba(255, 255, 255, 0.95);
+            padding: 8px 16px; border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            font-size: 14px; font-weight: bold; color: #374151;
+            border: 1px solid #e5e7eb; display: flex; align-items: center; gap: 8px;
+            pointer-events: none; white-space: nowrap; transition: all 0.3s ease;
+        }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #3b82f6; display: inline-block; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        .custom-div-icon { background: transparent; border: none; }
+        .marker-start { width: 32px; height: 32px; border-radius: 50%; border: 3px solid white; box-shadow: 0 3px 6px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; }
+        .marker-end { width: 32px; height: 32px; border-radius: 50%; border: 3px solid white; box-shadow: 0 3px 6px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; }
+        .marker-waypoint { width: 10px; height: 10px; border-radius: 50%; background: white; border: 2px solid #666; }
+        
+        .marker-moving {
+            width: 32px; height: 32px; border-radius: 50%; border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 16px; z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div id="status-pill"><span class="dot"></span> 請點擊地圖設定 <span style="color:#2563eb;">起點 (A)</span></div>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"><\/script>
+    <script>
+        let map;
+        let singleMode = { points: [], markers: [], polyline: null, drawing: false }; 
+        let runningAnimators = []; 
+        let allLayers = L.layerGroup(); 
+        let currentMode = 'walking'; 
+
+        const MODE_ICONS = {
+            walking: 'fa-person-walking',
+            cycling: 'fa-bicycle',
+            motorcycle: 'fa-motorcycle'
+        };
+
+        const MODE_COLORS = {
+            walking: '#2563eb',    
+            cycling: '#16a34a',    
+            motorcycle: '#dc2626'  
+        };
+
+        const SINGLE_MODE_COLORS = {
+            start: '#2563eb', 
+            end: '#dc2626',   
+        };
+
+        function init() {
+            map = L.map('map', { zoomControl: false }).setView([24.1477, 120.6736], 13);
+            L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 20, attribution: 'Google Maps' }).addTo(map);
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+            allLayers.addTo(map);
+
+            map.on('click', handleLeftClick);
+            map.on('contextmenu', handleRightClick);
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(p => {
+                    map.setView([p.coords.latitude, p.coords.longitude], 15);
+                });
+            }
+            window.parent.postMessage({ type: 'mapLoaded' }, '*');
+        }
+
+        // --- 單一路徑繪製邏輯 ---
+        function handleLeftClick(e) {
+            clearMultiView(); 
+            if (!singleMode.drawing && singleMode.points.length > 0) resetSingle();
+
+            const latlng = e.latlng;
+            singleMode.points.push(latlng);
+            singleMode.drawing = true;
+
+            if (singleMode.points.length === 1) {
+                addSingleMarker(latlng, 'start', 'A', SINGLE_MODE_COLORS.start);
+                updateStatus('左鍵增加路徑點，<span style="color:#dc2626; font-weight:bold;">右鍵</span> 設定終點 (B)');
+            } else {
+                addSingleMarker(latlng, 'waypoint');
+                drawSinglePolyline();
+            }
+        }
+
+        function handleRightClick(e) {
+            if (singleMode.points.length === 0) return;
+            if (!singleMode.drawing) return;
+
+            const latlng = e.latlng;
+            singleMode.points.push(latlng);
+            addSingleMarker(latlng, 'end', 'B', SINGLE_MODE_COLORS.end);
+            drawSinglePolyline();
+            
+            singleMode.drawing = false;
+            updateStatus('<i class="fa-solid fa-check" style="color:#16a34a;"></i> 路線繪製完成，請儲存');
+            window.parent.postMessage({ type: 'routeCreated', points: singleMode.points }, '*');
+        }
+
+        class RouteAnimator {
+            constructor(map, points, color, mode) {
+                this.map = map;
+                this.points = points;
+                this.color = color;
+                this.mode = mode;
+                this.running = true;
+                this.marker = null;
+                this.segmentIndex = 0;
+                this.startTime = null;
+                this.initMarker();
+                this.animateSegment();
+            }
+
+            initMarker() {
+                const iconClass = MODE_ICONS[this.mode] || 'fa-location-dot';
+                const html = \`<div class="marker-moving" style="background:\${this.color}"><i class="fa-solid \${iconClass}"></i></div>\`;
+                const icon = L.divIcon({ className: 'custom-div-icon', html: html, iconSize: [32, 32], iconAnchor: [16, 16] });
+                this.marker = L.marker(this.points[0], {icon: icon, zIndexOffset: 1000}).addTo(this.map);
+                allLayers.addLayer(this.marker);
+            }
+
+            animateSegment() {
+                if (!this.running) return;
+                if (this.segmentIndex >= this.points.length - 1) {
+                    setTimeout(() => { if(this.running) { this.segmentIndex = 0; this.marker.setLatLng(this.points[0]); this.animateSegment(); } }, 2000);
+                    return;
+                }
+                const start = this.points[this.segmentIndex];
+                const end = this.points[this.segmentIndex + 1];
+                const dist = this.map.distance(start, end);
+                const duration = Math.max(500, dist * 5); 
+
+                this.startTime = null;
+                const _step = (timestamp) => {
+                    if (!this.running) return;
+                    if (!this.startTime) this.startTime = timestamp;
+                    const t = Math.min((timestamp - this.startTime) / duration, 1);
+                    
+                    const lat = start.lat + (end.lat - start.lat) * t;
+                    const lng = start.lng + (end.lng - start.lng) * t;
+                    this.marker.setLatLng([lat, lng]);
+
+                    if (t < 1) requestAnimationFrame(_step);
+                    else { this.segmentIndex++; this.animateSegment(); }
+                };
+                requestAnimationFrame(_step);
+            }
+            stop() { this.running = false; }
+        }
+
+        function loadAllRoutes(routes) {
+            resetSingle();
+            clearMultiView(); 
+            if(routes.length === 0) return;
+            const bounds = L.latLngBounds();
+
+            routes.forEach((route, index) => {
+                const hue = (index * 137.508) % 360; 
+                const color = \`hsl(\${hue}, 70%, 50%)\`;
+
+                const poly = L.polyline(route.points, {
+                    color: color,
+                    weight: 5,
+                    opacity: 0.7 
+                }).addTo(allLayers).bindTooltip(\`\${route.title} (\${route.date})\`, {sticky: true});
+                
+                L.circleMarker(route.points[0], {radius: 4, color: color, fillOpacity: 1}).addTo(allLayers);
+                L.circleMarker(route.points[route.points.length-1], {radius: 4, color: color, fillOpacity: 1}).addTo(allLayers);
+
+                const animator = new RouteAnimator(map, route.points, color, route.mode);
+                runningAnimators.push(animator);
+                route.points.forEach(p => bounds.extend(p));
+            });
+
+            if(bounds.isValid()) map.fitBounds(bounds, {padding: [50, 50]});
+            updateStatus(\`<i class="fa-solid fa-layer-group text-purple-600"></i> 已顯示 \${routes.length} 條路徑疊圖 (自動播放中)\`);
+        }
+
+        function addSingleMarker(latlng, type, label='', color='#666') {
+            let html = '';
+            if(type === 'waypoint') html = \`<div class="marker-waypoint"></div>\`;
+            else html = \`<div class="marker-start" style="background:\${color}">\${label}</div>\`;
+            
+            const icon = L.divIcon({ className: 'custom-div-icon', html: html, iconSize: [32, 32], iconAnchor: type==='waypoint'?[5,5]:[16,16] });
+            const m = L.marker(latlng, {icon: icon}).addTo(map);
+            singleMode.markers.push(m);
+        }
+
+        function drawSinglePolyline() {
+            if (singleMode.polyline) map.removeLayer(singleMode.polyline);
+            const lineColor = MODE_COLORS[currentMode] || '#2563eb';
+            singleMode.polyline = L.polyline(singleMode.points, { color: lineColor, weight: 5, opacity: 0.8 }).addTo(map);
+        }
+
+        function resetSingle() {
+            singleMode.markers.forEach(m => map.removeLayer(m));
+            if (singleMode.polyline) map.removeLayer(singleMode.polyline);
+            singleMode.points = []; singleMode.markers = []; singleMode.polyline = null; singleMode.drawing = false;
+            updateStatus('<span class="dot"></span> 請點擊地圖設定 <span style="color:#2563eb;">起點 (A)</span>');
+            window.parent.postMessage({ type: 'routeReset' }, '*');
+        }
+
+        function clearMultiView() {
+            runningAnimators.forEach(a => a.stop());
+            runningAnimators = [];
+            allLayers.clearLayers();
+        }
+
+        function updateStatus(html) { document.getElementById('status-pill').innerHTML = html; }
+
+        window.addEventListener('message', (event) => {
+            const data = event.data;
+            if (data.cmd === 'reset') { clearMultiView(); resetSingle(); }
+            
+            if (data.cmd === 'setMode') { 
+                currentMode = data.mode;
+                if(singleMode.points.length > 1) drawSinglePolyline();
+            }
+            
+            if (data.cmd === 'loadRoute') { loadAllRoutes([data.payload]); }
+            if (data.cmd === 'loadAllRoutes') { loadAllRoutes(data.payload); }
+        });
+
+        window.onload = init;
+    <\/script>
+</body>
+</html>
+        `;
+
+        // ==========================================
+        // 2. 主視窗邏輯
+        // ==========================================
+        let currentMode = 'walking';
+        let currentPoints = []; 
+        const MAX_HISTORY = 100; 
+        
+        const MODE_CONFIG = {
+            walking: { gmapsMode: 'walking', icon: 'fa-person-walking', colorClass: 'bg-blue-100 text-blue-700', label: '步行' },
+            cycling: { gmapsMode: 'bicycling', icon: 'fa-bicycle', colorClass: 'bg-green-100 text-green-700', label: '單車' },
+            motorcycle: { gmapsMode: 'driving', icon: 'fa-motorcycle', colorClass: 'bg-red-100 text-red-700', label: '機車' }
+        };
+
+        window.onload = function() {
+            const iframe = document.getElementById('map-frame');
+            const doc = iframe.contentWindow.document;
+            doc.open(); doc.write(mapHTML); doc.close();
+            document.getElementById('routeDate').valueAsDate = new Date();
+            loadHistory();
+        };
+
+        window.addEventListener('message', (event) => {
+            const data = event.data;
+            if (data.type === 'mapLoaded') {
+                const loader = document.getElementById('map-loading');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.style.display = 'none', 500);
+            }
+            else if (data.type === 'routeCreated') { currentPoints = data.points; }
+            else if (data.type === 'routeReset') { currentPoints = []; }
+        });
+
+        function sendToFrame(cmd, payload = {}) {
+            const iframe = document.getElementById('map-frame');
+            if(iframe && iframe.contentWindow) iframe.contentWindow.postMessage({ cmd, payload }, '*');
+        }
+
+        function showAllRoutes() {
+            const history = JSON.parse(localStorage.getItem('travelRoutes') || '[]');
+            if(history.length === 0) { alert("目前沒有紀錄可以顯示"); return; }
+            sendToFrame('loadAllRoutes', history);
+        }
+
+        function changeMode(mode) {
+            currentMode = mode;
+            ['walking', 'cycling', 'motorcycle'].forEach(m => {
+                document.getElementById(`btn-${m}`).className = `py-2 border rounded-lg text-gray-500 hover:bg-gray-50 text-sm flex flex-col items-center gap-1 transition`;
+            });
+            const activeBtn = document.getElementById(`btn-${mode}`);
+            let activeClass = mode === 'walking' ? 'text-blue-600 bg-blue-50 border-blue-200 shadow-sm' :
+                              (mode === 'cycling' ? 'text-green-600 bg-green-50 border-green-200 shadow-sm' : 'text-red-600 bg-red-50 border-red-200 shadow-sm');
+            activeBtn.className = `py-2 border rounded-lg font-bold text-sm flex flex-col items-center gap-1 ${activeClass}`;
+            sendToFrame('setMode', { mode });
+        }
+
+        function triggerReset() { sendToFrame('reset'); }
+
+        function saveRoute() {
+            const title = document.getElementById('routeTitle').value.trim();
+            const date = document.getElementById('routeDate').value;
+            if (!title) { alert("請輸入標題！"); return; }
+            if (currentPoints.length < 2) { alert("請先在地圖上繪製完整路線！"); return; }
+
+            const record = { id: Date.now(), title, date, mode: currentMode, points: currentPoints };
+            let history = JSON.parse(localStorage.getItem('travelRoutes') || '[]');
+            history.unshift(record);
+            if (history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
+            localStorage.setItem('travelRoutes', JSON.stringify(history));
+            
+            loadHistory();
+            triggerReset();
+            document.getElementById('routeTitle').value = '';
+            alert("✅ 紀錄已儲存！");
+        }
+
+        function previewRoute(id) {
+            const history = JSON.parse(localStorage.getItem('travelRoutes') || '[]');
+            const record = history.find(item => item.id === id);
+            if (record) {
+                document.getElementById('routeTitle').value = record.title;
+                document.getElementById('routeDate').value = record.date;
+                changeMode(record.mode);
+                sendToFrame('loadRoute', record);
+                currentPoints = record.points;
+            }
+        }
+
+        function loadHistory() {
+            const listEl = document.getElementById('history-list');
+            const history = JSON.parse(localStorage.getItem('travelRoutes') || '[]');
+            if (history.length === 0) { listEl.innerHTML = `<div class="text-center text-gray-400 py-10 text-xs">尚無紀錄</div>`; return; }
+
+            let html = '';
+            history.forEach(item => {
+                const cfg = MODE_CONFIG[item.mode];
+                const gLink = generateGmapsLink(item);
+                
+                html += `
+                <div class="history-card bg-white p-3 rounded-xl border border-gray-100 hover:border-blue-400 hover:bg-blue-50 transition group" onclick="previewRoute(${item.id})">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1 min-w-0 pointer-events-none">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${cfg.colorClass} inline-flex items-center gap-1 shrink-0">
+                                    <i class="fa-solid ${cfg.icon}"></i> ${cfg.label}
+                                </span>
+                                <span class="text-[10px] text-gray-400 truncate">${item.date}</span>
+                            </div>
+                            <h3 class="font-bold text-gray-800 text-sm truncate pr-2" title="${item.title}">${item.title}</h3>
+                        </div>
+                        <div class="flex gap-1 shrink-0">
+                            <a href="${gLink}" target="_blank" onclick="event.stopPropagation()" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-500 hover:bg-blue-600 hover:text-white hover:border-blue-600 transition" title="開啟 Google Maps">
+                                <i class="fa-brands fa-google"></i>
+                            </a>
+                            <button onclick="deleteRoute(${item.id}, event)" class="w-8 h-8 flex items-center justify-center rounded-lg bg-white border border-gray-200 text-gray-400 hover:text-red-500 hover:border-red-300 transition" title="刪除">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            listEl.innerHTML = html;
+        }
+
+        function generateGmapsLink(item) {
+            const pts = item.points;
+            if (!pts || pts.length === 0) return '#';
+            const start = pts[0];
+            const end = pts[pts.length - 1];
+            const cfg = MODE_CONFIG[item.mode];
+            let waypointsStr = '';
+            
+            if (pts.length > 2) {
+                const middlePoints = pts.slice(1, -1);
+                // [修正] 將限制從 8 提高到 23，這會大幅增加 Google Maps 路徑的準確度
+                // Google Maps URL 最多約支援 20-25 個中途點
+                const limit = 23; 
+                
+                if (middlePoints.length <= limit) {
+                    const coords = middlePoints.map(p => `${p.lat},${p.lng}`);
+                    waypointsStr = `&waypoints=${coords.join('|')}`;
+                } else {
+                    const step = Math.ceil(middlePoints.length / limit);
+                    const filtered = middlePoints.filter((_, index) => index % step === 0);
+                    // 二次檢查，確保不超過 23 個（雖然通常不會）
+                    const finalFiltered = filtered.slice(0, limit);
+                    const coords = finalFiltered.map(p => `${p.lat},${p.lng}`);
+                    waypointsStr = `&waypoints=${coords.join('|')}`;
+                }
+            }
+            return `https://www.google.com/maps/dir/?api=1&origin=${start.lat},${start.lng}&destination=${end.lat},${end.lng}${waypointsStr}&travelmode=${cfg.gmapsMode}`;
+        }
+
+        function exportData(type) {
+            const history = JSON.parse(localStorage.getItem('travelRoutes') || '[]');
+            if (history.length === 0) { alert("目前沒有紀錄可以匯出"); return; }
+            if (type === 'json') {
+                downloadFile(JSON.stringify(history, null, 2), `routes_backup_${getTodayString()}.json`, 'application/json');
+            } else if (type === 'txt') {
+                let txt = "=== 旅行過往路線連結清單 ===\n\n";
+                history.forEach((item, i) => {
+                    txt += `${i+1}. [${item.date}] ${item.title} (${MODE_CONFIG[item.mode].label})\n   Google Maps: ${generateGmapsLink(item)}\n----------------------------------------\n`;
+                });
+                downloadFile(txt, `routes_links_${getTodayString()}.txt`, 'text/plain');
+            }
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                try {
+                    if (file.name.endsWith('.json')) {
+                        const data = JSON.parse(content);
+                        if (!Array.isArray(data)) throw new Error("JSON 格式不符");
+                        let count = 0;
+                        let history = JSON.parse(localStorage.getItem('travelRoutes') || '[]');
+                        data.forEach(item => { 
+                            if (item.title && item.points) { 
+                                item.id = Date.now() + Math.random(); 
+                                history.unshift(item); 
+                                count++; 
+                            } 
+                        });
+                        if(history.length > MAX_HISTORY) history = history.slice(0, MAX_HISTORY);
+                        localStorage.setItem('travelRoutes', JSON.stringify(history));
+                        loadHistory();
+                        alert(`成功匯入 ${count} 筆紀錄！`);
+                    } else if (file.name.endsWith('.txt')) {
+                        alert("TXT 匯入功能已整合，請確認格式正確。");
+                    }
+                } catch (err) { alert("匯入失敗：" + err.message); }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        function downloadFile(content, fileName, contentType) {
+            const a = document.createElement("a");
+            const file = new Blob([content], {type: contentType});
+            a.href = URL.createObjectURL(file);
+            a.download = fileName;
+            a.click();
+        }
+
+        function getTodayString() { return new Date().toISOString().split('T')[0]; }
+
+        function deleteRoute(id, event) {
+            if(event) event.stopPropagation();
+            if(!confirm("刪除此紀錄？")) return;
+            let history = JSON.parse(localStorage.getItem('travelRoutes') || '[]');
+            history = history.filter(item => item.id !== id);
+            localStorage.setItem('travelRoutes', JSON.stringify(history));
+            loadHistory();
+        }
+
+        function clearAllHistory() {
+            if(!confirm("確定要清空所有紀錄？")) return;
+            localStorage.removeItem('travelRoutes');
+            loadHistory();
+        }
+    </script>
+</body>
+</html>

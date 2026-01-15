@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商業情報追蹤儀表板 | Business Intelligence Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        /* 自定義滾動條 */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* 表格行懸停效果 */
+        .table-row-hover:hover {
+            background-color: #eff6ff;
+            transition: background-color 0.2s;
+        }
+        
+        /* 關鍵字欄位樣式 */
+        .keyword-cell {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .keyword-cell:hover {
+            color: #2563eb; /* blue-600 */
+        }
+        .keyword-cell:hover::after {
+            content: '\f002'; /* FontAwesome search icon */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.5;
+        }
+
+        /* 模態視窗動畫 */
+        .modal {
+            transition: opacity 0.25s ease;
+        }
+        body.modal-active {
+            overflow-x: hidden;
+            overflow-y: visible !important;
+        }
+    </style>
+</head>
+<body class="text-slate-800 h-screen flex flex-col overflow-hidden">
+
+    <!-- 頂部導航欄 -->
+    <header class="bg-slate-900 text-white shadow-lg z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-chart-line text-blue-400 text-xl"></i>
+                <h1 class="text-xl font-bold tracking-wide">商業情報追蹤儀表板</h1>
+            </div>
+            <div class="flex items-center gap-4 text-sm text-slate-300">
+                <div id="clock" class="font-mono"></div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                    <span>系統正常</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要內容區 -->
+    <main class="flex-1 flex flex-col max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 overflow-hidden">
+        
+        <!-- 狀態卡片 -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 shrink-0">
+            <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-blue-500 flex justify-between items-center">
+                <div>
+                    <p class="text-xs text-slate-500 uppercase font-bold">總追蹤項目</p>
+                    <h3 class="text-2xl font-bold text-slate-800" id="total-count">0</h3>
+                </div>
+                <div class="bg-blue-50 p-2 rounded-full text-blue-600">
+                    <i class="fa-solid fa-list-ul"></i>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500 flex justify-between items-center">
+                <div>
+                    <p class="text-xs text-slate-500 uppercase font-bold">進行中</p>
+                    <h3 class="text-2xl font-bold text-slate-800" id="active-count">0</h3>
+                </div>
+                <div class="bg-green-50 p-2 rounded-full text-green-600">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-red-500 flex justify-between items-center">
+                <div>
+                    <p class="text-xs text-slate-500 uppercase font-bold">已過期 / 需關注</p>
+                    <h3 class="text-2xl font-bold text-red-600" id="expired-count">0</h3>
+                </div>
+                <div class="bg-red-50 p-2 rounded-full text-red-600">
+                    <i class="fa-solid fa-bell"></i>
+                </div>
+            </div>
+             <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-purple-500 flex justify-between items-center cursor-pointer hover:bg-slate-50" onclick="exportCSV()">
+                <div>
+                    <p class="text-xs text-slate-500 uppercase font-bold">資料導出</p>
+                    <h3 class="text-sm font-bold text-slate-800 mt-1">下載 CSV 報表</h3>
+                </div>
+                <div class="bg-purple-50 p-2 rounded-full text-purple-600">
+                    <i class="fa-solid fa-file-export"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作與輸入區 -->
+        <div class="bg-white p-4 rounded-lg shadow-sm mb-4 border border-slate-200 shrink-0">
+            <form id="add-form" class="flex flex-col gap-4">
+                <!-- 第一排：關鍵字輸入 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">英文關鍵字 (English)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-bold text-xs">EN</span>
+                            <input type="text" id="input-en" required placeholder="Ex: AI Trends" 
+                                class="pl-8 block w-full rounded-md border-slate-300 bg-slate-50 border focus:border-blue-500 focus:bg-white focus:ring-0 py-2 px-3 text-sm transition shadow-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">日文關鍵字 (日本語)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-bold text-xs">JP</span>
+                            <input type="text" id="input-jp" required placeholder="例：AI トレンド" 
+                                class="pl-8 block w-full rounded-md border-slate-300 bg-slate-50 border focus:border-blue-500 focus:bg-white focus:ring-0 py-2 px-3 text-sm transition shadow-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">中文關鍵字 (中文)</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400 font-bold text-xs">ZH</span>
+                            <input type="text" id="input-zh" required placeholder="例：AI 趨勢" 
+                                class="pl-8 block w-full rounded-md border-slate-300 bg-slate-50 border focus:border-blue-500 focus:bg-white focus:ring-0 py-2 px-3 text-sm transition shadow-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第二排：設定與按鈕 -->
+                <div class="flex flex-col md:flex-row gap-4 items-end border-t border-slate-100 pt-3">
+                    <div class="w-full md:w-48">
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">預設搜尋區間</label>
+                        <select id="input-range" class="block w-full rounded-md border-slate-300 bg-slate-50 border focus:border-blue-500 focus:bg-white focus:ring-0 py-2 px-3 text-sm shadow-sm">
+                            <option value="w">過去一週 (1 Week)</option>
+                            <option value="m" selected>過去一個月 (1 Month)</option>
+                            <option value="m3">過去三個月 (3 Months)</option>
+                            <option value="y">過去一年 (1 Year)</option>
+                        </select>
+                    </div>
+                    <div class="w-full md:w-48">
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">追蹤截止日</label>
+                        <input type="date" id="input-deadline" required 
+                            class="block w-full rounded-md border-slate-300 bg-slate-50 border focus:border-blue-500 focus:bg-white focus:ring-0 py-2 px-3 text-sm shadow-sm">
+                    </div>
+                    <div class="flex-1"></div> <!-- Spacer -->
+                    <button type="submit" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-8 rounded-md shadow-sm transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus"></i> 新增多語系追蹤
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 表格區域 -->
+        <div class="bg-white border border-slate-200 rounded-lg shadow-sm flex-1 overflow-hidden flex flex-col">
+            <!-- 表頭 -->
+            <div class="overflow-x-auto custom-scrollbar flex-1">
+                <table class="min-w-full divide-y divide-slate-200">
+                    <thead class="bg-slate-50 sticky top-0 z-10 shadow-sm text-center md:text-left">
+                        <tr>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider w-12">ID</th>
+                            
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider min-w-[150px] border-l border-slate-200 bg-slate-50">
+                                <i class="fa-solid fa-globe text-blue-400 mr-1"></i> 英文 (EN)
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider min-w-[150px] border-l border-slate-200 bg-slate-50">
+                                <i class="fa-solid fa-globe text-red-400 mr-1"></i> 日文 (JP)
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider min-w-[150px] border-l border-slate-200 bg-slate-50">
+                                <i class="fa-solid fa-globe text-green-400 mr-1"></i> 中文 (ZH)
+                            </th>
+
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider w-32 border-l border-slate-200">
+                                區間設定
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider w-32">
+                                截止日
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider w-28">
+                                狀態
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-right text-xs font-bold text-slate-500 uppercase tracking-wider w-24">
+                                操作
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="bg-white divide-y divide-slate-100">
+                        <!-- JS 生成數據 -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- 表格底部工具列 -->
+            <div class="bg-slate-50 px-6 py-3 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4 text-xs shrink-0">
+                <span id="showing-text" class="text-slate-500">顯示 0 筆資料</span>
+                
+                <div class="flex items-center gap-4">
+                    <!-- 隱藏的檔案輸入框 -->
+                    <input type="file" id="import-file" accept=".json" class="hidden" onchange="handleImportFile(this)">
+                    
+                    <button onclick="downloadJSON()" class="text-slate-600 hover:text-blue-600 font-medium flex items-center gap-1 transition">
+                        <i class="fa-solid fa-download"></i> 匯出備份 (JSON)
+                    </button>
+                    <button onclick="triggerImport()" class="text-slate-600 hover:text-blue-600 font-medium flex items-center gap-1 transition">
+                        <i class="fa-solid fa-upload"></i> 匯入備份 (JSON)
+                    </button>
+                    <div class="h-4 w-px bg-slate-300 mx-2"></div>
+                    <button onclick="clearAllData()" class="text-red-500 hover:text-red-700 font-medium hover:underline flex items-center gap-1">
+                        <i class="fa-solid fa-trash-can"></i> 清空資料
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 編輯模態視窗 (Modal) -->
+    <div id="edit-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- 背景遮罩 -->
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <!-- Modal 內容 -->
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
+                            <i class="fa-solid fa-pen-to-square text-blue-600"></i>
+                        </div>
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">編輯追蹤項目</h3>
+                            <div class="mt-4 grid gap-4">
+                                <input type="hidden" id="edit-id">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">英文關鍵字</label>
+                                    <input type="text" id="edit-en" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">日文關鍵字</label>
+                                    <input type="text" id="edit-jp" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 mb-1">中文關鍵字</label>
+                                    <input type="text" id="edit-zh" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border">
+                                </div>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">搜尋區間</label>
+                                        <select id="edit-range" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border">
+                                            <option value="w">一週</option>
+                                            <option value="m">一個月</option>
+                                            <option value="m3">三個月</option>
+                                            <option value="y">一年</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 mb-1">截止日期</label>
+                                        <input type="date" id="edit-deadline" class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md p-2 border">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" onclick="saveEdit()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                        儲存修改
+                    </button>
+                    <button type="button" onclick="closeModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        取消
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript 邏輯 -->
+    <script>
+        // 初始化應用
+        document.addEventListener('DOMContentLoaded', () => {
+            initApp();
+            updateClock();
+            setInterval(updateClock, 60000);
+            
+            // 設置日期選擇器預設為一週後
+            const today = new Date();
+            const nextWeek = new Date(today);
+            nextWeek.setDate(today.getDate() + 7);
+            document.getElementById('input-deadline').valueAsDate = nextWeek;
+        });
+
+        let trackerData = [];
+
+        // 初始化
+        function initApp() {
+            const savedData = localStorage.getItem('marketTrackerData_v2'); 
+            if (savedData) {
+                try {
+                    trackerData = JSON.parse(savedData);
+                } catch(e) {
+                    console.error("Data parse error", e);
+                    trackerData = [];
+                }
+            } else {
+                // 範例資料
+                trackerData = [
+                    { 
+                        id: Date.now(), 
+                        en: "AI Market Trends 2025", 
+                        jp: "AI 市場動向 2025", 
+                        zh: "人工智慧 市場趨勢 2025", 
+                        range: "m", 
+                        deadline: getFutureDate(30), 
+                        createdAt: Date.now() 
+                    },
+                    { 
+                        id: Date.now() - 1000, 
+                        en: "Semiconductor Supply Chain", 
+                        jp: "半導体 サプライチェーン", 
+                        zh: "半導體 供應鏈", 
+                        range: "y", 
+                        deadline: getFutureDate(5), 
+                        createdAt: Date.now() - 1000 
+                    },
+                    { 
+                        id: Date.now() - 2000, 
+                        en: "Renewable Energy Policy EU", 
+                        jp: "再生可能エネルギー 政策 EU", 
+                        zh: "再生能源 政策 歐盟", 
+                        range: "w", 
+                        deadline: getFutureDate(-2), 
+                        createdAt: Date.now() - 2000 
+                    } 
+                ];
+                saveData();
+            }
+            renderTable();
+            updateStats();
+        }
+
+        function getFutureDate(days) {
+            const date = new Date();
+            date.setDate(date.getDate() + days);
+            return date.toISOString().split('T')[0];
+        }
+
+        // 新增資料
+        document.getElementById('add-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const en = document.getElementById('input-en').value;
+            const jp = document.getElementById('input-jp').value;
+            const zh = document.getElementById('input-zh').value;
+            const range = document.getElementById('input-range').value;
+            const deadline = document.getElementById('input-deadline').value;
+
+            const newItem = {
+                id: Date.now(),
+                en, jp, zh,
+                range,
+                deadline,
+                createdAt: Date.now()
+            };
+
+            trackerData.unshift(newItem);
+            saveData();
+            renderTable();
+            updateStats();
+            
+            // 重置輸入
+            document.getElementById('input-en').value = '';
+            document.getElementById('input-jp').value = '';
+            document.getElementById('input-zh').value = '';
+            document.getElementById('input-en').focus();
+        });
+
+        function saveData() {
+            localStorage.setItem('marketTrackerData_v2', JSON.stringify(trackerData));
+        }
+
+        // 修正後的搜尋邏輯：動態讀取最新的區間設定
+        function performSearch(id, langKey) {
+            // 找出對應的項目
+            const item = trackerData.find(i => i.id === id);
+            if (!item) return;
+
+            // 取得對應語言的關鍵字
+            // 相容性處理：若無特定語言欄位，嘗試取用中文或 fallback 到 keyword
+            let keyword = '';
+            if (langKey === 'en') keyword = item.en;
+            else if (langKey === 'jp') keyword = item.jp;
+            else if (langKey === 'zh') keyword = item.zh || item.keyword;
+
+            if (!keyword) return;
+
+            // 使用最新的 range 設定
+            const range = item.range || 'm'; 
+
+            const query = encodeURIComponent(keyword);
+            const url = `https://www.google.com/search?q=${query}&tbs=qdr:${range}`;
+            window.open(url, '_blank');
+        }
+
+        function deleteItem(id) {
+            if(confirm('確定要移除此追蹤項目嗎？')) {
+                trackerData = trackerData.filter(item => item.id !== id);
+                saveData();
+                renderTable();
+                updateStats();
+            }
+        }
+
+        function updateRange(id, newRange) {
+            const item = trackerData.find(i => i.id === id);
+            if (item) {
+                item.range = newRange;
+                saveData();
+                // 這裡不需要重新 renderTable，因為 performSearch 改為動態讀取
+            }
+        }
+
+        function clearAllData() {
+            if(confirm('警告：這將清空所有紀錄且無法復原。確定要執行嗎？')) {
+                trackerData = [];
+                saveData();
+                renderTable();
+                updateStats();
+            }
+        }
+
+        // --- 編輯功能區 ---
+
+        function editItem(id) {
+            const item = trackerData.find(i => i.id === id);
+            if (!item) return;
+
+            document.getElementById('edit-id').value = item.id;
+            document.getElementById('edit-en').value = item.en || '';
+            document.getElementById('edit-jp').value = item.jp || '';
+            document.getElementById('edit-zh').value = item.zh || '';
+            document.getElementById('edit-range').value = item.range;
+            document.getElementById('edit-deadline').value = item.deadline;
+
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        function saveEdit() {
+            const id = parseInt(document.getElementById('edit-id').value);
+            const en = document.getElementById('edit-en').value;
+            const jp = document.getElementById('edit-jp').value;
+            const zh = document.getElementById('edit-zh').value;
+            const range = document.getElementById('edit-range').value;
+            const deadline = document.getElementById('edit-deadline').value;
+
+            const itemIndex = trackerData.findIndex(i => i.id === id);
+            if (itemIndex > -1) {
+                trackerData[itemIndex] = {
+                    ...trackerData[itemIndex],
+                    en, jp, zh, range, deadline
+                };
+                saveData();
+                renderTable();
+                updateStats();
+                closeModal();
+            }
+        }
+
+        // --- 匯入/匯出功能區 ---
+
+        // 1. 匯出 CSV (報表用)
+        function exportCSV() {
+            if(trackerData.length === 0) {
+                alert("目前沒有資料可導出");
+                return;
+            }
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
+            csvContent += "ID,英文關鍵字,日文關鍵字,中文關鍵字,搜尋區間代碼,截止日期,建立時間\n";
+            
+            trackerData.forEach(row => {
+                const dateStr = new Date(row.createdAt).toLocaleDateString();
+                const escapeCsv = (str) => `"${(str || '').replace(/"/g, '""')}"`;
+                csvContent += `${row.id},${escapeCsv(row.en)},${escapeCsv(row.jp)},${escapeCsv(row.zh)},${row.range},${row.deadline},${dateStr}\n`;
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `market_tracker_report_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // 2. 匯出 JSON (備份用)
+        function downloadJSON() {
+            if(trackerData.length === 0) {
+                alert("目前沒有資料可備份");
+                return;
+            }
+            const dataStr = JSON.stringify(trackerData, null, 2);
+            const blob = new Blob([dataStr], {type: "application/json"});
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `tracker_backup_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // 3. 觸發匯入
+        function triggerImport() {
+            document.getElementById('import-file').click();
+        }
+
+        // 4. 處理匯入檔案
+        function handleImportFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const json = JSON.parse(e.target.result);
+                    if (Array.isArray(json)) {
+                        if (confirm(`讀取到 ${json.length} 筆資料。\n確定要匯入並「覆蓋」現有資料嗎？\n(若選取消，將只會把資料附加在現有資料後)`)) {
+                             trackerData = json;
+                        } else {
+                             // 附加模式：過濾重複 ID 避免衝突 (雖 ID 為時間戳，但以防萬一)
+                             const existingIds = new Set(trackerData.map(d => d.id));
+                             const newItems = json.filter(d => !existingIds.has(d.id));
+                             trackerData = [...newItems, ...trackerData];
+                             alert(`已附加 ${newItems.length} 筆新資料`);
+                        }
+                        saveData();
+                        renderTable();
+                        updateStats();
+                        alert("資料匯入成功！");
+                    } else {
+                        alert("檔案格式錯誤：內容必須是陣列格式");
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert("檔案解析失敗，請確認上傳的是正確的 JSON 備份檔");
+                }
+                // 清空 input 讓同個檔案可再次選取
+                input.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+
+        // 渲染表格
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            const today = new Date();
+            today.setHours(0,0,0,0);
+
+            trackerData.forEach((item, index) => {
+                const deadlineDate = new Date(item.deadline);
+                const timeDiff = deadlineDate - today;
+                const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+                
+                let statusHtml = '';
+                let statusClass = '';
+                let rowClass = 'table-row-hover';
+
+                if (daysLeft < 0) {
+                    statusHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800"><i class="fa-solid fa-circle-exclamation mr-1"></i> 過期</span>`;
+                    statusClass = 'border-l-4 border-l-red-500';
+                } else if (daysLeft === 0) {
+                    statusHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800"><i class="fa-solid fa-clock mr-1"></i> 到期</span>`;
+                    statusClass = 'border-l-4 border-l-orange-500';
+                } else if (daysLeft <= 3) {
+                    statusHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">剩 ${daysLeft} 天</span>`;
+                } else {
+                    statusHtml = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">正常</span>`;
+                }
+                
+                const enText = item.en || '';
+                const jpText = item.jp || '';
+                const zhText = item.zh || (item.keyword || '');
+
+                const tr = document.createElement('tr');
+                tr.className = `${rowClass} ${statusClass}`;
+                tr.innerHTML = `
+                    <td class="px-4 py-4 whitespace-nowrap text-xs text-slate-400 font-mono">#${index + 1}</td>
+                    
+                    <td class="px-4 py-4 border-l border-slate-100 keyword-cell" onclick="performSearch(${item.id}, 'en')">
+                        <div class="text-sm font-medium text-slate-900">${enText}</div>
+                    </td>
+
+                    <td class="px-4 py-4 border-l border-slate-100 keyword-cell" onclick="performSearch(${item.id}, 'jp')">
+                        <div class="text-sm font-medium text-slate-900">${jpText}</div>
+                    </td>
+
+                    <td class="px-4 py-4 border-l border-slate-100 keyword-cell" onclick="performSearch(${item.id}, 'zh')">
+                        <div class="text-sm font-medium text-slate-900">${zhText}</div>
+                    </td>
+
+                    <td class="px-4 py-4 whitespace-nowrap border-l border-slate-100">
+                        <select onchange="updateRange(${item.id}, this.value)" class="block w-full text-xs rounded border-slate-200 bg-slate-50 focus:border-blue-500 focus:ring-0 py-1">
+                            <option value="w" ${item.range === 'w' ? 'selected' : ''}>一週</option>
+                            <option value="m" ${item.range === 'm' ? 'selected' : ''}>一個月</option>
+                            <option value="m3" ${item.range === 'm3' ? 'selected' : ''}>三個月</option>
+                            <option value="y" ${item.range === 'y' ? 'selected' : ''}>一年</option>
+                        </select>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-xs text-slate-600 font-mono">
+                        ${item.deadline}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                        ${statusHtml}
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex items-center justify-end gap-2">
+                            <button onclick="editItem(${item.id})" class="text-slate-400 hover:text-blue-600 transition p-1" title="編輯">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button onclick="deleteItem(${item.id})" class="text-slate-400 hover:text-red-600 transition p-1" title="刪除">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('showing-text').textContent = `目前共有 ${trackerData.length} 筆追蹤資料`;
+        }
+
+        function updateStats() {
+            const total = trackerData.length;
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            let expired = 0;
+            
+            trackerData.forEach(item => {
+                const d = new Date(item.deadline);
+                if (d < today) expired++;
+            });
+
+            const active = total - expired;
+            animateValue("total-count", parseInt(document.getElementById("total-count").innerText), total, 500);
+            animateValue("active-count", parseInt(document.getElementById("active-count").innerText), active, 500);
+            animateValue("expired-count", parseInt(document.getElementById("expired-count").innerText), expired, 500);
+        }
+
+        function animateValue(id, start, end, duration) {
+            if (start === end) return;
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start);
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').textContent = now.toLocaleString('zh-TW', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        }
+    </script>
+</body>
+</html>
