@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高科技時空鬧鐘 SYSTEM</title>
+    <!-- 引入科幻風格字體，增加 Share Tech Mono 用於數字顯示 -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* 明亮高科技配色 */
+            --primary-color: #0066ff; /* 科技深藍 */
+            --active-color: #00ccff; /* 亮青色 */
+            --alert-color: #ff3300; /* 警示紅 */
+            --stop-color: #ff0055;  /* 停止按鈕色 */
+            --bg-color: #f0f4f8; /* 實驗室白 */
+            --panel-bg: rgba(255, 255, 255, 0.7); /* 毛玻璃白 */
+            --panel-border: rgba(0, 102, 255, 0.3);
+            --grid-line: rgba(0, 102, 255, 0.05);
+            --text-main: #334455;
+            --shadow-light: 0 4px 20px rgba(0, 102, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            /* 淺色網格背景 */
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* 頂部裝飾條 */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--active-color));
+            z-index: 10;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            height: 90vh;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 20px;
+            z-index: 1;
+            position: relative;
+        }
+
+        /* 裝飾角落 - 改為銳利風格 */
+        .corner {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border: 2px solid var(--active-color);
+            opacity: 0.8;
+        }
+        .top-left { top: 0; left: 0; border-bottom: none; border-right: none; }
+        .top-right { top: 0; right: 0; border-bottom: none; border-left: none; }
+        .bottom-left { bottom: 0; left: 0; border-top: none; border-right: none; }
+        .bottom-right { bottom: 0; right: 0; border-top: none; border-left: none; }
+
+        /* 主時鐘顯示區 - 玻璃擬態 */
+        .main-display {
+            background: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--panel-border);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            box-shadow: var(--shadow-light);
+            /* 切角設計 */
+            clip-path: polygon(20px 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%, 0 20px);
+        }
+
+        .clock-label {
+            font-size: 1rem;
+            letter-spacing: 4px;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .clock-label::before, .clock-label::after {
+            content: "";
+            height: 1px;
+            width: 30px;
+            background: var(--primary-color);
+            opacity: 0.5;
+        }
+
+        #local-time {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 6rem;
+            font-weight: 700;
+            color: var(--text-main);
+            letter-spacing: -2px;
+            background: linear-gradient(180deg, #334455 0%, #0066ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 2px rgba(0,102,255,0.2));
+        }
+
+        #local-date {
+            font-size: 1.5rem;
+            margin-top: 5px;
+            color: #667788;
+            font-weight: 500;
+        }
+
+        /* 控制面板區域 */
+        .control-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            #local-time { font-size: 3.5rem; }
+            .control-panel { grid-template-columns: 1fr; }
+            .container { height: auto; overflow-y: auto; padding: 20px 0; }
+        }
+
+        .panel-box {
+            background: #fff;
+            border: 1px solid #e0e6ed;
+            border-left: 4px solid var(--primary-color);
+            padding: 25px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+        }
+
+        .panel-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,102,255,0.1);
+        }
+
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-color);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 輸入控件樣式 */
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        input, select {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            padding: 5px;
+            outline: none;
+            width: 100%;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        select {
+            font-size: 1rem;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* 科技感按鈕 (亮色系) */
+        .cyber-btn {
+            background: #fff;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            width: 100%;
+            margin-top: 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cyber-btn:hover {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .cyber-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 試聽按鈕播放中樣式 */
+        .cyber-btn.playing {
+            background: var(--stop-color);
+            border-color: var(--stop-color);
+            color: #fff;
+            animation: pulse-red 1.5s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 0, 85, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 85, 0); }
+        }
+
+        /* 聲音選擇區 */
+        .sound-selector {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f0f7ff; /* 淺藍底 */
+            border-left-color: var(--active-color);
+        }
+
+        /* 鬧鐘列表 */
+        .alarm-list-container {
+            margin-top: 10px;
+            overflow-y: auto;
+            max-height: 200px;
+        }
+
+        .alarm-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            margin-bottom: 8px;
+            padding: 12px 15px;
+            border: 1px solid #eee;
+            border-right: 4px solid #ccc;
+            transition: border-color 0.3s, background 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        
+        .alarm-item:hover {
+            border-right-color: var(--active-color);
+            padding-left: 20px;
+        }
+
+        .alarm-item.countdown {
+            border-right-color: var(--accent-color); /* 黃色 */
+            background: linear-gradient(90deg, #fff, #fff, #fffbf0);
+        }
+        
+        .alarm-item.countdown:hover {
+            border-right-color: #ffaa00;
+        }
+
+        .alarm-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .alarm-time {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .alarm-type {
+            font-size: 0.85rem;
+            color: #8899aa;
+            font-weight: 600;
+        }
+        
+        /* 倒數計時數字專用樣式 */
+        .mono-digit {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-left: 10px;
+            letter-spacing: 2px;
+            background: #e6f7ff;
+            padding: 2px 10px;
+            border-radius: 4px;
+            border: 1px solid #b3e0ff;
+            min-width: 110px;
+            display: inline-block;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 204, 255, 0.2);
+        }
+
+        .delete-btn {
+            background: transparent;
+            border: none;
+            color: #ccc;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: color 0.2s;
+        }
+
+        .delete-btn:hover {
+            color: var(--alert-color);
+        }
+
+        /* 觸發時的覆蓋層 */
+        #alarm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 100;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #alarm-overlay.active {
+            display: flex;
+            animation: bgPulse 2s infinite;
+        }
+
+        .alert-icon {
+            font-size: 4rem;
+            color: var(--alert-color);
+            margin-bottom: 20px;
+            animation: shake 0.5s infinite;
+        }
+
+        .alert-msg {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            color: var(--text-main);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .alert-detail {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 40px;
+        }
+
+        .stop-btn {
+            background: var(--alert-color);
+            color: #fff;
+            border: none;
+            padding: 20px 80px;
+            font-size: 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255, 51, 0, 0.3);
+            border-radius: 50px;
+            transition: transform 0.2s;
+        }
+
+        .stop-btn:hover {
+            transform: scale(1.05);
+            background: #ff4d22;
+        }
+
+        @keyframes bgPulse {
+            0% { background-color: rgba(255,255,255,0.95); }
+            50% { background-color: rgba(255,240,240,0.95); }
+            100% { background-color: rgba(255,255,255,0.95); }
+        }
+
+        @keyframes shake {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        /* 自定義滾動條 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f0f0f0; }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- 主要時間顯示 -->
+        <div class="main-display">
+            <!-- 裝飾角標 -->
+            <div class="corner top-left"></div>
+            <div class="corner top-right"></div>
+            <div class="corner bottom-left"></div>
+            <div class="corner bottom-right"></div>
+            
+            <div class="clock-label">SYSTEM TIME // LOCAL_SYNC</div>
+            <div id="local-time">00:00:00</div>
+            <div id="local-date">Loading Data Stream...</div>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            
+            <!-- 功能 1: 設定指定時間 -->
+            <div class="panel-box">
+                <div class="panel-title">
+                    <span style="display:inline-block; width:8px; height:8px; background:var(--primary-color);"></span>
+                    指定時間鬧鐘 (TARGET TIME)
+                </div>
+                <div class="input-group">
+                    <input type="time" id="alarm-time-input" step="1">
+                </div>
+                <button class="cyber-btn" onclick="addTimeAlarm()">＋ 設定任務</button>
+            </div>
+
+            <!-- 功能 2: 設定倒數時間 -->
+            <div class="panel-box">
+                <div class="panel-title">
+                    <span style="display:inline-block; width:8px; height:8px; background:var(--primary-color);"></span>
+                    倒數計時模組 (COUNTDOWN)
+                </div>
+                <div class="input-group">
+                    <input type="number" id="countdown-h" placeholder="00" min="0" max="23"> 
+                    <span style="font-size:0.8rem; color:#888;">H</span>
+                    <input type="number" id="countdown-m" placeholder="00" min="0" max="59"> 
+                    <span style="font-size:0.8rem; color:#888;">M</span>
+                    <input type="number" id="countdown-s" placeholder="00" min="0" max="59"> 
+                    <span style="font-size:0.8rem; color:#888;">S</span>
+                </div>
+                <button class="cyber-btn" onclick="addCountdownAlarm()">＋ 啟動序列</button>
+            </div>
+
+            <!-- 功能 3: 聲音選擇 -->
+            <div class="panel-box sound-selector">
+                <div class="panel-title" style="margin:0;">🔊 AUDIO OUTPUT</div>
+                <select id="sound-type">
+                    <option value="piyo">日本行人號誌 (Piyo Piyo - 南北)</option>
+                    <option value="cuckoo">日本行人號誌 (Cuckoo - 東西)</option>
+                    <option value="station">電車發車鈴 (Station)</option>
+                    <option value="classic">傳統鬧鈴 (Digital)</option>
+                    <option value="owl">森林貓頭鷹 (Owl)</option>
+                    <option value="car">汽車喇叭 (Horn)</option>
+                </select>
+                <button id="preview-btn" class="cyber-btn" style="width: auto; margin:0; padding: 8px 20px;" onclick="previewSound()">試聽</button>
+            </div>
+
+            <!-- 任務列表 -->
+            <div class="panel-box" style="grid-column: 1 / -1; min-height: 200px;">
+                <div class="panel-title">
+                     <span style="display:inline-block; width:8px; height:8px; background:#00cc44;"></span>
+                     ACTIVE TASKS // 監控佇列
+                </div>
+                <div id="alarm-list" class="alarm-list-container">
+                    <!-- Javascript 將在此處插入鬧鐘項目 -->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 鬧鐘響起時的覆蓋層 -->
+    <div id="alarm-overlay">
+        <div class="alert-icon">🔔</div>
+        <div class="alert-msg">ALARM TRIGGERED</div>
+        <div class="alert-detail" id="triggered-alarm-name"></div>
+        <button class="stop-btn" onclick="stopAlarm()">關閉警報</button>
+    </div>
+
+    <script>
+        // --- 全域變數初始化 ---
+        var alarms = [];
+        var isRinging = false;
+        var isPreviewing = false; // 用於追蹤試聽狀態
+
+        // --- 真實音效網址對照表 (Google Actions Library) ---
+        var realSoundUrls = {
+            'classic': 'https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg',
+            'owl': 'https://actions.google.com/sounds/v1/animals/great_horned_owl.ogg',
+            'car': 'https://actions.google.com/sounds/v1/transportation/car_horn.ogg'
+        };
+
+        // --- 1. 聲音引擎 ---
+        var AudioEngine = {
+            activeHtmlAudio: null, // 用於播放真實音效
+            ctx: null,            // 用於合成音效
+            oscList: [],          // 儲存多個振盪器以便一次停止 (和弦用)
+            interval: null,
+
+            initCtx: function() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+
+            // 核心播放函式
+            play: function(type) {
+                this.stop(); // 停止當前聲音
+
+                // 特殊合成音效
+                if (type === 'station' || type === 'piyo' || type === 'cuckoo') {
+                    this.playSynth(type);
+                    return;
+                }
+
+                // 其他音效：嘗試播放真實音效
+                if (realSoundUrls[type]) {
+                    this.playReal(type);
+                } else {
+                    this.playSynth(type);
+                }
+            },
+
+            stop: function() {
+                // 停止真實音效
+                if (this.activeHtmlAudio) {
+                    this.activeHtmlAudio.pause();
+                    this.activeHtmlAudio.currentTime = 0;
+                    this.activeHtmlAudio = null;
+                }
+                
+                // 停止合成音效 (清空所有振盪器)
+                this.oscList.forEach(function(node) {
+                    try { node.stop(); } catch(e){}
+                });
+                this.oscList = [];
+
+                if (this.interval) {
+                    clearInterval(this.interval);
+                    this.interval = null;
+                }
+            },
+
+            // 播放真實音效
+            playReal: function(type) {
+                var url = realSoundUrls[type];
+                var audio = new Audio(url);
+                audio.loop = true;
+                var self = this;
+
+                var playPromise = audio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise.then(function() {
+                        self.activeHtmlAudio = audio;
+                    }).catch(function(error) {
+                        console.warn("真實音效播放失敗，切換至備用合成音效:", error);
+                        self.playSynth(type);
+                    });
+                }
+            },
+
+            // 播放合成音效
+            playSynth: function(type) {
+                this.initCtx();
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+
+                switch(type) {
+                    case 'piyo': this.synthPiyo(); break;       // 日本行人號誌 (南北)
+                    case 'cuckoo': this.synthCuckoo(); break;   // 日本行人號誌 (東西)
+                    case 'station': this.synthStation(); break;
+                    case 'classic': this.synthClassic(); break;
+                    case 'owl': this.synthOwl(); break;
+                    case 'car': this.synthCar(); break;
+                }
+            },
+
+            // 輔助：自動清除已結束的 Oscillator，防止記憶體洩漏
+            trackOsc: function(osc) {
+                var self = this;
+                self.oscList.push(osc);
+                osc.onended = function() {
+                    var idx = self.oscList.indexOf(osc);
+                    if (idx > -1) {
+                        self.oscList.splice(idx, 1);
+                    }
+                };
+            },
+
+            // --- 合成器邏輯 ---
+            
+            // 1. [日本] Piyo Piyo (ピヨピヨ) - 南北向
+            // 模式：Piyo-Piyo (名古屋式雙聲)
+            // 頻率：3200Hz 掃頻至 800Hz
+            // 節奏：約 1.95 秒一次循環，稍微放慢
+            synthPiyo: function() {
+                var self = this;
+                
+                var playChirp = function(startTime) {
+                    if (!self.ctx) return;
+                    
+                    var t = self.ctx.currentTime + startTime;
+                    var osc = self.ctx.createOscillator();
+                    var gain = self.ctx.createGain();
+                    
+                    osc.type = 'sine';
+                    // 掃頻：模仿小鳥叫聲，高頻快速下降
+                    osc.frequency.setValueAtTime(3200, t); 
+                    osc.frequency.exponentialRampToValueAtTime(800, t + 0.08);
+                    
+                    osc.connect(gain);
+                    gain.connect(self.ctx.destination);
+                    
+                    // 音量包絡
+                    gain.gain.setValueAtTime(0, t);
+                    gain.gain.linearRampToValueAtTime(0.4, t + 0.01);
+                    gain.gain.exponentialRampToValueAtTime(0.01, t + 0.08);
+                    
+                    osc.start(t);
+                    osc.stop(t + 0.1);
+                    self.trackOsc(osc);
+                };
+
+                var playPattern = function() {
+                    // Piyo 1
+                    playChirp(0);
+                    // Piyo 2 (緊接著，稍微放慢間隔至 180ms)
+                    playChirp(0.18);
+                };
+
+                // 立即播放第一次
+                playPattern();
+                
+                // 循環間隔約 1.95 秒 (比之前的 1.85 秒慢一點)
+                this.interval = setInterval(function() {
+                    playPattern();
+                }, 1950); 
+            },
+
+            // 2. [日本] Cuckoo (カッコー) - 東西向
+            // 頻率：回復到較舒適的大三度音程 (約 1050Hz / 840Hz)
+            // 節奏："Ka"(短) ... "Koo"(長)
+            // 循環：約 2.15 秒，稍微放慢
+            synthCuckoo: function() {
+                var self = this;
+
+                var playCuckooCycle = function() {
+                    if (!self.ctx) return;
+                    var t = self.ctx.currentTime;
+
+                    // 第一聲 "Ka" (高音，短促)
+                    var osc1 = self.ctx.createOscillator();
+                    var gain1 = self.ctx.createGain();
+                    osc1.type = 'sine';
+                    osc1.frequency.value = 1050; // 約 C6 附近
+                    
+                    osc1.connect(gain1);
+                    gain1.connect(self.ctx.destination);
+                    
+                    osc1.start(t);
+                    gain1.gain.setValueAtTime(0, t);
+                    gain1.gain.linearRampToValueAtTime(0.25, t + 0.02);
+                    gain1.gain.linearRampToValueAtTime(0.01, t + 0.08); // 非常短，約 80ms 有聲
+                    osc1.stop(t + 0.1);
+                    self.trackOsc(osc1);
+
+                    // 第二聲 "Koo" (低音，較長)
+                    var osc2 = self.ctx.createOscillator();
+                    var gain2 = self.ctx.createGain();
+                    osc2.type = 'sine';
+                    osc2.frequency.value = 840; // 約 G#5/Ab5 (構成大三度)
+                    
+                    osc2.connect(gain2);
+                    gain2.connect(self.ctx.destination);
+                    
+                    // 緊接著第一聲，稍微拉開一點距離
+                    var start2 = t + 0.13;
+                    osc2.start(start2); 
+                    gain2.gain.setValueAtTime(0, start2);
+                    gain2.gain.linearRampToValueAtTime(0.25, start2 + 0.05);
+                    gain2.gain.linearRampToValueAtTime(0.01, start2 + 0.5); // 聲音持續約 500ms
+                    osc2.stop(start2 + 0.55);
+                    self.trackOsc(osc2);
+                };
+
+                playCuckooCycle();
+                // 循環間隔 (比之前的 2.0 秒慢一點)
+                this.interval = setInterval(function() {
+                    playCuckooCycle();
+                }, 2150);
+            },
+
+            // 2. [日本] Cuckoo (カッコー) - 東西向
+            // 頻率：回復到較舒適的大三度音程 (約 1050Hz / 840Hz)
+            // 節奏："Ka"(短) ... "Koo"(長)
+            // 循環：約 2.0 秒，確保聽起來是連續的號誌聲
+            synthCuckoo: function() {
+                var self = this;
+
+                var playCuckooCycle = function() {
+                    if (!self.ctx) return;
+                    var t = self.ctx.currentTime;
+
+                    // 第一聲 "Ka" (高音，短促)
+                    var osc1 = self.ctx.createOscillator();
+                    var gain1 = self.ctx.createGain();
+                    osc1.type = 'sine';
+                    osc1.frequency.value = 1050; // 約 C6 附近
+                    
+                    osc1.connect(gain1);
+                    gain1.connect(self.ctx.destination);
+                    
+                    osc1.start(t);
+                    gain1.gain.setValueAtTime(0, t);
+                    gain1.gain.linearRampToValueAtTime(0.25, t + 0.02);
+                    gain1.gain.linearRampToValueAtTime(0.01, t + 0.08); // 非常短，約 80ms 有聲
+                    osc1.stop(t + 0.1);
+                    self.trackOsc(osc1);
+
+                    // 第二聲 "Koo" (低音，較長)
+                    var osc2 = self.ctx.createOscillator();
+                    var gain2 = self.ctx.createGain();
+                    osc2.type = 'sine';
+                    osc2.frequency.value = 840; // 約 G#5/Ab5 (構成大三度)
+                    
+                    osc2.connect(gain2);
+                    gain2.connect(self.ctx.destination);
+                    
+                    // 緊接著第一聲，幾乎沒有空隙
+                    var start2 = t + 0.10;
+                    osc2.start(start2); 
+                    gain2.gain.setValueAtTime(0, start2);
+                    gain2.gain.linearRampToValueAtTime(0.25, start2 + 0.05);
+                    gain2.gain.linearRampToValueAtTime(0.01, start2 + 0.5); // 聲音持續約 500ms
+                    osc2.stop(start2 + 0.55);
+                    self.trackOsc(osc2);
+                };
+
+                playCuckooCycle();
+                // 循環間隔
+                this.interval = setInterval(function() {
+                    playCuckooCycle();
+                }, 2000);
+            },
+
+            // 3. [日本] 電車發車鈴
+            synthStation: function() {
+                var self = this;
+                var melody = [659.25, 830.61, 987.77, 1318.51]; 
+                var noteDuration = 200; 
+                var playSequence = function() {
+                    melody.forEach(function(freq, index) {
+                        setTimeout(function() {
+                            if (!self.ctx) return;
+                            var osc = self.ctx.createOscillator();
+                            var gain = self.ctx.createGain();
+                            osc.type = 'sine'; 
+                            osc.frequency.value = freq;
+                            osc.connect(gain);
+                            gain.connect(self.ctx.destination);
+                            osc.start();
+                            gain.gain.setValueAtTime(0.3, self.ctx.currentTime);
+                            gain.gain.exponentialRampToValueAtTime(0.01, self.ctx.currentTime + 0.4);
+                            osc.stop(self.ctx.currentTime + 0.4);
+                            self.trackOsc(osc); 
+                        }, index * noteDuration);
+                    });
+                };
+                playSequence();
+                this.interval = setInterval(playSequence, melody.length * noteDuration + 500);
+            },
+
+            // 4. 傳統
+            synthClassic: function() {
+                var self = this;
+                var playBeep = function() {
+                    var osc = self.ctx.createOscillator();
+                    var gain = self.ctx.createGain();
+                    osc.type = 'square';
+                    osc.frequency.value = 880;
+                    osc.connect(gain);
+                    gain.connect(self.ctx.destination);
+                    osc.start();
+                    gain.gain.setValueAtTime(0.3, self.ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, self.ctx.currentTime + 0.2);
+                    osc.stop(self.ctx.currentTime + 0.2);
+                    self.trackOsc(osc);
+                };
+                playBeep();
+                this.interval = setInterval(function() {
+                    playBeep();
+                    setTimeout(playBeep, 150);
+                }, 1000);
+            },
+
+            // 5. 貓頭鷹
+            synthOwl: function() {
+                var self = this;
+                var hoot = function() {
+                    var osc = self.ctx.createOscillator();
+                    var gain = self.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, self.ctx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(300, self.ctx.currentTime + 0.4);
+                    osc.connect(gain);
+                    gain.connect(self.ctx.destination);
+                    gain.gain.setValueAtTime(0, self.ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.5, self.ctx.currentTime + 0.1);
+                    gain.gain.linearRampToValueAtTime(0, self.ctx.currentTime + 0.4);
+                    osc.start();
+                    osc.stop(self.ctx.currentTime + 0.5);
+                    self.trackOsc(osc);
+                };
+                hoot();
+                this.interval = setInterval(function() {
+                    hoot();
+                    setTimeout(hoot, 600); 
+                }, 2500);
+            },
+
+            // 6. 汽車
+            synthCar: function() {
+                var self = this;
+                var honk = function() {
+                    var osc1 = self.ctx.createOscillator();
+                    var osc2 = self.ctx.createOscillator();
+                    var gain = self.ctx.createGain();
+                    osc1.type = 'sawtooth';
+                    osc1.frequency.value = 200;
+                    osc2.type = 'sawtooth';
+                    osc2.frequency.value = 240; 
+                    osc1.connect(gain);
+                    osc2.connect(gain);
+                    gain.connect(self.ctx.destination);
+                    gain.gain.setValueAtTime(0.3, self.ctx.currentTime);
+                    gain.gain.linearRampToValueAtTime(0.3, self.ctx.currentTime + 0.4);
+                    gain.gain.linearRampToValueAtTime(0, self.ctx.currentTime + 0.5);
+                    osc1.start();
+                    osc2.start();
+                    osc1.stop(self.ctx.currentTime + 0.5);
+                    osc2.stop(self.ctx.currentTime + 0.5);
+                    self.trackOsc(osc1);
+                    self.trackOsc(osc2);
+                };
+                honk();
+                this.interval = setInterval(honk, 1000);
+            }
+        };
+
+        // --- 2. 鬧鐘管理邏輯 ---
+
+        function renderAlarms() {
+            var list = document.getElementById('alarm-list');
+            list.innerHTML = '';
+
+            alarms.sort(function(a, b) { return a.timestamp - b.timestamp; });
+
+            alarms.forEach(function(alarm, index) {
+                var div = document.createElement('div');
+                div.className = 'alarm-item ' + (alarm.type === 'countdown' ? 'countdown' : '');
+                
+                // 格式化時間
+                var date = new Date(alarm.timestamp);
+                var timeStr = date.toLocaleTimeString('zh-TW', { hour12: false });
+                
+                // 計算剩餘時間標籤
+                var remainingText = "";
+                if (alarm.type === 'countdown') {
+                    var now = new Date();
+                    var diffMs = alarm.timestamp - now.getTime();
+                    
+                    var d = Math.ceil(diffMs / 1000);
+                    if (d < 0) d = 0;
+                    
+                    var rh = Math.floor(d / 3600);
+                    var rm = Math.floor((d % 3600) / 60);
+                    var rs = d % 60;
+                    
+                    var hStr = String(rh).padStart(2, '0');
+                    var mStr = String(rm).padStart(2, '0');
+                    var sStr = String(rs).padStart(2, '0');
+                    
+                    remainingText = '<span class="mono-digit">' + hStr + ':' + mStr + ':' + sStr + '</span>';
+                }
+
+                div.innerHTML = 
+                    '<div class="alarm-info">' +
+                        '<span class="alarm-time">' + timeStr + '</span>' +
+                        '<span class="alarm-type">' + alarm.label + ' ' + remainingText + '</span>' +
+                    '</div>' +
+                    '<div class="alarm-info" style="align-items:flex-end;">' +
+                         '<span style="font-size:0.8rem; color: #888;">' + getSoundName(alarm.sound) + '</span>' +
+                    '</div>' +
+                    '<button class="delete-btn" onclick="removeAlarm(' + index + ')" title="刪除">×</button>';
+                
+                list.appendChild(div);
+            });
+        }
+
+        setInterval(function() {
+            if(alarms.some(function(a) { return a.type === 'countdown'; })) {
+                renderAlarms();
+            }
+        }, 100);
+
+        function getSoundName(val) {
+            var map = {
+                'piyo': '行人號誌 (南北-Piyo)',
+                'cuckoo': '行人號誌 (東西-Cuckoo)',
+                'station': '電車發車鈴',
+                'classic': '傳統鬧鈴',
+                'owl': '森林貓頭鷹',
+                'car': '汽車喇叭'
+            };
+            return map[val] || val;
+        }
+
+        function addTimeAlarm() {
+            var input = document.getElementById('alarm-time-input').value;
+            if (!input) return alert('請輸入時間');
+
+            var now = new Date();
+            var target = new Date();
+            var parts = input.split(':');
+            var h = Number(parts[0]);
+            var m = Number(parts[1]);
+            
+            target.setHours(h, m, 0, 0);
+
+            if (target <= now) {
+                target.setDate(target.getDate() + 1);
+            }
+
+            var sound = document.getElementById('sound-type').value;
+
+            alarms.push({
+                timestamp: target.getTime(),
+                label: "TIME_SET",
+                type: 'time',
+                sound: sound
+            });
+
+            renderAlarms();
+            document.getElementById('alarm-time-input').value = '';
+            
+            if (AudioEngine.ctx && AudioEngine.ctx.state === 'suspended') {
+                AudioEngine.ctx.resume();
+            }
+        }
+
+        function addCountdownAlarm() {
+            var h = parseInt(document.getElementById('countdown-h').value) || 0;
+            var m = parseInt(document.getElementById('countdown-m').value) || 0;
+            var s = parseInt(document.getElementById('countdown-s').value) || 0;
+
+            if (h === 0 && m === 0 && s === 0) return alert('請設定倒數時間');
+
+            var now = new Date();
+            var totalMs = (h * 3600 + m * 60 + s) * 1000;
+            var targetTime = now.getTime() + totalMs;
+            var sound = document.getElementById('sound-type').value;
+
+            alarms.push({
+                timestamp: targetTime,
+                label: "COUNTDOWN",
+                type: 'countdown',
+                sound: sound
+            });
+
+            renderAlarms();
+            
+            document.getElementById('countdown-h').value = '';
+            document.getElementById('countdown-m').value = '';
+            document.getElementById('countdown-s').value = '';
+
+            if (AudioEngine.ctx && AudioEngine.ctx.state === 'suspended') {
+                AudioEngine.ctx.resume();
+            }
+        }
+
+        function removeAlarm(index) {
+            alarms.splice(index, 1);
+            renderAlarms();
+        }
+
+        function checkAlarms(now) {
+            if (typeof isRinging === 'undefined' || isRinging) return;
+
+            var nowTs = now.getTime();
+            var triggeredIndex = alarms.findIndex(function(a) { return a.timestamp <= nowTs; });
+
+            if (triggeredIndex !== -1) {
+                var alarm = alarms[triggeredIndex];
+                triggerAlarm(alarm);
+                alarms.splice(triggeredIndex, 1);
+                renderAlarms();
+            }
+        }
+
+        function triggerAlarm(alarm) {
+            // 如果正在試聽，先停止試聽狀態
+            if (isPreviewing) {
+                stopPreviewState();
+            }
+            
+            isRinging = true;
+            document.getElementById('alarm-overlay').classList.add('active');
+            document.getElementById('triggered-alarm-name').innerText = alarm.label + ' // ' + getSoundName(alarm.sound);
+            
+            AudioEngine.play(alarm.sound);
+        }
+
+        function stopAlarm() {
+            isRinging = false;
+            document.getElementById('alarm-overlay').classList.remove('active');
+            AudioEngine.stop();
+        }
+
+        // 修改後的試聽功能：切換開關 (Toggle)
+        function previewSound() {
+            var btn = document.getElementById('preview-btn');
+            
+            if (isPreviewing) {
+                // 停止試聽
+                stopPreviewState();
+                AudioEngine.stop();
+            } else {
+                // 開始試聽
+                var sound = document.getElementById('sound-type').value;
+                AudioEngine.play(sound);
+                
+                isPreviewing = true;
+                btn.innerText = "■ 停止";
+                btn.classList.add('playing');
+            }
+        }
+
+        function stopPreviewState() {
+            var btn = document.getElementById('preview-btn');
+            isPreviewing = false;
+            btn.innerText = "試聽";
+            btn.classList.remove('playing');
+        }
+
+        // --- 3. 時間顯示邏輯 ---
+        function updateClock() {
+            var now = new Date();
+            var h = String(now.getHours()).padStart(2, '0');
+            var m = String(now.getMinutes()).padStart(2, '0');
+            var s = String(now.getSeconds()).padStart(2, '0');
+            
+            var timeEl = document.getElementById('local-time');
+            if (timeEl) timeEl.textContent = h + ':' + m + ':' + s;
+            
+            var options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+            var dateEl = document.getElementById('local-date');
+            if (dateEl) dateEl.textContent = now.toLocaleDateString('zh-TW', options);
+
+            checkAlarms(now);
+        }
+        
+        window.onload = function() {
+            updateClock();
+            setInterval(updateClock, 1000);
+            AudioEngine.initCtx();
+        };
+    </script>
+</body>
+</html>
