@@ -1054,34 +1054,1165 @@
 
 主題: 戶外廁所與旱廁系統 Outhouse (Dry Sanitation Systems)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的室內設計師、空間規劃專家與建築美學譯者，擅長編纂結合室內工程設計、美學術語與空間生活應用面，且具備高度精準性的分類詞典。
 
+# Task
+請針對主題【室內設計與客廳空間 Living Room & Interior Design】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
 
+## 任務一：架構規劃 (Planning)
+請將「客廳空間」相關領域細分為以下 8 個子類別，以確保覆蓋面從家具結構延伸至空間心理學：
+1. **家具構成、結構與骨架 (Furniture Anatomy & Structural Framework)** - 如：框架、扶手、椅腳、填充材料、旋轉底座。
+2. **軟裝織品、皮革與面料 (Textiles, Upholstery & Material Finishes)** - 如：緹花織物、天鵝絨、紋理皮革、滾邊處理、耐磨等級。
+3. **照明系統、燈具與光學效應 (Lighting Systems & Luminaires)** - 如：嵌入式筒燈、壁燈、調光器、色溫、流明度。
+4. **建築飾面、壁面與木作細部 (Architectural Finishes & Moldings)** - 如：護牆板、踢腳板、皇冠飾板、飾面板、石膏飾件。
+5. **視聽系統、智能家居與線路管理 (AV Systems & Smart Home Integration)** - 如：環繞音效、隱藏式佈線、電動窗簾、投影幕。
+6. **裝飾藝術、陳列與配件 (Decor, Art & Accents)** - 如：雕塑品、掛畫框架、裝飾托盤、流蘇掛飾、書架陳列。
+7. **空間動線、佈局概念與人因工程 (Spatial Flow & Ergonomics)** - 如：視覺焦點、迴遊動線、視距、寬敞感、黃金比例。
+8. **風格語彙、氛圍營造與感官描述 (Styling, Ambience & Aesthetic Descriptors)** - 如：極簡主義、奢華感、通透的、古色古香的。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Upholster 繃皮、Refurbish 翻新）與「形容詞」（例如：Plush 豪華柔軟的、Eclectic 折衷風格的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Sectional/Corner sofa, Drapes/Curtains, Ottoman/Footstool, Credenza/Sideboard）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Chair, Table, Light, Window 等過於簡單的詞。必須包含如：Chaise longue (長躺椅)、Sconce (壁燈)、Wainscoting (護牆板)、Clutter-free (整潔的) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保能描述完整的空間設計、裝修工程與居住感受。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks. No "Here is the list..." or "Let me know if you need more."
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 室內設計與客廳空間 Living Room & Interior Design
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的英語語言專家，擅長編纂生活化且專業的分類詞典。
+
+# Task
+請針對主題【臥室 Bedroom】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+首先，請將「臥室」細分為至少 6-8 個子類別，以確保覆蓋面無死角。建議類別應包含：
+1. 床鋪結構與大型家具 (Beds & Large Furniture)
+2. 寢具、織品與軟裝 (Bedding & Textiles)
+3. 衣物收納與梳妝設備 (Storage & Grooming)
+4. 採光、溫控與睡眠環境 (Lighting, Windows & Climate)
+5. 睡眠行為與日常動作 (Sleep Actions & Routines)
+6. 空間氛圍與體感描述 (Ambience & Sensory Adjectives)
+（你可以根據專業判斷微調或增加類別）。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請盡可能挖掘生活中高頻率出現的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 80-100 個以上。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：鋪床、摺疊、打瞌睡）與「形容詞」（例如：支撐性強的、親膚的、遮光的）。
+
+## 任務三：格式化輸出 (Formatting)
+最後，請將所有規劃的內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：若兩者相同請重複填寫；若有文化或慣用法差異（如 Comforter/Duvet, Closet/Wardrobe），請務必標記。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- 嚴禁只輸出基礎詞彙，必須包含進階但生活化的詞彙（如：床墊保護墊、記憶枕、床裙、防塵蟎、床邊毯、全身鏡等）。
+- 確保動詞與形容詞的比例佔總數量的 30% 以上，以符合實際對話需求。
+- 輸出必須一次性完成，不要分段或省略，確保資料的絕對完整性。
+
+主題: 臥室 Bedroom
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的英語語言專家，擅長編纂生活化且專業的分類詞典。
+
+# Task
+請針對主題【廚房與烹飪藝術 Kitchen & Culinary Arts】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「廚房」相關領域細分為以下 8 個子類別，以確保覆蓋面從硬體設施延伸至飲食文化：
+1. 大型家電與廚衛設施 (Major Appliances & Fixtures) - 如：爐灶、通風系統、水路設施。
+2. 小型廚房家電與電子產品 (Small Appliances & Gadgets) - 如：氣炸鍋、調理機、咖啡設備。
+3. 鍋具、烘焙模具與料理工具 (Cookware, Bakeware & Tools) - 如：不沾鍋、矽膠鏟、計時器。
+4. 餐具、金屬餐具與容器收納 (Tableware, Cutlery & Food Storage) - 如：西餐具、保鮮容器、密封罐。
+5. 前置準備與食材處理動作 (Preparation & Handling) - 如：削皮、去籽、醃漬、過篩。
+6. 烹調技法與熱處理動作 (Cooking Techniques & Heat Processes) - 如：嫩煎、川燙、隔水加熱、慢燉。
+7. 食材成分、營養與風味感受 (Ingredients, Nutrition & Palate) - 如：調味料、有機屬性、味蕾感受。
+8. 清潔維護、衛生與環境狀態 (Cleaning, Hygiene & Ambience) - 如：油膩度、消毒動作、剩菜處理。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘生活中高頻且具備專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 80-100 個以上。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Sauté 嫩煎、Mince 絞碎）與「形容詞」（例如：Savory 鹹香的、Tender 軟嫩的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Broil/Grill, Aluminum/Aluminium, Faucet/Tap, Silverware/Cutlery）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Spoon, Apple, Cook 等過於簡單的詞。必須包含如：Garbage disposal (廚餘機)、Exhaust fan (排風扇)、Whisk (打蛋器)、Garnish (點綴) 等進階詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 35% 以上，以確保學習者能描述完整的烹飪流程。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+主題: 廚房 Kitchen
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+# Role
+你是一位資深的英語語言專家，擅長編纂生活化且專業的分類詞典，特別精通於室內設計、建築空間與社交心理學詞彙。
+
+# Task
+請針對主題【公共空間與社交生活 Common Room & Social Spaces】進行深度且完整的詞彙整理。此處的「Common Room」泛指公寓公共休息室、學生宿舍聯誼廳、共享辦公室的交誼區或社區活動中心。請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「公共空間」相關領域細分為以下 8 個子類別，以確保覆蓋面從硬體軟裝延伸至社交行為：
+1. **大型家具與空間規劃 (Major Furniture & Layout)** - 如：模組化沙發、嵌入式長椅、空間分區、動線規劃。
+2. **多媒體娛樂與數位設施 (Multimedia & Entertainment)** - 如：投影系統、遊戲主機配件、智能中控、串流設備。
+3. **氛圍燈光與環境調節 (Lighting & Climate Control)** - 如：間接照明、調光器、溫控系統、換氣扇。
+4. **社交康樂與休閒物件 (Recreation & Leisure Assets)** - 如：撞球檯配件、桌遊術語、自動販賣機、書報架。
+5. **軟裝陳設、織品與藝術 (Decor, Textiles & Artistry)** - 如：遮光簾、波斯地毯、藝術掛畫、隔音板。
+6. **社交互動、行為與活動動作 (Social Interaction & Activities)** - 如：寒暄、閒聊、主辦活動、放鬆癱坐。
+7. **管理規章、共享規範與權益 (Management, Rules & Etiquette)** - 如：預約系統、噪音限制、共同承擔、公德心。
+8. **感官體驗、美學形容與空間狀態 (Ambience, Aesthetics & State)** - 如：溫馨感、極簡風、雜亂程度、通透性。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘生活中高頻且具備專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 80-100 個以上。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Lounge 懶洋洋地躺、Socialize 社交）與「形容詞」（例如：Chic 時髦的、Spacious 寬敞的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Apartment/Flat, Couch/Settee, Elevator/Lift, Trash can/Dustbin）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Chair, TV, Play 等過於簡單的詞。必須包含如：Upholstery (沙發布料)、Recessed lighting (嵌入式燈照)、Mingle (應酬交際)、Soundproofing (隔音) 等進階詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 35% 以上，以確保學習者能描述完整的社交情境與空間感受。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+主題: 公共空間 Common Room
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的英語語言專家，擅長編纂生活化且專業的分類詞典，特別精通於空間設計、室內裝潢與居家生活美學的詞彙描述。
+
+# Task
+請針對主題 **【私室與居家休憩美學 The Den & Private Retreats】** 進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「Den (私室/起居室)」相關領域細分為以下 8 個子類別，以確保覆蓋面從硬體空間延伸至感官體驗：
+1. **家具配置與人體工學 (Seating & Ergonomic Furniture)** - 如：躺椅、腳凳、組合沙發、書桌。
+2. **影音娛樂與智慧科技 (Media, Tech & Smart Home)** - 如：環繞音效、投影幕、串流設備、線材管理。
+3. **收納系統、書架與展示 (Storage, Shelving & Display)** - 如：嵌壁式書櫃、陳列架、邊几、收納櫃。
+4. **照明設計與氛圍營造 (Lighting, Fixtures & Ambiance)** - 如：調光開關、落地燈、間接照明、暖色調。
+5. **軟裝織品、地毯與觸感 (Textiles, Rugs & Tactile Elements)** - 如：羊絨毯、遮光簾、波斯地毯、抱枕。
+6. **休憩活動、嗜好與休閒動作 (Leisure Activities & Pastimes)** - 如：沉浸式閱讀、午睡、品酒、冥想。
+7. **建築結構、壁面與硬體細節 (Architectural Elements & Finishes)** - 如：護牆板、壁爐、隔音棉、鑲木地板。
+8. **空間感受、維護與心理狀態 (Vibe, Upkeep & Emotional State)** - 如：溫馨感、雜亂度、隱密性、塵封感。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘生活中高頻且具備專業感（甚至帶有美學深度）的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Recline 傾斜躺下、Clutter 堆積）與「形容詞」（例如：Snug 溫暖舒適的、Acoustically-treated 經過聲學處理的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Ottoman/Footstool, Recliner/Armchair, Cozy/Cosy, Curtains/Drapes）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Chair, Book, TV, Happy 等過於簡單的詞。必須包含如：Chaise longue (長躺椅)、Upholstery (沙發面料)、Ambience (氛圍)、Built-in (嵌入式的)、Declutter (斷捨離/整理) 等進階詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保學習者能描述私室內的動態行為與空間質感。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的英語語言專家，擅長編纂生活化且專業的分類詞典，特別精通室內設計、家居生活與家庭娛樂領域。
+
+# Task
+請針對主題【起居空間與家庭生活 Family Room & Leisure Living】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「Family Room (起居室/家庭廳)」相關領域細分為以下 8 個子類別，以確保覆蓋面從硬體配置延伸至感官氛圍：
+1. **大型家具與空間佈局 (Major Furniture & Layout)** - 如：組合沙發、奧托曼腳凳、嵌入式書櫃、隔間櫃。
+2. **家庭影音與智能科技 (Home Entertainment & Smart Tech)** - 如：環繞音響、投影幕、串流媒體設備、語音助理。
+3. **照明系統、溫控與固定裝置 (Lighting, Climate Control & Fixtures)** - 如：落地燈、調光開關、壁爐配件、吊扇。
+4. **織品軟裝與裝飾藝術 (Textiles, Decor & Art)** - 如：抱枕、羊毛地毯、遮光簾、掛畫藝術。
+5. **休閒活動、遊戲與愛好 (Leisure Activities & Hobbies)** - 如：拼圖、桌遊配件、閱讀架、手作工具。
+6. **社交互動與放鬆動作 (Social Interaction & Relaxation)** - 如：小憩、招待客賓、愜意癱坐、深談。
+7. **視覺美感、觸感與氛圍形容 (Aesthetics, Textures & Ambience)** - 如：溫馨的、極簡的、天鵝絨質感的、通透的。
+8. **收納組織、維護與家務管理 (Organization, Maintenance & Upkeep)** - 如：除塵、斷捨離、收納籃、日常整理。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘生活中高頻且具備專業感（能體現家居品味）的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Unwind 放鬆、Recline 傾斜靠背）與「形容詞」（例如：Clutter-free 無雜物的、Plush 柔軟豪華的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Sectional/Corner sofa, Ottoman/Footstool, Remote/Zapper, Drapes/Curtains）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Chair, TV, Play 等過於簡單的詞。必須包含如：Recessed lighting (嵌入式照明)、Recliner (倒放式躺椅)、Upholstery (沙發面料)、Ambiance (氛圍感) 等進階詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保學習者能描述完整的生活場景與感受。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Role
+你是一位專精於**建築史與空間社會學**的英語語言專家。你對 19 世紀巴黎波希米亞風格（Bohemian）以及現代微型居住（Micro-living）有著深刻研究，擅長捕捉那種位於建物頂端、與世隔絕且充滿詩意的「閣樓（Garret）」語境。
+
+## Task
+請針對主題**【閣樓建築與閣樓生活藝術 Garret Architecture & Attic Life】**進行深度且完整的詞彙整理。這不僅是關於一個房間，更是關於一種在高處、斜面牆下生存的哲學。請嚴格執行以下三個任務步驟：
+
+### 任務一：架構規劃 (Planning)
+請將「閣樓」相關領域細分為以下 8 個子類別，以確保覆蓋面從建築骨架延伸至精神世界：
+1. **外部結構與屋頂特徵 (External Structures & Rooflines)** - 如：老虎窗、山牆、屋脊、排水溝槽。
+2. **室內骨架與斜面空間 (Interior Framing & Sloping Spaces)** - 如：露出的椽木、隔熱層、矮牆、天花板坡度。
+3. **採光、通風與視野 (Illumination, Ventilation & Vista)** - 如：天窗、推射窗、煙囪氣流、鳥瞰視野。
+4. **家具配置與空間優化 (Furnishings & Space Optimization)** - 如：嵌牆式書架、折疊家具、角落收納、閣樓梯。
+5. **物理環境與感官體驗 (Physical Environment & Sensations)** - 如：漏水、悶熱、雨聲敲擊、木頭擠壓聲。
+6. **阁樓活動與孤獨藝術 (Attic Activities & Solitary Arts)** - 如：創作、觀星、冥想、舊物儲藏。
+7. **歷史意象、文學與風格 (Historical Imagery, Literature & Style)** - 如：波希米亞、窮困藝術家、維多利亞式、隱居感。
+8. **修繕維護與現代改造 (Renovation, Maintenance & Retrofitting)** - 如：補漏、結構強化、空間轉型、隔音工程。
+
+### 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘具備建築專業感且富有文學底蘊的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Weatherproof 防風雨、Seclude 使隔絕）與「形容詞」（例如：Cramped 狹窄的、Gabled 山牆狀的）。
+
+### 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Attic/Loft, Skylight/Rooflight, Shingle/Tile, Baseboard/Skirting board）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+## Constraints
+- **拒絕基礎化**：嚴禁給出 Roof, Window, Table 等基礎詞。必須包含如：Dormer (老虎窗)、Eaves (屋簷)、Rafter (椽子)、Alcove (壁龕) 等進階詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以精確描述閣樓生活的動態感與氛圍。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的音頻工程師（Audio Engineer）與英語語言專家，擅長編纂結合專業技術與產業術語的分類詞典。
+
+# Task
+請針對主題【錄音室與音頻工程 Recording Studio & Audio Engineering】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「錄音室」相關領域細分為以下 8 個子類別，以確保覆蓋面從硬體設施、數位技術延伸至聲學環境：
+1. **錄音硬體、麥克風與前級 (Recording Hardware, Mics & Preamps)** - 如：電容式麥克風、真空管前級、幻象電源。
+2. **數位音訊工作站與軟體插件 (DAW, Software Plugins & VSTs)** - 如：編曲軟體、取樣率、緩衝大小、虛擬樂器。
+3. **監聽系統與聲學空間處理 (Monitoring & Acoustic Treatment)** - 如：近場監聽、吸音棉、擴散板、相位抵消。
+4. **信號鏈、線材與連通性 (Signal Chain, Cables & Connectivity)** - 如：平衡傳輸、撥線盤 (Patch bay)、阻抗匹配。
+5. **錄製執行與前期作業 (Tracking & Recording Processes)** - 如：試音 (Soundcheck)、疊錄 (Overdubting)、入點錄音 (Punch-in)。
+6. **混音工程、動態處理與效果 (Mixing, Dynamics & Effects)** - 如：平行壓縮、頻率自動化、側鏈處理、梳狀濾波。
+7. **母帶後期、輸出格式與技術指標 (Mastering & Delivery Formats)** - 如：響度標竿 (LUFS)、位元深度、抖動 (Dithering)。
+8. **錄音室運作、溝通術語與氛圍描述 (Studio Ops, Slang & Ambience)** - 如：混響時長、底噪、通透感、溫暖感。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘產業中高頻且具備專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 80-100 個以上。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Normalize 標準化、Modulate 調變）與「形容詞」（例如：Muddy 渾濁的、Crisp 脆亮的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Tube/Valve, Ground/Earth, Analog/Analogue, Fader/Slider 的慣用法）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Mic, Song, Loud 等過於簡單的詞。必須包含如：Phantom power (幻象電源)、Diaphragm (振膜)、Quantization (量化)、Signal-to-noise ratio (信噪比) 等專業術語。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 35% 以上，以確保學習者能描述完整的製作流程與音質聽感。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者分段輸出。
+
+主題: 錄音室 Recording Studio
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的英語語言專家，擅長編纂生活化且專業的分類詞典。
+
+# Task
+請針對主題【日光室與室內植栽休閒空間 Sunroom & Indoor Conservatory】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「日光室」相關領域細分為以下 8 個子類別，以確保覆蓋面從建築結構延伸至情境氛圍：
+1. **建築結構與採光硬體 (Architectural Structure & Lighting Hardware)** - 如：採光罩、天窗、氣密窗、斷熱鋁條。
+2. **通風溫控與遮陽系統 (Ventilation, Climate Control & Shading)** - 如：電動百葉窗、吊扇、隔熱膜、交叉通風。
+3. **傢俱配置與軟裝佈置 (Furniture Placement & Soft Furnishings)** - 如：藤編椅、貴妃榻、戶外地毯、靠枕。
+4. **室內植物與園藝設備 (Indoor Plants & Gardening Equipment)** - 如：攀爬架、玻璃木箱、盆栽土、花台。
+5. **建材材質與表面防護 (Materials & Surface Finishes)** - 如：強化玻璃、聚碳酸酯 (PC板)、防潑水塗層、實木。
+6. **空間維護與植物照護動作 (Maintenance & Plant Care Actions)** - 如：修剪、噴霧、隔熱、擦拭。
+7. **光影變化與自然氣象感受 (Lighting Dynamics & Natural Sensations)** - 如：斑駁的光影、日照充足的、眩光、輻射熱。
+8. **休閒活動與情境氛圍 (Leisure Activities & Ambience)** - 如：沐浴陽光、全景的、靜謐的、慵懶放鬆。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘生活中高頻且具備專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 80-100 個以上。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Bask 沐浴陽光、Ventilate 通風）與「形容詞」（例如：Sun-drenched 充滿陽光的、Weatherproof 防風雨的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Sunroom/Conservatory, Window blind/Louvre, Yard/Garden）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Window, Sun, Plant, Chair 等過於簡單的詞。必須包含如：Thermal break (斷橋隔熱)、Photosynthesis (光合作用)、Wicker (柳條編織)、Dappled sunlight (斑駁的陽光) 等進階詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 35% 以上，以確保學習者能描述完整的空間體驗與維護流程。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+主題: 日光室 Sunroom
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的英語語言專家，擅長編纂生活化且專業的分類詞典，特別精通於學術、辦公與個人生產力領域的術語。
+
+# Task
+請針對主題**【書房、工作空間與學術研究 Study, Workspace & Academic Life】**進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「書房與學習」相關領域細分為以下 8 個子類別，以確保覆蓋面從硬體設施延伸至心智活動：
+1. **家具設備與人體工學 (Furniture, Fixtures & Ergonomics)** - 如：升降桌、人體工學椅、腰靠、書架板。
+2. **辦公科技、電子產品與周邊 (Tech, Gadgets & Peripherals)** - 如：擴充基座、碎紙機、外部硬碟、降噪耳機。
+3. **文具用品、書寫工具與修整 (Stationery, Writing Tools & Modification)** - 如：自動鉛筆、修正帶、螢光筆、釘書機。
+4. **書籍、文件分類與檔案管理 (Books, Documents & Organization)** - 如：精裝本、活頁夾、索引標籤、參考書目。
+5. **閱讀理解、資訊處理與吸收 (Reading, Comprehension & Input)** - 如：略讀、精讀、標註、內化。
+6. **寫作、研究、產出與邏輯動作 (Writing, Research & Output)** - 如：擬稿、引述、校對、腦力激盪、論證。
+7. **專注狀態、心智認知與學習效率 (Cognitive States, Focus & Productivity)** - 如：心流、拖延、注意力分散、認知負荷。
+8. **空間氛圍、整理維護與環境控制 (Ambience, Maintenance & Environment)** - 如：照明色溫、雜亂程度、通風、極簡主義。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘生活中高頻且具備專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 80-100 個以上。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Annotate 標註、Synthesize 綜合）與「形容詞」（例如：Pensive 沉思的、Ergonomic 人體工學的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Eraser/Rubber, Fountain pen/Ink pen, Sharpener/Pencil parer, Period/Full stop）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Pen, Book, Desk 等過於簡單的詞。必須包含如：Lumbar support (腰部支撐)、Lever arch file (槓桿檔案夾)、Plagiarism (抄襲)、Transcribe (逐字記錄) 等進階詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 35% 以上，以確保學習者能描述完整的學習與工作流程。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的建築英語專家與語言學家，擅長編纂結合「建築美學」與「工程實務」的分類詞典。
+
+# Task
+請針對主題【中庭建築與空間設計 Atrium Architecture & Spatial Design】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「中庭」相關領域細分為以下 8 個子類別，以確保覆蓋面從結構基礎延伸至使用者體驗：
+1. **結構組件與頂蓋系統 (Structural Components & Roofing)** - 如：桁架、採光頂、支撐柱、鋼結構。
+2. **垂直交通與動線連結 (Vertical Circulation & Linkages)** - 如：景觀電梯、懸挑樓梯、空中走廊。
+3. **景觀配置與生物多樣性 (Landscaping & Biophilic Design)** - 如：室內植生牆、景觀水池、植栽穴。
+4. **採光、通風與環境控制 (Daylighting, Ventilation & HVAC)** - 如：自然採光、熱對流、排煙系統。
+5. **建築風格與空間構成 (Architectural Styles & Spatial Volumetry)** - 如：紀念性、通透感、幾何比例。
+6. **材料科學、飾面與光澤 (Materiality, Finishes & Textures)** - 如：鋼化玻璃、消音板、天然石材、磨砂面。
+7. **感官體驗、聲學與社會互動 (Aesthetics, Acoustics & Social Dynamics)** - 如：迴聲抑制、聚會節點、視線可達性。
+8. **營運維護、安全與永續發展 (Operations, Safety & Sustainability)** - 如：洗窗設備、防火分隔、熱能回收。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘生活中（使用者角度）與專業實務中高頻的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Illuminate 照亮、Cantilever 懸挑）與「形容詞」（例如：Diaphanous 半透明的、Resonant 共鳴的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Elevator/Lift, Aluminum/Aluminium, Molding/Moulding, Center/Centre）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Window, Tree, Door, Wall 等過於簡單的詞。必須包含如：Fenestration (開窗配置)、Clerestory (高側窗)、Mullion (窗框縱樑)、Wayfinding (導引設計) 等進階詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保學習者能描述空間的動態感受與質感特徵。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+**主題: 中庭 (Atrium Architecture)**
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的英語語言專家，擅長編纂生活化且專業的分類詞典，特別精通於空間建築、居家收納與歷史物件的詞彙描述。
+
+# Task
+請針對主題【閣樓空間與儲藏藝術 The Attic & Storage Management】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「閣樓」相關領域細分為以下 8 個子類別，以確保覆蓋面從建築結構延伸至情感記憶與空間轉型：
+1. **建築結構與外部設施 (Structural Elements & Architecture)** - 如：椽木、天窗、絕緣材料、傾斜屋頂。
+2. **收納系統與組織工具 (Storage Solutions & Organization)** - 如：密封箱、標籤系統、組合層架、真空袋。
+3. **古董、傳家寶與懷舊物件 (Antiques, Heirlooms & Memorabilia)** - 如：復古行李箱、家譜記錄、舊式相簿、紀念品。
+4. **季節性用品與大件雜物 (Seasonal Items & Bulky Goods)** - 如：節慶裝飾、冬季裝備、備用床墊、露營用具。
+5. **維護、害蟲防治與環境狀態 (Maintenance, Pests & Environment)** - 如：白蟻防護、通風設備、發霉處理、除濕。
+6. **感官體驗、氛圍與光影描述 (Atmosphere, Sensation & Lighting)** - 如：塵埃飛揚的、陰暗的、霉味、靜謐。
+7. **空間改造與裝潢施工 (Renovation & Loft Conversion)** - 如：石膏板、防火噴塗、加固地板、走入式衣櫃。
+8. **整理動作、篩選與廢物處理 (Sorting, Decluttering & Actions)** - 如：翻找、歸檔、清除、鑑定。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘生活中高頻且具備專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個**以上。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Salvage 挽救/回收、Stow 堆放）與「形容詞」（例如：Musty 有霉味的、Dilapidated 荒廢的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Attic/Loft, Flashlight/Torch, Trunk/Box, Aluminum/Aluminium）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Box, Old, Bug, Window 等過於簡單的詞。必須包含如：Eaves (屋簷/簷下空間)、Joists (托樑)、Mothballs (樟腦丸)、Appraise (估價) 等進階詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保學習者能描述整理與改造閣樓的完整過程。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+**主題: 閣樓 Attic**
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的汽車工程專家與英語語言學家，擅長編纂結合工程專業與生活實務的分類詞典。
+
+# Task
+請針對主題【車庫空間、車輛保修與汽車美容 Carport, Garage & Automotive Care】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「車庫與保修」相關領域細分為以下 8 個子類別，以確保覆蓋面從硬體設施延伸至機械原理與養護文化：
+1. **車庫結構、大型設備與收納設施 (Garage Structure & Heavy Equipment)** - 如：舉升機、工作檯、捲門系統、氣壓管路。
+2. **手動工具與硬體配件 (Hand Tools & Hardware)** - 如：棘輪扳手、扭力扳手、內六角套筒、墊圈。
+3. **動力工具、診斷儀器與電子設備 (Power Tools & Diagnostic Gear)** - 如：衝擊起子、OBD-II 掃描器、電瓶測試儀。
+4. **車體外觀、鈑金與美容細節 (Bodywork, Exterior & Detailing)** - 如：拋光機、鍍膜劑、底盤裝甲、黏土棒。
+5. **引擎、傳動與機件構造 (Engine, Drivetrain & Components)** - 如：凸輪軸、差速器、火星塞、墊片。
+6. **保修動作、機械維修與調整 (Maintenance & Repair Actions)** - 如：洩壓、校正、扭緊、潤滑、放氣 (Bleeding)。
+7. **車輛性能、動態感受與物理狀態 (Performance & Vehicle Dynamics)** - 如：馬力、空氣阻力、抓地力、過彎傾側。
+8. **安全防護、化學流體與環境廢置 (Safety, Chemicals & Waste Management)** - 如：防凍劑、煞車油、去脂劑、防護面罩。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘生活中高頻且具備專業感（黑油手等級）的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Torque 施加扭力、Degrease 去油污）與「形容詞」（例如：Aerodynamic 空氣動力學的、Viscous 黏稠的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Hood/Bonnet, Trunk/Boot, Wrench/Spanner, Tire/Tyre）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Car, Door, Fix, Clean 等過於簡單的詞。必須包含如：Caliper (卡鉗)、Gasket (墊片)、Hydraulic jack (液壓千斤頂)、Oscilloscope (示波器) 等進階詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保學習者能描述完整的保修與診斷流程。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的英語語言專家與時尚產業顧問，擅長編纂生活化且專業的分類詞典，對於服裝構造、布料材質及衣櫥管理有深厚的詞彙儲備。
+
+# Task
+請針對主題【衣櫥、服飾與時尚管理 Closet, Apparel & Fashion Management】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「衣櫥與服飾」相關領域細分為以下 8 個子類別，以確保覆蓋面從硬體設施延伸至穿搭美學：
+1. **衣櫥硬體、大型櫃體與照明設施 (Closet Hardware, Fixtures & Lighting)** - 如：步入式衣帽間、嵌入式層架、感應掛衣桿。
+2. **收納配件、衣架與整理小物 (Organizers, Hangers & Small Storage)** - 如：真空壓縮袋、分格抽屜、絲巾架、珠寶收納盒。
+3. **上身服飾、外衣與層次穿搭 (Tops, Outerwear & Layering)** - 如：戰壕風衣、開襟衫、高領毛衣、平口上衣。
+4. **下身服飾、洋裝與內著 (Bottoms, Dresses & Intimates)** - 如：寬褲、鉛筆裙、連身褲、調整型內衣。
+5. **鞋履、襪類、包款與帽飾 (Footwear, Hosiery, Bags & Headwear)** - 如：樂福鞋、過膝靴、手拿包、貝雷帽。
+6. **布料材質、紡織花紋與服裝構造 (Textiles, Patterns & Construction)** - 如：人字紋、羊絨、抽褶設計、領口剪裁。
+7. **衣物護理、洗滌與修改動作 (Garment Care, Laundry & Alterations)** - 如：乾洗、去毛球、縮水、熨燙、修改腰身。
+8. **穿搭風格、剪裁廓形與視覺感受 (Styling, Silhouettes & Aesthetics)** - 如：顯瘦的、垂墜感、極簡風、撞色搭配。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘生活中高頻且具備專業感（甚至產業等級）的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 80-100 個以上。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Accessorize 配戴飾品、Tailor 量身打造）與「形容詞」（例如：Sheer 透膚的、Wrinkle-resistant 抗皺的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Closet/Wardrobe, Pants/Trousers, Sneakers/Trainers, Jewelry/Jewellery）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 T-shirt, Jeans, Blue 等過於簡單的詞。必須包含如：Walk-in closet (步入式衣櫥)、Herringbone (人字紋)、Espadrilles (草編鞋)、Drape (垂墜性) 等進階詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 35% 以上，以確保學習者能描述完整的穿衣、護理與審美過程。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks. No "Here is the list..." or "Let me know if you need more."
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 衣櫥 Closet
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的英語語言專家，專精於「工業技術 (Industrial Technology)」與「機電工程 (Electrical Engineering)」領域，擅長編纂結合實務操作與理論知識的專業分類詞典。
+
+# Task
+請針對主題【機電房與電力系統 Electrical Room & Power Systems】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「機電房」相關領域細分為以下 8 個子類別，以確保覆蓋面從基礎硬體至運作邏輯：
+1. **大型配電與變壓設施 (Power Distribution & Transformers)** - 如：開關櫃、乾式變壓器、母線槽。
+2. **控制盤面、保護開關與組件 (Control Panels & Protection Devices)** - 如：斷路器、繼電器、電磁接觸器。
+3. **電纜佈線、接頭與支撐系統 (Cabling, Wiring & Containment)** - 如：金屬軟管、電纜托架、接線端子。
+4. **備用電力、不斷電與儲能系統 (Backup Power & Energy Storage)** - 如：發電機組、UPS、蓄電池組。
+5. **檢測儀表、自動化與監控系統 (Measurement, Automation & Monitoring)** - 如：萬用錶、PLC 控制器、智慧電錶。
+6. **工程施作、安裝與維護動作 (Installation, Maintenance & Operations)** - 如：剝線、壓接、校準、排錯。
+7. **電氣特性、參數與運行狀態 (Electrical Properties & States)** - 如：阻抗、頻率、三相平衡、帶電狀態。
+8. **工安防護、法規與環境管理 (Safety, Regulations & Environment)** - 如：弧閃防護、接地系統、防護等級 (IP rating)。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘實務現場高頻且具備專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 80-100 個以上。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Energize 通電、Troubleshoot 故障排除）與「形容詞」（例如：Insulated 絕緣的、Redundant 冗餘的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Ground/Earth, Conduit/Trunking, Outlet/Socket, Generator/Genset）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Wire, Battery, Light 等過於簡單的詞。必須包含如：Switchgear (開關櫃)、Busbar (母線)、Capacitor bank (電容器組)、Step-down transformer (降壓變壓器) 等進階詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 35% 以上，以確保學習者能描述完整的工程流程與系統診斷。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks. No "Here is the list..." or "Let me know if you need more."
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 機電房與電力系統 Electrical Room
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的住宅建築師、車庫空間規劃專家與英語語言專家，擅長編纂結合建築結構、機械維修、空間組織與美學應用的高精準度分類詞典。
+
+# Task
+請針對主題【居家車庫與工作坊 Residential Garage & Workshop】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「居家車庫」相關領域細分為以下 8 個子類別，以確保覆蓋面從結構本體延伸至專業機能：
+1. **結構組件與門禁系統 (Structural Components & Entry Systems)** - 如：扭力彈簧、軌道支架、氣密密封條、門板節點。
+2. **收納系統與空間優化 (Storage Systems & Space Optimization)** - 如：板條牆 (Slatwall)、懸空置物架、模組化系統櫃、工具掛板。
+3. **地面工程、表面處理與防護 (Flooring, Surfacing & Protection)** - 如：環氧樹脂塗層、聚阿斯帕提克 (Polyaspartic)、排水溝蓋、防油處理。
+4. **電力、照明與電動車基礎設施 (Power, Lighting & EV Infrastructure)** - 如：二級充電樁、高天井燈 (High-bay LED)、隱藏式插座、配電分盤。
+5. **維修工具、舉升設備與專業機具 (Maintenance Tools, Lifts & Machinery)** - 如：雙柱頂高機、氣動捲盤、工作檯、移動式斜板。
+6. **安全監控、智能控制與通訊 (Security, Smart Controls & Comms)** - 如：雷射停車導引、智能開門機、移動感測器、防火偵測。
+7. **施工動作、維護程序與操作行為 (Operational Actions & Procedures)** - 如：錨定 (Anchor)、扭矩緊固、環氧塗佈、除油、組裝。
+8. **空間狀態、環境規格與功能形容 (Spatial States, Specs & Attributes)** - 如：承重的、耐油脂的、氣候密封的、多功能的。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Mount 安裝、Coat 塗層）與「形容詞」（例如：Heavy-duty 重型的、Rust-proof 防鏽的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Garage/Lock-up, Sedan/Saloon, Tire/Tyre, Wrench/Spanner）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Car, Door, Tool 等基礎詞彙。必須包含如：Torsion spring (扭力彈簧)、Modular cabinetry (模組化機櫃)、Hydrostatic pressure (靜水壓力)、Epoxy resin (環氧樹脂) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保能描述完整的改裝、維護與收納流程。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks. No "Here is the list..." or "Let me know if you need more."
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 居家車庫與工作坊 Residential Garage & Workshop
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的冷鏈物流 (Cold Chain Logistics) 工程師與食品科學專家，擅長分析從傳統物理保存到現代製冷系統的技術演進。
+
+# Task
+請針對主題【食品冷藏演進：從傳統儲藏室到工業冷鏈 Evolution of Cold Storage: From Larder to Cold Chain】進行深度詞彙整理。
+
+## 任務一：架構規劃 (Planning)
+請將領域細分為以下 8 個子類別：
+1. **傳統冷藏物理結構 (Traditional Cooling Structures)** - 如：冰窖、通風櫥、石質基座。
+2. **隔熱材料與熱力學屬性 (Insulation & Thermal Properties)** - 如：導熱係數、熱橋、軟木隔層。
+3. **製冷劑、油脂介質與能源 (Refrigerants, Mediums & Energy)** - 如：氨製冷、相變材料、油脂屏障。
+4. **濕度與空氣質量管理 (Humidity & Air Quality Management)** - 如：濕度調節、交叉污染、空氣循環。
+5. **食品安全標準與微生物控制 (Food Safety Standards & Microbiology)** - 如：臨界控制點 (HACCP)、菌落總數、防腐。
+6. **存儲設備與自動化組件 (Storage Equipment & Components)** - 如：蒸發器、溫控感應器、密封條。
+7. **安裝、維修與保存操作 (Operations & Maintenance)** - 如：舊系統改造 (Retrofit)、校準、除霜。
+8. **儲存環境感官與系統狀態 (System Ambience & States)** - 如：低溫的、易腐壞的、通風良好的。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+- **目標數量**：每個子分類的總詞彙量請挑戰 80-100 個以上。
+- **詞性**：名詞、動詞、形容詞需均衡分布。
+
+## 任務三：格式化輸出 (Formatting)
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **精確對照**：如 Refrigerator/Fridge/Icebox, Cold store/Chill room 等。
+3. **排序規則**：類別 > 詞性。
+
+# Constraints
+- 嚴禁基礎化詞彙。
+- 詞性比例：動詞/形容詞需 > 35%。
+- 嚴格執行 Zero-Brevity Policy，直接輸出表格。
+
+主題: 食品冷藏與儲藏室技術 Larder (Cold Storage Technology)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+# Role
+你是一位資深的物業設施管理 (Facility Management) 專家與工業衛生 (Industrial Hygiene) 語言專家，擅長編纂結合環境清潔工程專業與實務管理面、且具備高度精準性的分類詞典。
 
+# Task
+請針對主題【清潔用品儲藏室與家事間 Cleaning Storeroom & Janitor Closet】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「清潔儲藏」相關領域細分為以下 8 個子類別，以確保覆蓋面從化學藥劑延伸至職業安全：
+1. **清潔藥劑、化學稀釋與消毒系統 (Cleaning Agents, Dilution & Disinfectants)** - 如：脫脂劑、除垢劑、pH 中性清潔劑、比例分流器。
+2. **手動工具、抹布與表面處理配件 (Manual Tools & Surface Care Accessories)** - 如：超細纖維布、刮水器、長柄刷、靜電拖把。
+3. **動力設備與地面養護機械 (Power Equipment & Floor Maintenance Machinery)** - 如：自動洗地機、工業吸塵器、拋光機、蒸汽清洗機。
+4. **收納系統、運載工具與空間組織 (Storage, Utility Carts & Organization)** - 如：多功能推車、壁掛式掛架、易燃物儲存櫃、物料架。
+5. **個人防護裝備 (PPE) 與職業安全警示 (Personal Protection & Safety Signage)** - 如：丁腈手套、防護面罩、防滑告示牌、安全資料表 (SDS)。
+6. **廢棄物管理與衛生處置系統 (Waste Management & Disposal Systems)** - 如：生物危害廢棄物袋、垃圾壓縮機、感應式垃圾桶、分裝噴瓶。
+7. **清潔程序、化學作用與專業動作 (Cleaning Processes & Operational Actions)** - 如：稀釋、乳化、中和、深度刷洗、霧化消毒。
+8. **表面狀態、環境衛生標準與感官描述 (Surface States, Hygiene Standards & Ambience)** - 如：無菌的、條紋殘留、高度拋光的、具腐蝕性的。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Dilute 稀釋、Sanitize 消毒）與「形容詞」（例如：Abrasive 磨蝕性的、Biodegradable 可生物分解的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Janitor Closet/Cleaning Cupboard, Garbage Can/Dustbin, Bleach/Sodium Hypochlorite, Cart/Trolley）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Soap, Mop, Clean 等基礎詞。必須包含如：Surfactant (表面活性劑)、Sequestering agent (螯合劑)、Ergonomic handle (人體工學握把)、Cross-contamination (交叉污染) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保能描述完整的作業流程與物料特性。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks.
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 清潔用品儲藏室 Cleaning Storeroom (Janitor Closet)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的室內設計規劃師 (Interior Designer)、家政工程專家 (Domestic Engineering Specialist) 與英語語言專家，擅長編纂結合建築硬體、家電技術與高效家務流程面、且具備高度精準性的分類詞典。
 
+# Task
+請針對主題【家事房與家務管理 Utility Room & Home Management】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
 
+## 任務一：架構規劃 (Planning)
+請將「家事房」相關領域細分為以下 8 個子類別，以確保覆蓋面從核心家電延伸至空間組織科學：
+1. **洗滌與烘乾核心設備 (Laundry & Drying Appliances)** - 如：滾筒洗衣機、熱泵烘乾機、懸掛式乾衣機、洗脫烘一體機。
+2. **水路系統、水槽與排水工程 (Plumbing, Sinks & Drainage)** - 如：不鏽鋼深水槽、防臭落水頭、進水軟管、軟水系統。
+3. **收納系統、櫥櫃與空間結構 (Storage Systems, Cabinetry & Structure)** - 如：懸掛軌道、拉籃、內嵌式熨衣板、模組化層架。
+4. **清潔劑、化學品與織物護理 (Detergents, Chemicals & Fabric Care)** - 如：去漬劑、增艷劑、抗靜電噴霧、中性洗滌劑。
+5. **家務工具、硬體與維護器材 (Cleaning Tools, Hardware & Maintenance)** - 如：手持式吸塵器、長柄拖把、萬用清潔刷、梯凳。
+6. **環境控制、通風與照明系統 (Environment, Ventilation & Lighting)** - 如：抽風機、除濕機、感應照明、防潮壁紙。
+7. **家事運作動作與處理程序 (Operational Actions & Laundry Processes)** - 如：預洗、脫水、折疊、分類、去毛球。
+8. **空間狀態、質感與人體工學描述 (Spatial States, Texture & Ergonomics)** - 如：防潑水的、雜亂的、井然有序的、耐用的。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Sanitize 消毒、Declutter 斷捨離）與「形容詞」（例如：Stackable 可堆疊的、Lint-free 不掉絮的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Laundry room/Utility room, Faucet/Tap, Trash can/Dustbin, Detergent/Washing powder）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Wash, Clean, Table 等過於簡單的詞。必須包含如：Front-loading (前置式)、Sump pump (抽水泵)、Ergonomic height (人體工學高度)、Encapsulated detergent (膠囊洗滌劑) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保能描述完整的家事流程與空間特性。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks. No "Here is the list..." or "Let me know if you need more."
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 家事房與家務管理 Utility Room & Home Management
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的空間規劃設計師 (Space Planner) 與專業收納管理專家 (Professional Organizer)，擅長編纂結合建築設計、廚房物流管理與生活應用、且具備高度精準性的分類詞典。
 
+# Task
+請針對主題【廚房儲藏室管理與食品倉儲 Pantry & Food Storage Management】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
 
+## 任務一：架構規劃 (Planning)
+請將「Pantry」相關領域細分為以下 8 個子類別，以確保覆蓋面從物理結構延伸至庫存科學：
+1. **硬體結構與收納組件 (Storage Structures & Built-in Components)** - 如：懸掛式層架、拉出式層籃、旋轉轉盤 (Lazy Susan)、軌道抽屜、通風背板。
+2. **容器類型與密封器材 (Containment, Vessels & Sealing)** - 如：密封罐 (Hermetic jar)、真空保鮮盒、玻璃方罐、防潮箱、矽膠密封條。
+3. **庫存類別與乾貨物料 (Inventory Groups & Dry Goods)** - 如：豆類穀物、香料調味、烘焙原料、半耐久性食品、大宗物資。
+4. **管理系統、標籤與邏輯集成 (Management Systems, Labeling & Logistics)** - 如：先進先出 (FIFO)、區塊化管理 (Zoning)、庫存清點、條碼掃描、色彩編碼。
+5. **維護、清潔與蟲害防治 (Maintenance, Hygiene & Pest Control)** - 如：除溼劑、防蟲密封、擦拭、定期斷捨離、殺菌處置。
+6. **烹飪整合與食材處理動作 (Culinary Integration & Handling Actions)** - 如：分裝 (Decant)、過篩、稱重、預備、補貨 (Restock)。
+7. **人體工學、空間幾何與設計邏輯 (Ergonomics & Spatial Logistics)** - 如：視線高度 (Eye level)、進深、開口寬度、垂直利用率、取用動線。
+8. **儲存狀態、感官與美學描述 (Storage States, Aesthetics & Sensory)** - 如：氣密的、整齊劃一的、易腐敗的、透光的、簡約風格。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Decant 分裝、Categorize 分類）與「形容詞」（例如：Stackable 可堆疊的、Modular 模組化的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Pantry/Larder, Canister/Caddy, Drawer/Pull-out, Aluminum foil/Tin foil）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Jar, Food, Big 等過於簡單的詞。必須包含如：Tiered riser (階梯式架子)、Bulk buying (大宗採購)、Airtightness (氣密性)、Inventory turnover (庫存周轉) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保能描述完整的收納、補貨與管理流程。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks.
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 廚房儲藏室管理與食品倉儲 Pantry & Food Storage Management
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的**安全防護工程專家 (Security Engineering Consultant)** 與**英語語言專家**，擅長編纂結合軍事/民防工程專業與極端生存應用面、且具備高度精準性的分類詞典。
 
+# Task
+請針對主題【**安全室與避難所系統 Safe Room & Panic Room Systems**】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
 
+## 任務一：架構規劃 (Planning)
+請將「安全室」相關領域細分為以下 8 個子類別，以確保覆蓋面從物理防護延伸至心理維生：
+1. **結構強化與建築防護 (Structural Reinforcements & Ballistic Shielding)** - 如：強化混凝土、防彈鋼板、防爆牆、凱夫拉纖維 (Kevlar)。
+2. **出入口系統與門禁控制 (Entry Systems & Access Control)** - 如：電磁鎖、生物識別、重裝防撬門 (Vault door)、緊急出口。
+3. **維生系統、空氣過濾與環境控制 (Life Support, CBRN Filtration & HVAC)** - 如：核生化過濾系統 (CBRN)、正壓通訊、二氧化碳洗滌器。
+4. **通訊監控、信號防禦與偵察 (Communications, Surveillance & Signal Defense)** - 如：閉路電視、衛星電話、法拉第籠 (Faraday cage)、隱蔽式攝像頭。
+5. **能源供應、備用電源與設施 (Power Supply & Backup Utilities)** - 如：不間斷電源 (UPS)、手搖發電機、太陽能蓄電池、離網系統。
+6. **應急儲備、醫療與生存裝備 (Emergency Supplies, Medical & Survival Gear)** - 如：止血帶、長期貯存乾糧、防毒面具、化學洗消工具。
+7. **威脅情境與戰術防禦動作 (Threat Scenarios & Defensive Actions)** - 如：強行闖入、破壁、撤離、加固、偵測、反制。
+8. **安全狀態、隱蔽性與心理環境 (Security States, Stealth & Ambience)** - 如：隱蔽的、牢不可破的、幽閉恐懼的、加固的。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備工程專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Fortify 加固、Infiltrate 滲透）與「形容詞」（例如：Blast-proof 防爆的、Hermetic 氣密的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Flashlight/Torch, Armor/Armour, Apartment/Flat [在特定語境下], Aluminum/Aluminium）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Door, Wall, Food 等過於簡單的詞。必須包含如：Ballistic resistance (防彈性能)、Biometric authentication (生物識別認證)、Scrubber (洗滌器)、Breach (破口/突破) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保能描述完整的建造、防禦與極端情境。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks.
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 安全室與避難所系統 Safe Room (Panic Room)
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的「空間設計建築師 (Studio Architect)」與「多媒體聲學工程專家」，同時具備英語語言學背景。你擅長處理高階藝術空間（包含音樂錄音室、舞蹈排練廳、藝術創作室與黑盒子劇場）的技術規格與設計語彙，能精準區分美式與英式術語。
 
+# Task
+請針對主題【專業創意空間與工作室構建 Professional Studio Infrastructure & Design】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
 
+## 任務一：架構規劃 (Planning)
+請將「Studio 空間」相關領域細分為以下 8 個子類別，確保覆蓋面從物理結構延伸至感官氛圍：
+1. **空間格局與建築結構 (Spatial Layout & Architectural Structure)** - 如：懸挑結構、夾層、淨高、開放式佈局。
+2. **聲學處理與隔音工程 (Acoustic Treatment & Soundproofing)** - 如：擴散板、低頻陷阱、去耦合、混響時間。
+3. **專業照明與視覺系統 (Professional Lighting & Visual Systems)** - 如：燈光桁架、顯色指數 (CRI)、柔光、遮光葉片。
+4. **地板技術與表面材質 (Surface Materials & Specialized Flooring)** - 如：彈性地板 (Sprung floor)、無縫地坪、聲學飾面。
+5. **影音信號與技術基礎設施 (AV Signal & Technical Infrastructure)** - 如：信號鏈、跳線盤、抗干擾、延遲。
+6. **環境控制、通風與精密調節 (Climate Control & Studio Environment)** - 如：靜音空調、濕度控制（針對樂器/畫作）、空氣交換率。
+7. **創作工作流與運作動作 (Creative Workflow & Operational Actions)** - 如：校準、混音、編舞、渲染、佈展。
+8. **空間美學、氛圍與感官描述 (Aesthetics, Ambience & Sensory Description)** - 如：極簡主義的、沉浸式的、回聲飽滿的、工業風。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備工程專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Dampen 減震/消音、Reconfigure 重新配置）與「形容詞」（例如：Resonant 共振的、Opaque 不透明的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Theater/Theatre, Molding/Moulding, Program/Programme, Apartment/Studio flat [在特定語境下]）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出 Room, Light, Dance 等過於簡單的詞。必須包含如：Reverberation (混響)、Decoupling (去耦合)、Cantilever (懸臂)、Anodic (陽極處理的) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以描述空間的動態使用過程與細膩質地。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks. 
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的酒窖工程專家 (Wine Cellar Engineer) 與英語語言專家，擅長編纂結合精密環境工程、材料科學與葡萄酒感官科學的分類詞典。
 
+# Task
+請針對主題【專業酒窖工程與窖藏保存 Professional Wine Cellar Engineering & Preservation】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
 
+## 任務一：架構規劃 (Planning)
+請將「酒窖系統」相關領域細分為以下 8 個子類別，以確保覆蓋面從核心溫控延伸至化學演變：
+1. **恆溫恆濕核心機組與製冷組件 (Climate Control Units & Refrigeration Components)** - 如：蒸發器、冷凝器、壓縮機、散熱鰭片、熱擴張閥。
+2. **保溫、防潮工程與結構材料 (Insulation, Vapor Barriers & Construction)** - 如：封閉式噴塗泡沫、防潮層、熱阻值 (R-value)、密封條。
+3. **酒架系統、收納佈局與材質 (Racking Systems, Layout & Materials)** - 如：模組化酒架、散裝儲存、心材、加州紅木。
+4. **智能監控、傳感器與自動化控制 (Monitoring, Sensors & Automation)** - 如：濕度計、遠端遙測、露點控制、差壓感測器。
+5. **氣流管理、通風與管道設計 (Airflow, Ventilation & Ducting)** - 如：層流、靜壓、排氣百葉、循環風扇。
+6. **葡萄酒化學、陳年演變與科學術語 (Wine Chemistry & Aging Science)** - 如：單寧聚合、氧化、沉澱、成熟度、瓶陳。
+7. **系統維護、故障診斷與專業工具 (Maintenance, Diagnostics & Professional Tools)** - 如：冷媒充填、漏液檢測、校準、預防性維護。
+8. **窖藏環境感官、狀態與舒適度形容 (Cellar Ambience, States & Sensory Qualities)** - 如：恆定濕潤的、無震動的、受光害影響的、氣密的。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備工程專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Humidify 加濕、Insulate 隔熱、Decant 醒酒）與「形容詞」（例如：Hygroscopic 吸濕的、Vibration-free 無震動的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Vapor barrier/Vapour barrier, Cellar/Undercroft, Corked/TCA-tainted）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Bottle, Cold, Wine 等過於簡單的詞。必須包含如：Evaporator coil (蒸發器線圈)、Polyurethane spray foam (聚氨酯噴塗泡沫)、Thermophilic (親熱性的)、Ullage (液面空隙) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保能描述完整的安裝、環境調節與酒液演變流程。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks. No "Here is the list..." or "Let me know if you need more."
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 專業酒窖工程與窖藏保存 Professional Wine Cellar Engineering & Preservation
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的機械工程專家、工具機具 (Tooling) 生態系顧問與英語語言專家，擅長編纂結合工業實務、工藝標準且具備極高精準度的技術分類詞典。
 
+# Task
+請針對主題【專業工作坊、工具機具與維修空間 Professional Workshop & Tooling】進行深度且完整的詞彙整理。為了確保資料的「專業權威性」與「實務操作性」，請嚴格執行以下三個任務步驟：
 
+## 任務一：架構規劃 (Planning)
+請將「工作坊與工具」領域細分為以下 8 個子類別，以確保覆蓋面從基礎手動工具延伸至高階加工與環境安全：
+1. **精密量測與標記工具 (Precision Measuring & Marking Tools)** - 如：撥盤百分表、塞規、劃線針、數位卡尺。
+2. **手動工具與力學傳動 (Hand Tools & Mechanical Drive)** - 如：棘輪扳手、扭力限制器、台虎鉗、衝擊起子。
+3. **動力工具與固定式機具 (Power Tools & Stationary Machinery)** - 如：帶鋸機、台式鑽床、砂輪機、角磨機。
+4. **緊固件、五金與耗材 (Fasteners, Hardware & Consumables)** - 如：自攻螺絲、墊圈、切削液、研磨膏。
+5. **工作台、收納與空間佈置 (Workbenches, Storage & Shop Layout)** - 如：懸臂架、工具車、穿孔掛板、重型貨架。
+6. **工安防護、PPE 與環境危害 (Safety, PPE & Environmental Hazards)** - 如：防割手套、洗眼站、呼吸器、有害物質收集箱。
+7. **加工動作、維修工藝與動詞 (Machining, Repair Actions & Verbs)** - 如：沉頭孔加工、鉸孔、攻絲、調校、銲接。
+8. **物件特性、加工品質與形容詞 (Material States & Quality Adjectives)** - 如：淬火的、有毛邊的、防鏽的、高精度的、延性的。
 
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備工業、工匠專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：嚴格執行多樣化詞性，必須包含大量對應的「動詞」（例如：Countersink 鑽沉頭孔、Calibrate 校準）與「形容詞」（例如：Brittle 脆性的、Flush 齊平的）。
 
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確的術語差異（如：Wrench/Spanner, Pliers/Pincers, Vice/Vise, Flashlight/Torch）。
+3. **排序規則**：先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
 
+# Constraints
+- **拒絕通用化**：嚴禁出現 Hammer, Screw, Scissors 等基礎詞彙。必須包含：Micrometer (分厘卡)、Chiseling (鑿削)、Deburring (去毛刺)、Annealing (退火) 等工程級詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以精確描述加工作業流程與材料檢測結果。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
 
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks.
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (| 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 專業工作坊、工具機具與維修空間 Professional Workshop & Tooling
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的室內設計師 (Interior Designer) 與室內建築專家，同時精通裝飾藝術史與英語語言學。你擅長編纂結合空間美學、構造工法與生活機能細節的專業分類詞典。
+
+# Task
+請針對主題【正式起居室/客廳 Drawing Room & Formal Living Space】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「空間邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「Drawing Room」相關領域細分為以下 8 個子類別，以確保覆蓋面從建築結構延伸至感官氛圍：
+1. **家具構件與裝飾細部 (Furniture Anatomy & Ornamental Details)** - 如：椅腳造型 (Cabriole leg)、扶手 (Armrest)、拉扣工法 (Tufting)、鑲嵌 (Inlay)。
+2. **建築骨架、牆面與木作工藝 (Architectural Shell, Walling & Joinery)** - 如：護牆板 (Wainscoting)、簷口線條 (Cornice)、壁龕 (Alcove)、裝飾柱 (Pilaster)。
+3. **紡織品、窗飾與軟裝材質 (Textiles, Window Treatments & Upholstery)** - 如：絲緞 (Damask)、落地長簾 (Drapery)、流蘇綴飾 (Tassel)、遮光襯裡 (Blackout lining)。
+4. **燈光配置、電路與氛圍控制 (Lighting Schemes, Electrics & Ambiance)** - 如：吊燈 (Chandelier)、壁燈 (Sconce)、調光開關 (Dimmer switch)、流明度 (Lumens)。
+5. **地面鋪設、地毯與空間邊界 (Flooring, Rugs & Spatial Boundaries)** - 如：人字拼木地板 (Herringbone parquet)、東方地毯 (Oriental rug)、門檻 (Threshold)。
+6. **壁爐文化、陳設藝術與收藏 (Fireplace, Curated Art & Accents)** - 如：壁爐架 (Mantelpiece)、柴堆 (Andirons)、雕塑 (Sculpture)、古董 (Antique)。
+7. **空間布局、視線與比例學 (Spatial Layout, Sightlines & Proportion)** - 如：對稱性 (Symmetry)、視覺焦點 (Focal point)、動線 (Circulation)、通透感。
+8. **感官體驗、風格流派與維護動作 (Sensory Experience, Styles & Restoration)** - 如：極簡的 (Minimalist)、翻新 (Refurbish)、拋光 (Burnish)、宏偉的 (Grandiose)。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備「設計專業感」或「文學修辭感」的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Upholster 包覆、Embellish 裝飾）與「形容詞」（例如：Velvety 絲絨般的、Baroque 巴洛克式的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Drapes/Curtains, Sofa/Settee, Fireplace/Hearth, Wallpaper/Wall-covering）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Chair, Table, Sofa 等過於簡單的詞。必須包含如：Chaise longue (長躺椅)、Chesterfield (切斯特菲爾德沙發)、Coffered ceiling (格子天花板)、Patina (歲月痕跡/氧化層) 等專業或高端詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保能描述空間的營造、修復過程與視覺感受。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks. No "Here is the list..." or "Let me know if you need more."
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 正式起居室/客廳 Drawing Room & Formal Living Space
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的桑拿工程顧問 (Sauna Engineering Consultant) 與建築語言專家，擅長編纂結合土木工程、熱力學、木材科學與康養文化 (Wellness) 的高度精準分類詞典。
+
+# Task
+請針對主題【桑拿系統與熱療工程 Sauna Systems & Thermal Engineering】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「桑拿系統」相關領域細分為以下 8 個子類別，以確保覆蓋面從硬體結構延伸至生理感官：
+1. **核心加熱機組與熱石系統 (Heating Units & Sauna Stones)** - 如：遠紅外線加熱器、柴燒爐、導熱石、防護柵欄。
+2. **桑拿建築結構與木材科學 (Construction & Timber Science)** - 如：舌榫結構 (Tongue and Groove)、紅雪松、隔熱岩棉、蒸汽障壁 (Vapor Barrier)。
+3. **熱力學過程與「Löyly」蒸氣動力學 (Thermodynamics & Steam Dynamics)** - 如：對流循環、蒸發率、潛熱、潑水產生蒸汽 (Löyly)。
+4. **控制面板、傳感器與自動化集成 (Controls, Sensors & Automation)** - 如：限溫器 (High-limit switch)、濕度計校準、遙控啟動。
+5. **通風系統與微氣候調節 (Ventilation & Microclimate Control)** - 如：重力通風、機械排氣、進氣口位置、空氣分層 (Stratification)。
+6. **維護、清潔與結構完整性檢測 (Maintenance, Hygiene & Structural Integrity)** - 如：木材除油、石材裂紋檢測、防霉處理、重新填縫。
+7. **配件、精油與傳統儀式工具 (Accessories, Aromatherapy & Rituals)** - 如：水桶勺子、白樺枝束 (Vihta/Vasta)、香氛擴散、頭托。
+8. **生理狀態、熱感官與康養描述 (Physiological States & Thermal Comfort)** - 如：排汗反應、血管舒張、悶熱感、甦醒感。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備工程專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Preheat 預熱、Refurbish 翻新）與「形容詞」（例如：Hygroscopic 吸濕的、Aromatic 芳香的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文/北歐對照 (UK/Nordic Terminology)。
+2. **術語對照**：必須標記精確差異（如：Sauna heater/Stove, Bench/Tier, Steam/Löyly [專有名詞保留]）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Hot, Wood, Water 等過於簡單的詞。必須包含如：Heat stratification (熱分層)、Soft heat (柔和熱感)、Kiln-dried (窯乾的)、Infrared wavelength (紅外線波長) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保能描述完整的建造、操作與感官體驗。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks.
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 桑拿系統與熱療工程 Sauna Systems (Thermal Wellness)
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的池體工程顧問 (Pool Engineering Consultant) 與水處理專家，專精於商業與私人游泳池的生命週期管理、水力設計及水化學平衡。同時，你也是一位英語語言專家，擅長編纂結合土木工程、化學與流體力學的專業分類詞典。
+
+# Task
+請針對主題【游泳池系統與水處理工程 Swimming Pool Systems & Aquatic Engineering】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「游泳池系統」相關領域細分為以下 8 個子類別，以確保覆蓋面從結構工程延伸至微觀化學反應：
+1. **池體結構、材料與周邊工程 (Pool Structure, Finishes & Decking)** - 如：噴漿混凝土、鋼筋、防水層、溢水溝、防滑磁磚。
+2. **水循環、過濾與水力系統 (Circulation, Hydraulics & Filtration)** - 如：變頻泵、砂濾缸、多向閥、主排水口、集水槽 (Skimmer)。
+3. **水化學、消毒與水質平衡 (Water Chemistry, Sanitization & Balancing)** - 如：次氯酸鈣、總鹼度、朗格里爾飽和指數 (LSI)、氰尿酸。
+4. **加熱、照明與機房自動化 (Heating, Lighting & Automation)** - 如：熱泵、LED 水底燈、自動投藥系統、遠端監控控制器。
+5. **維護工具、檢測設備與檢修 (Maintenance, Testing & Diagnostic Tools)** - 如：光度計、自動吸塵機器人、漏水偵測、反沖洗。
+6. **安全設施、功能配件與硬體 (Safety, Features & Deck Equipment)** - 如：救生座、跳板、扶手、泳道線、電動池蓋。
+7. **流體力學過程與化學反應動作 (Fluid Mechanics & Chemical Actions)** - 如：絮凝作用、循環率、汽蝕現象、氧化還原、過濾沖刷。
+8. **水質狀態、環境感官與舒適度 (Water Quality, Ambience & Sensations)** - 如：清澈見底的、鹹味的、濁度、氯臭味、刺激性的。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備工程專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Backwash 反沖洗、Chlorinate 加氯）與「形容詞」（例如：Impermeable 不透水的、Potable 可飲用的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Skimmer/Scum channel, Salt cell/Salt chlorinator, Pool deck/Pool surround）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Pool, Water, Clean, Pump 等過於簡單的詞。必須包含如：Flocculation (絮凝)、Total Dissolved Solids (總溶解固體)、Hydrostatic relief valve (地下壓力釋放閥)、Electrolysis (電解) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保能描述完整的施工、維護與水質調整流程。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks. No "Here is the list..." or "Let me know if you need more."
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 游泳池系統與水處理工程 Swimming Pool Systems & Aquatic Engineering
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的建築師、室內設計專家與建築物理環境科學家，擅長編纂結合空間美學、構造工程與功能性分析、且具備高度精準性的分類詞典。
+
+# Task
+請針對主題【建築門廊與過渡空間 Vestibule & Transitional Architecture】進行深度且完整的詞彙整理。這包含門廊、前廳、風擋間、玄關及其在建築性能與美學上的所有相關表達。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「門廊與過渡空間」相關領域細分為以下 8 個子類別，以確保覆蓋面從結構構件延伸至空間感知：
+1. **空間類型與歷史形態 (Spatial Typology & Historical Forms)** - 如：前廳 (Anteroom)、納塞克斯 (Narthex)、外門廊 (Portico)、風擋間 (Windbreak room)。
+2. **結構構件與建材細部 (Structural Elements & Material Details)** - 如：過樑 (Lintel)、門檻 (Threshold)、採光窗 (Transom)、嵌板 (Paneling)。
+3. **建築物理、氣密與環境控制 (Building Science, Air-lock & Thermal Barriers)** - 如：空氣鎖 (Air-lock)、熱橋效應、氣密性、壓力平衡 (Pressure equalization)。
+4. **動線、導引與視線規劃 (Circulation, Orientation & Sightlines)** - 如：主要動線、出口 (Egress)、視線遮蔽 (Visual screening)、緩衝區域。
+5. **功能收納與公用設施 (Utility, Storage & Mudroom Solutions)** - 如：衣帽間 (Cloakroom)、落塵區、嵌牆櫃、包裹收納空間 (Parcel drop-off)。
+6. **裝飾藝術、風格與表面處理 (Aesthetics, Ornamentation & Finishes)** - 如：護牆板 (Wainscoting)、裝飾線條、地坪鋪面、浮雕裝飾。
+7. **硬體組件、五金與開啟機制 (Hardware, Joinery & Opening Mechanisms)** - 如：地彈簧 (Floor spring)、氣密條 (Weatherstripping)、樞軸門、緩衝閉門器。
+8. **空間狀態、環境感知與體驗形容 (Spatial States, Ambience & Experience)** - 如：過渡性的、寬敞的、幽閉的、光線充足的、密封的。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Insulate 隔熱、Buffer 緩衝）與「形容詞」（例如：Airtight 氣密的、Interstitial 間隙的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Vestibule/Foyer, Mudroom/Boot room, Closet/Wardrobe, Threshold/Sill）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Door, Room, Wall 等過於簡單的詞。必須包含如：Fenestration (開窗配置)、Thermal envelope (熱包絡線)、Acoustic decoupling (聲學脫耦)、Clerestory (高窗) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保能描述完整的空間轉換、施工與感官體驗。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks. No "Here is the list..." or "Let me know if you need more."
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題：建築門廊與過渡空間 Vestibule (Architecture) & Transitional Spaces
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的建築史學家、景觀設計師 (Landscape Architect) 與英語語言專家，擅長編纂結合建築美學、工程實務與空間心理學、且具備高度精準性的分類詞典。
+
+# Task
+請針對主題【天井、中庭與院落空間 Courtyard, Atrium & Quadrangles】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「中庭與天井」相關領域細分為以下 8 個子類別，以確保覆蓋面從建築結構延伸至人文感知：
+1. **空間佈局與結構構件 (Spatial Layout & Structural Components)** - 如：柱廊 (Peristyle)、迴廊、採光井 (Lightwell)、承重牆、比例。
+2. **硬景工程、鋪面與排水 (Hardscaping, Paving & Drainage)** - 如：透水磚、鵝卵石鋪地、排水溝渠、基座、階梯。
+3. **植物景觀與園藝生態 (Softscaping, Flora & Ecology)** - 如：地被植物、常綠喬木、修剪技術 (Topiary)、落葉、根系控制。
+4. **水景設計與微氣候調節 (Water Features & Microclimate Control)** - 如：噴泉、反射池、蒸發冷卻、溢流口、霧化系統。
+5. **光影動態與開口元素 (Light Dynamics & Aperture Elements)** - 如：天際線 (Skyline)、遮陽篷、花格窗 (Lattice)、陰影對比、折射。
+6. **裝飾藝術、家具與文化元素 (Ornamentation, Furniture & Cultural Icons)** - 如：浮雕、涼亭 (Gazebo)、雕塑、長凳、象徵意義。
+7. **施工技術、修復與材料科學 (Construction, Restoration & Materiality)** - 如：耐候鋼、石灰岩、加固 (Reinforcement)、防水層、古蹟修復。
+8. **美學特質、氛圍與空間感官 (Aesthetics, Ambience & Perception)** - 如：幽靜的、封閉感 (Enclosure)、通透性、和諧、感官體驗。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備專業建築感與景觀感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Pave 鋪設、Enclose 圍合）與「形容詞」（例如：Verdant 翠綠的、Symmetrical 對稱的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Yard/Garden, Pavement/Paving, Arbor/Pergola, Center/Centre）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Flower, Tree, Wall, Sun 等過於簡單的詞。必須包含如：Portico (柱廊門廳)、Balustrade (欄杆)、Xeriscaping (旱生景觀)、Translucency (半透明性) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保能描述完整的規劃、建造、維護與美學評估流程。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks. No "Here is the list..." or "Let me know if you need more."
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 天井、中庭與院落空間 Courtyard (Atrium & Landscape)
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的衛浴工程 (Sanitary Engineering)、室內設計專家與英語語言專家，擅長編纂結合建築規範、工程實務與生活應用面、且具備高度精準性的分類詞典。
+
+# Task
+請針對主題【衛浴空間與衛生設備 Toilet Room & Sanitary Fixtures】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「衛浴空間」相關領域細分為以下 8 個子類別，以確保覆蓋面從核心設備延伸至空間美學與隱私：
+1. **衛浴主體設備與核心組件 (Sanitary Fixtures & Core Components)** - 如：馬桶座、水箱、浮球閥、洗手盆。
+2. **給排水管路、閥門與工程 (Plumbing, Piping & Drainage)** - 如：P型存水彎、角閥、落水頭、給水軟管。
+3. **五金配件、收納與飾面 (Hardware, Fittings & Accessories)** - 如：沖水桿、衛生紙架、毛巾環、洗手乳分配器。
+4. **通風、採光與水電系統 (Ventilation, Lighting & Electrical)** - 如：排氣扇、感應燈、漏電斷路器 (GFCI)、靜音通風。
+5. **地面牆面材質與防水工程 (Surfaces, Materials & Waterproofing)** - 如：防滑地磚、填縫劑、防水層、防濺板。
+6. **清潔維護、消毒與檢修動作 (Maintenance, Sanitation & Troubleshooting)** - 如：疏通、除垢、填縫、消毒、更換墊圈。
+7. **空間佈局、隱私與建築規範 (Layout, Privacy & Building Codes)** - 如：隔間、淨寬、半套衛浴、無障礙空間。
+8. **環境感官、功能特性與風格描述 (Ambience, Functionality & Aesthetics)** - 如：防臭的、水資源回收的、極簡的、潮濕感。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備工程專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Flush 沖水、Sanitize 消毒）與「形容詞」（例如：Water-efficient 省水的、Clogged 堵塞的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、英式英文 (UK)。
+2. **美英對照**：必須標記精確差異（如：Faucet/Tap, Toilet/Loo, Countertop/Worktop, Backsplash/Splashback）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Sink, Toilet, Water 等過於簡單的詞。必須包含如：Siphon jet (噴射虹吸)、Ballcock (浮球閥)、Escutcheon (裝飾蓋板)、Macerator (碎解幫浦) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以描述完整的安裝、清潔與損壞狀態。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks. No "Here is the list..." or "Let me know if you need more."
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 衛浴空間與衛生設備 Toilet Room (Sanitary Fixtures)
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Role
+你是一位資深的衛浴工程 (Plumbing Engineering) 專家與日系設備研究專員，同時具備深厚的英語語言學背景，擅長編纂結合機械原理、電子控制與工業設計的專業分類詞典。
+
+# Task
+請針對主題【日本衛浴科技與溫水洗淨便座 Japanese Toilet Technology & Washlets】進行深度且完整的詞彙整理。為了確保資料的「絕對完整性」與「邏輯性」，請嚴格執行以下三個任務步驟：
+
+## 任務一：架構規劃 (Planning)
+請將「日本馬桶系統」相關領域細分為以下 8 個子類別，以確保覆蓋面從硬體組件延伸至使用者體驗科學：
+1. **核心機械組件與噴嘴技術 (Core Components & Nozzle Technology)** - 如：伸縮噴嘴、陶瓷加熱器、電磁閥、泵浦。
+2. **洗淨功能與流體力學 (Cleaning Functions & Fluid Dynamics)** - 如：脈衝式水流、擺動洗淨、臀部洗淨、水壓調節。
+3. **舒適化機能與感測系統 (Comfort Features & Sensing Systems)** - 如：便座加熱、自動開蓋、著座感應器、溫控調節。
+4. **環境衛生、除臭與表面處理 (Hygiene, Deodorization & Surface Treatment)** - 如：光觸媒、抗菌塗層、除臭觸媒、抗污陶瓷。
+5. **電子控制、界面與智能集成 (Electronic Controls, Interface & Smart Integration)** - 如：無線遙控面板、節電模式、微電腦控制、物聯網連接。
+6. **安裝、供水工程與維護檢修 (Installation, Plumbing & Maintenance)** - 如：分流閥、進水編織管、過濾芯、故障代碼顯示。
+7. **使用者行為、禮儀與聲學設計 (User Experience, Etiquette & Acoustics)** - 如：音姬 (Sound masker)、隱私保護、無障礙設計。
+8. **系統狀態、物理感受與感官形容 (System States, Physical Sensations & Ambience)** - 如：恆溫的、瞬熱式的、水霧狀的、符合人體工學的。
+
+## 任務二：詞彙窮舉 (Brainstorming)
+在每個子類別下，請挖掘領域內高頻且具備工程專業感的詞彙。
+- **目標數量**：每個子分類的總詞彙量請挑戰 **80-100 個以上**。
+- **詞性覆蓋**：每個類別必須包含相關的「名詞」，並延伸出對應的「動詞」（例如：Retract 縮回、Sanitize 消毒）與「形容詞」（例如：Water-repellent 撥水的、Antibacterial 抗菌的）。
+
+## 任務三：格式化輸出 (Formatting)
+請將所有內容整合成一個完整的長表格，並符合以下規範：
+1. **表格欄位**：類別、詞性、中文、美式英文 (US)、專業術語/日系英語 (Technical/JP English Context)。
+2. **術語對照**：必須標記精確差異（如：Bidet/Washlet, Toilet seat/Heated seat, Remote control/Control panel）。
+3. **排序規則**：必須先依「類別」排序，同一類別內依「詞性（名詞 > 動詞 > 形容詞）」排序。
+
+# Constraints
+- **拒絕基礎化**：嚴禁只給出如 Toilet, Water, Clean 等過於簡單的詞。必須包含如：Solenoid valve (電磁閥)、Hydrophilic (親水性的)、Centrifugal flush (離心式沖水)、Proximity sensor (感應感測器) 等專業詞彙。
+- **詞性比例**：動詞與形容詞的比例必須佔總數量的 **35% 以上**，以確保能描述完整的運作邏輯、安裝流程與使用者感受。
+- **完整性**：一次性輸出所有類別，嚴禁省略或要求使用者點擊「繼續」。
+
+# Output Format Requirement (CRITICAL)
+- **Zero-Brevity Policy**: DO NOT include any introductory or concluding remarks. No "Here is the list..." or "Let me know if you need more."
+- **Direct Start**: The very first character of your response MUST be the Markdown table header (e.g., | 類別 |).
+- **Format**: Output the entire data strictly in a single Markdown table.
+
+主題: 日本衛浴科技與溫水洗淨便座 Japanese Toilet Technology (Washlets)
