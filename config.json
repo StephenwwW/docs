@@ -1,0 +1,17 @@
+{
+  "_comment": "修改 essentials_path 和 full_path 為你的實際資料夾路徑",
+  "essentials_path": "C:\\Users\\H\\Downloads\\Gemini_Images\\essentials",
+  "full_path":       "C:\\Users\\H\\Downloads\\Gemini_Images\\full",
+
+  "_comment2": "以下為高頻詞表路徑，設為 null 則使用內建精簡版",
+  "dolch_txt_path":  null,
+  "fry_txt_paths":   null,
+  "ngsl_csv_path":   null,
+
+  "_comment3": "伺服器設定",
+  "server_port": 8080,
+  "output_json": "index.json",
+
+  "_comment4": "CEFR 低信心推算清單輸出路徑（Tier 3 BERT + 無法推算的詞彙）",
+  "cefr_review_csv": "cefr_review.csv"
+}

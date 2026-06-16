@@ -1,0 +1,42 @@
+{
+  "words": {
+    "abolish": {
+      "word": "abolish",
+      "status": "new",
+      "ease": 2.5,
+      "interval": 1,
+      "repetitions": 0,
+      "due": "2026-06-15",
+      "last_seen": "2026-06-15",
+      "first_seen": "2026-06-15",
+      "history": []
+    },
+    "consider": {
+      "word": "consider",
+      "status": "new",
+      "ease": 2.5,
+      "interval": 1,
+      "repetitions": 0,
+      "due": "2026-06-15",
+      "last_seen": "2026-06-15",
+      "first_seen": "2026-06-15",
+      "history": []
+    },
+    "generally": {
+      "word": "generally",
+      "status": "new",
+      "ease": 2.5,
+      "interval": 1,
+      "repetitions": 0,
+      "due": "2026-06-15",
+      "last_seen": "2026-06-15",
+      "first_seen": "2026-06-15",
+      "history": []
+    }
+  },
+  "meta": {
+    "total_seen": 3,
+    "total_mastered": 0,
+    "last_updated": "2026-06-15"
+  }
+}

@@ -1,0 +1,3158 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>英文學習菜單 — 知識樹索引</title>
+<style>
+/* ── 色彩系統（與 v4.html 同步） ── */
+:root {
+  --bg: #F8FAFC; --surface: #FFFFFF; --border: #E2E8F0;
+  --text: #0F172A; --muted: #64748B; --sidebar-w: 300px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+       background: var(--bg); color: var(--text);
+       display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+/* ── 頂部標題列 ── */
+.topbar { flex-shrink: 0; background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 12px 20px; display: flex; align-items: center; gap: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05); z-index: 100; }
+.topbar h1 { font-size: 16px; font-weight: 700; white-space: nowrap; }
+.topbar p  { font-size: 11.5px; color: var(--muted); }
+.stats-bar { margin-left: auto; display: flex; gap: 8px; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
+.stat-chip { font-size: 11px; padding: 3px 9px; border-radius: 99px;
+  background: var(--bg); border: 1px solid var(--border); color: var(--muted); white-space: nowrap; }
+
+/* ── 統計儀表板 ── */
+.dash-view { display: flex; flex-direction: column; gap: 14px; }
+.dash-hero {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 16px 18px; display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap;
+}
+.dash-title { font-size: 18px; font-weight: 800; color: #0F172A; }
+.dash-sub { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.dash-updated { font-size: 11px; color: var(--muted); background: var(--bg);
+  border: 1px solid var(--border); border-radius: 99px; padding: 4px 9px; }
+.dash-kpis {
+  display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 10px;
+}
+.dash-kpi {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 12px 13px; min-width: 0;
+}
+.dash-kpi-num { font-size: 24px; line-height: 1; font-weight: 850; color: #0F172A; }
+.dash-kpi-lbl { font-size: 11px; color: var(--muted); margin-top: 6px; white-space: nowrap; }
+.dash-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr); gap: 12px; }
+.dash-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  padding: 14px; min-width: 0;
+}
+.dash-card-hdr { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 12px; }
+.dash-card-title { font-size: 13.5px; font-weight: 800; color: #0F172A; }
+.dash-card-note { font-size: 11px; color: var(--muted); }
+.dash-bars { display: flex; flex-direction: column; gap: 9px; }
+.dash-bar-row { display: grid; grid-template-columns: 76px minmax(0, 1fr) 52px; gap: 9px; align-items: center; }
+.dash-bar-label { font-size: 11.5px; font-weight: 700; color: #334155; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dash-bar-track { height: 10px; background: #F1F5F9; border-radius: 99px; overflow: hidden; border: 1px solid #E2E8F0; }
+.dash-bar-fill { height: 100%; border-radius: 99px; min-width: 2px; }
+.dash-bar-val { font-size: 11px; color: var(--muted); text-align: right; }
+.dash-donut-wrap { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 14px; align-items: center; }
+.dash-donut {
+  width: 142px; height: 142px; border-radius: 50%; position: relative;
+  background: conic-gradient(#CBD5E1 0deg, #CBD5E1 360deg);
+}
+.dash-donut::after {
+  content: ""; position: absolute; inset: 22px; border-radius: 50%;
+  background: var(--surface); border: 1px solid var(--border);
+}
+.dash-donut-center {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; z-index: 1;
+}
+.dash-donut-num { font-size: 24px; font-weight: 850; color: #0F172A; line-height: 1; }
+.dash-donut-lbl { font-size: 10px; color: var(--muted); margin-top: 4px; }
+.dash-legend { display: flex; flex-direction: column; gap: 7px; }
+.dash-legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #334155; }
+.dash-legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.dash-legend-val { margin-left: auto; color: var(--muted); font-size: 11px; }
+.dash-coverage {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px;
+}
+.dash-meter { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 10px; }
+.dash-meter-label { font-size: 11px; color: var(--muted); }
+.dash-meter-value { font-size: 22px; font-weight: 850; margin-top: 4px; }
+.dash-meter-track { height: 7px; border-radius: 99px; background: #E2E8F0; overflow: hidden; margin-top: 8px; }
+.dash-meter-fill { height: 100%; border-radius: 99px; }
+.dash-timeline { display: grid; grid-template-columns: repeat(7, minmax(42px, 1fr)); gap: 8px; align-items: end; min-height: 150px; }
+.dash-day { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; }
+.dash-day-bar-wrap { height: 92px; width: 100%; display: flex; align-items: end; justify-content: center; }
+.dash-day-bar { width: min(34px, 70%); min-height: 3px; border-radius: 6px 6px 2px 2px; background: #0F766E; }
+.dash-day-count { font-size: 12px; font-weight: 800; color: #0F172A; }
+.dash-day-label { font-size: 10px; color: var(--muted); white-space: nowrap; }
+.dash-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.dash-table th { text-align: left; color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .4px; padding: 6px; border-bottom: 1px solid var(--border); }
+.dash-table td { padding: 7px 6px; border-bottom: 1px solid var(--border); }
+.dash-table tr:last-child td { border-bottom: 0; }
+.dash-empty-note { color: var(--muted); font-size: 12px; padding: 18px 4px; text-align: center; }
+@media (max-width: 980px) {
+  .dash-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dash-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .dash-hero { align-items: flex-start; }
+  .dash-kpis, .dash-coverage { grid-template-columns: 1fr; }
+  .dash-donut-wrap { grid-template-columns: 1fr; justify-items: center; }
+  .dash-legend { width: 100%; }
+  .dash-bar-row { grid-template-columns: 58px minmax(0, 1fr) 42px; }
+  .dash-timeline { grid-template-columns: repeat(7, minmax(34px, 1fr)); gap: 5px; }
+  .dash-day-bar { width: min(26px, 80%); }
+}
+
+/* ── 工具列 ── */
+.toolbar { flex-shrink: 0; padding: 8px 16px; background: var(--surface);
+  border-bottom: 1px solid var(--border); display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.toolbar input { flex: 1; min-width: 180px; padding: 6px 12px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: 13px; outline: none; transition: border-color 0.15s; }
+.toolbar input:focus { border-color: #93C5FD; }
+.btn-group { display: flex; gap: 4px; }
+.filter-btn { padding: 5px 11px; border: 1px solid var(--border); border-radius: 7px; font-size: 11.5px;
+  cursor: pointer; background: var(--surface); color: var(--muted); transition: all 0.15s; white-space: nowrap; }
+.filter-btn:hover  { background: var(--bg); }
+.filter-btn.active { background: #0F172A; color: #fff; border-color: #0F172A; }
+
+/* view toggle */
+.view-toggle { display: flex; gap: 4px; margin-left: auto; }
+.view-btn { padding: 5px 10px; border: 1px solid var(--border); border-radius: 7px; font-size: 12px;
+  cursor: pointer; background: var(--surface); color: var(--muted); }
+.view-btn.active { background: #1E3A8A; color: #fff; border-color: #1E3A8A; }
+
+/* ── 全域搜尋框（autocomplete wrapper） ── */
+.search-wrap {
+  position: relative; flex: 1; min-width: 200px;
+}
+.search-wrap input {
+  width: 100%; padding: 6px 34px 6px 12px;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-size: 13px; outline: none; transition: border-color 0.15s;
+  background: var(--surface);
+}
+.search-wrap input:focus { border-color: #2563EB; }
+.search-clear {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  font-size: 13px; color: var(--muted); cursor: pointer; display: none;
+  padding: 2px 4px; border-radius: 4px;
+}
+.search-clear:hover { color: #EF4444; background: #FEE2E2; }
+
+/* ── Autocomplete 下拉 ── */
+#acDropdown {
+  position: absolute; top: calc(100% + 4px); left: 0; right: 0;
+  background: var(--surface); border: 1.5px solid #93C5FD;
+  border-radius: 10px; box-shadow: 0 8px 24px rgba(37,99,235,0.12);
+  z-index: 300; max-height: 320px; overflow-y: auto; display: none;
+}
+#acDropdown.show { display: block; }
+
+.ac-header {
+  padding: 8px 12px 4px; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.6px;
+  color: var(--muted); border-bottom: 1px solid var(--border);
+}
+.ac-item {
+  padding: 8px 12px; cursor: pointer; display: flex;
+  align-items: center; gap: 8px; transition: background 0.1s;
+  font-size: 13px;
+}
+.ac-item:hover, .ac-item.focused { background: #EFF6FF; }
+.ac-item:last-child { border-radius: 0 0 8px 8px; }
+
+/* 輸入字元高亮（藍底白字） */
+.ac-match {
+  background: #2563EB; color: #fff;
+  border-radius: 3px; padding: 0 2px;
+  font-weight: 700;
+}
+/* 補全字元（灰色） */
+.ac-rest { color: var(--muted); }
+
+.ac-badge {
+  font-size: 9.5px; padding: 1px 5px; border-radius: 4px;
+  font-weight: 600; white-space: nowrap; margin-left: auto;
+}
+.ac-badge.essentials { background: #D1FAE5; color: #064E3B; }
+.ac-badge.full       { background: #DBEAFE; color: #1E3A8A; }
+.ac-badge.both       { background: #EDE9FE; color: #4C1D95; }
+
+.ac-empty {
+  padding: 16px 12px; color: var(--muted); font-size: 12.5px;
+  text-align: center;
+}
+
+/* ── 詞彙卡片關鍵字高亮 ── */
+.word-name mark {
+  background: #FEF08A; color: #713F12;
+  border-radius: 3px; padding: 0 2px; font-weight: 700;
+  font-style: normal;
+}
+/* 整張卡片被選中時的強調框 */
+.word-card.search-match {
+  border-color: #2563EB;
+  box-shadow: 0 0 0 2px rgba(37,99,235,0.2);
+}
+
+/* ── 主體 ── */
+.main { display: flex; flex: 1; overflow: hidden; }
+
+/* ── 左側知識樹 ── */
+.sidebar { width: var(--sidebar-w); flex-shrink: 0; background: var(--surface);
+  border-right: 1px solid var(--border); overflow-y: auto; padding: 6px 0; }
+.group-header { padding: 8px 14px 4px; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.8px; text-transform: uppercase; color: var(--muted);
+  border-top: 1px solid var(--border); margin-top: 4px; }
+.group-header:first-child { border-top: none; margin-top: 0; }
+.cat-item { display: flex; align-items: center; gap: 8px; padding: 5px 14px;
+  cursor: pointer; font-size: 12.5px; transition: background 0.12s;
+  border-left: 3px solid transparent; }
+.cat-item:hover { background: var(--bg); }
+.cat-item.active { border-left-color: var(--ac, #2563EB); background: var(--ab, #DBEAFE); }
+.cat-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.cat-label { flex: 1; line-height: 1.3; }
+.cat-count { font-size: 10px; color: var(--muted); background: var(--bg);
+  border: 1px solid var(--border); padding: 1px 5px; border-radius: 99px; flex-shrink: 0; }
+
+/* CEFR 側欄模式 */
+.cefr-section { padding: 6px 10px 2px; }
+.cefr-group-hdr { font-size: 10px; font-weight: 700; letter-spacing: 0.6px;
+  text-transform: uppercase; color: var(--muted); padding: 6px 4px 3px; }
+.cefr-item { display: flex; align-items: center; gap: 7px; padding: 5px 8px;
+  cursor: pointer; border-radius: 7px; font-size: 12.5px; transition: background 0.12s; }
+.cefr-item:hover { background: var(--bg); }
+.cefr-item.active { outline: 2px solid currentColor; }
+.cefr-pill { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 5px; flex-shrink: 0; }
+.cefr-name { flex: 1; }
+.cefr-cnt  { font-size: 10px; color: var(--muted); }
+
+/* ── 右側面板 ── */
+.panel { flex: 1; overflow-y: auto; padding: 18px 22px; background: var(--bg); }
+.panel-header { margin-bottom: 14px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.panel-title { font-size: 17px; font-weight: 700; }
+.panel-sub   { font-size: 12.5px; color: var(--muted); }
+
+.type-tabs { display: flex; gap: 5px; margin-bottom: 14px; flex-wrap: wrap; }
+.type-tab { padding: 4px 12px; border-radius: 7px; font-size: 12px; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface); color: var(--muted); transition: all 0.12s; }
+.type-tab:hover { background: var(--bg); }
+.type-tab.active { background: #0F172A; color: #fff; border-color: #0F172A; }
+
+/* ── 詞彙格線 ── */
+.word-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 9px; }
+.word-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  padding: 11px 13px; cursor: pointer; transition: all 0.14s;
+  display: flex; flex-direction: column; gap: 5px; text-decoration: none; color: inherit; }
+.word-card:hover { border-color: #93C5FD; box-shadow: 0 4px 12px rgba(37,99,235,0.1); transform: translateY(-1px); }
+.word-card.type-full        { border-left: 3px solid #2563EB; }
+.word-card.type-essentials  { border-left: 3px solid #059669; }
+.word-name { font-size: 13.5px; font-weight: 600; }
+.word-meta { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+
+/* ── 徽章 ── */
+.badge { font-size: 9.5px; padding: 1px 6px; border-radius: 4px; font-weight: 700; white-space: nowrap; }
+.badge-essentials { background: #D1FAE5; color: #064E3B; }
+.badge-full       { background: #DBEAFE; color: #1E3A8A; }
+.badge-dolch      { background: #FEF3C7; color: #78350F; }
+.badge-fry        { background: #FCE7F3; color: #831843; }
+.badge-ngsl       { background: #EDE9FE; color: #4C1D95; }
+/* CEFR 主等級 */
+.badge-A1    { background: #DCFCE7; color: #14532D; }
+.badge-A1-A2 { background: #F0FDF4; color: #166534; border: 1px solid #86EFAC; }
+.badge-A2    { background: #DBEAFE; color: #1E3A8A; }
+.badge-B1    { background: #EDE9FE; color: #4C1D95; }
+.badge-B1-B2 { background: #F5F3FF; color: #581C87; border: 1px solid #C4B5FD; }
+.badge-B2    { background: #FCE7F3; color: #831843; }
+.badge-B2-C1 { background: #FFF1F2; color: #9F1239; border: 1px solid #FDA4AF; }
+.badge-C1    { background: #FEF3C7; color: #78350F; }
+.badge-C2    { background: #ECFEFF; color: #164E63; }
+/* CEFR 子標籤 */
+.badge-CEFR-Academic { background: #F1F5F9; color: #334155; border: 1px solid #CBD5E1; }
+.badge-CEFR-Idiom    { background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; }
+/* CEFR 信心層級 */
+.badge-confirmed { background: #D1FAE5; color: #065F46; }
+.badge-inferred  { background: #FEF3C7; color: #78350F; }
+.badge-bert      { background: #EDE9FE; color: #5B21B6; }
+.badge-unknown   { background: #F1F5F9; color: #64748B; }
+
+/* ── 空狀態 / 載入 / 錯誤 ── */
+.empty-state { text-align: center; padding: 50px 20px; color: var(--muted); }
+.empty-icon  { font-size: 36px; margin-bottom: 10px; }
+.empty-text  { font-size: 13.5px; }
+.loading { display: flex; align-items: center; justify-content: center;
+  height: 100%; font-size: 13.5px; color: var(--muted); gap: 8px; }
+.spinner { width: 18px; height: 18px; border: 2px solid var(--border);
+  border-top-color: #2563EB; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.error-box { margin: 20px; padding: 16px 20px; background: #FEF2F2;
+  border: 1px solid #FECACA; border-radius: 10px; color: #991B1B; font-size: 13px; line-height: 1.7; }
+.error-box code { font-size: 11.5px; background: #fff; padding: 1px 5px; border-radius: 4px; }
+
+/* ── 心智圖面板 ── */
+#mmOverlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+  z-index: 400; display: none; align-items: center; justify-content: center;
+}
+#mmOverlay.show { display: flex; }
+#mmPanel {
+  width: 92vw; max-width: 1100px; height: 86vh;
+  background: var(--surface); border-radius: 16px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.mm-header {
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+}
+.mm-title { font-size: 16px; font-weight: 700; flex: 1; }
+.mm-subtitle { font-size: 12px; color: var(--muted); }
+.mm-controls { display: flex; gap: 6px; align-items: center; }
+.mm-btn {
+  padding: 4px 10px; border: 1px solid var(--border); border-radius: 6px;
+  font-size: 11.5px; cursor: pointer; background: var(--bg); color: var(--muted);
+  transition: all 0.12s;
+}
+.mm-btn:hover { background: var(--surface); border-color: #93C5FD; color: #1E3A8A; }
+.mm-close {
+  width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+  cursor: pointer; font-size: 14px; display: flex; align-items: center;
+  justify-content: center; background: var(--bg);
+}
+.mm-close:hover { background: #FEE2E2; border-color: #FCA5A5; }
+.mm-body {
+  flex: 1; position: relative; overflow: hidden; background: #FAFBFF;
+}
+.mm-legend {
+  position: absolute; bottom: 12px; left: 16px;
+  background: rgba(255,255,255,0.92); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px; font-size: 11px;
+  display: flex; flex-wrap: wrap; gap: 6px 14px; max-width: 480px;
+  backdrop-filter: blur(4px);
+}
+.mm-legend-item { display: flex; align-items: center; gap: 5px; color: var(--muted); }
+.mm-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.mm-tooltip {
+  position: absolute; background: #0F172A; color: #fff;
+  padding: 7px 12px; border-radius: 8px; font-size: 12px;
+  pointer-events: none; opacity: 0; transition: opacity 0.15s;
+  max-width: 260px; line-height: 1.5; z-index: 10;
+}
+/* 心智圖觸發按鈕（詞彙卡片上） */
+.mm-trigger {
+  display: inline-block; font-size: 10px; padding: 1px 6px;
+  border-radius: 4px; cursor: pointer; margin-left: 4px;
+  background: #EEF2FF; border: 1px solid #C7D2FE; color: #3730A3;
+  vertical-align: middle; transition: all 0.12s; white-space: nowrap;
+}
+.mm-trigger:hover { background: #E0E7FF; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 99px; }
+
+/* ── 語義展開面板 ── */
+.sem-btn {
+  display: inline-block; font-size: 10px; padding: 1px 6px;
+  border-radius: 4px; cursor: pointer; margin-left: 4px;
+  background: #F0FDF4; border: 1px solid #86EFAC; color: #14532D;
+  vertical-align: middle; transition: all 0.12s; white-space: nowrap;
+}
+.sem-btn:hover { background: #DCFCE7; }
+
+#semPanel {
+  position: fixed; top: 0; right: -420px; width: 400px; height: 100vh;
+  background: var(--surface); border-left: 1px solid var(--border);
+  box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+  z-index: 200; display: flex; flex-direction: column;
+  transition: right 0.25s cubic-bezier(0.4,0,0.2,1); overflow: hidden;
+}
+#semPanel.open { right: 0; }
+.sem-header { padding: 16px 18px 12px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.sem-word { font-size: 18px; font-weight: 700; flex: 1; }
+.sem-close { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; background: var(--bg); }
+.sem-close:hover { background: #FEE2E2; border-color: #FCA5A5; }
+.sem-tabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.sem-tab { flex: 1; padding: 10px 4px; text-align: center; font-size: 12px;
+  cursor: pointer; border-bottom: 2px solid transparent; color: var(--muted); }
+.sem-tab.active { color: #0F172A; border-bottom-color: #2563EB; font-weight: 600; }
+.sem-tab:hover:not(.active) { color: #0F172A; background: var(--bg); }
+.sem-body { flex: 1; overflow-y: auto; padding: 12px 16px; }
+.sem-section-title { font-size: 10.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.7px; color: var(--muted); margin: 12px 0 6px; }
+.sem-section-title:first-child { margin-top: 0; }
+.sem-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.sem-chip { padding: 5px 10px; border-radius: 8px; font-size: 12.5px;
+  cursor: pointer; border: 1px solid var(--border); background: var(--surface);
+  transition: all 0.12s; display: flex; align-items: center; gap: 5px; }
+.sem-chip:hover { border-color: #93C5FD; background: #EFF6FF; }
+.sem-chip.in-list { background: #F0FDF4; border-color: #86EFAC; color: #14532D; }
+.sem-chip.in-list:hover { background: #DCFCE7; }
+.sem-chip .chip-open { font-size: 9px; color: var(--muted); padding: 1px 4px;
+  border-radius: 3px; background: rgba(0,0,0,0.06); }
+.sem-empty { text-align: center; padding: 32px 16px; color: var(--muted); font-size: 13px; }
+#semOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.15);
+  z-index: 199; display: none; }
+#semOverlay.show { display: block; }
+
+/* ══════════════════════════════════════
+   進度追蹤系統
+   ══════════════════════════════════════ */
+
+/* 工具列進度按鈕 */
+.prog-btn {
+  padding: 5px 12px; border: 1.5px solid #6366F1; border-radius: 7px;
+  font-size: 11.5px; cursor: pointer; background: #EEF2FF; color: #4338CA;
+  font-weight: 600; transition: all 0.15s; white-space: nowrap;
+  display: flex; align-items: center; gap: 5px;
+}
+.prog-btn:hover { background: #6366F1; color: #fff; }
+.prog-btn .due-badge {
+  background: #EF4444; color: #fff; border-radius: 99px;
+  font-size: 10px; padding: 1px 5px; font-weight: 700; min-width: 18px;
+  text-align: center;
+}
+.prog-btn .due-badge.zero { background: #86EFAC; color: #14532D; }
+
+/* 工具列匯出選單 */
+.export-wrap { position: relative; }
+.export-btn {
+  padding: 5px 12px; border: 1.5px solid #0F766E; border-radius: 7px;
+  font-size: 11.5px; cursor: pointer; background: #F0FDFA; color: #115E59;
+  font-weight: 600; transition: all 0.15s; white-space: nowrap;
+  display: flex; align-items: center; gap: 5px;
+}
+.export-btn:hover, .export-wrap.open .export-btn { background: #0F766E; color: #fff; }
+.export-menu {
+  position: absolute; right: 0; top: calc(100% + 6px); width: 190px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  box-shadow: 0 12px 28px rgba(15,23,42,0.14); padding: 5px; z-index: 320;
+  display: none;
+}
+.export-wrap.open .export-menu { display: block; }
+.export-menu button {
+  width: 100%; border: 0; border-radius: 6px; background: transparent;
+  padding: 8px 9px; text-align: left; cursor: pointer; color: var(--text);
+  font-size: 12px; font-weight: 600;
+}
+.export-menu button:hover { background: var(--bg); }
+.export-menu small {
+  display: block; margin-top: 2px; color: var(--muted); font-size: 10px;
+  font-weight: 400; line-height: 1.35;
+}
+
+/* 設定面板 */
+.config-btn {
+  width: 30px; height: 30px; border: 1.5px solid var(--border); border-radius: 7px;
+  cursor: pointer; background: var(--surface); color: var(--muted);
+  font-size: 14px; display: flex; align-items: center; justify-content: center;
+}
+.config-btn:hover { border-color: #0F766E; color: #0F766E; background: #F0FDFA; }
+#configOverlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.2);
+  z-index: 260; display: none;
+}
+#configOverlay.show { display: block; }
+#configPanel {
+  position: fixed; top: 0; right: -540px; width: 520px; height: 100vh;
+  background: var(--surface); border-left: 1px solid var(--border);
+  box-shadow: -6px 0 32px rgba(0,0,0,0.15);
+  z-index: 261; display: flex; flex-direction: column;
+  transition: right 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+#configPanel.open { right: 0; }
+.cfg-header {
+  padding: 16px 20px 14px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  background: linear-gradient(135deg, #F0FDFA 0%, #F8FAFC 100%);
+}
+.cfg-title { font-size: 16px; font-weight: 800; color: #115E59; flex: 1; }
+.cfg-close {
+  width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; background: var(--surface);
+}
+.cfg-close:hover { background: #FEE2E2; border-color: #FCA5A5; }
+.cfg-body { flex: 1; overflow-y: auto; padding: 16px 20px 20px; }
+.cfg-section { margin-bottom: 18px; }
+.cfg-section-title {
+  font-size: 11px; font-weight: 800; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 10px;
+}
+.cfg-field { margin-bottom: 12px; }
+.cfg-field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 5px; }
+.cfg-field input {
+  width: 100%; border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 10px; font-size: 12.5px; outline: none; background: var(--surface);
+}
+.cfg-field input:focus { border-color: #0F766E; box-shadow: 0 0 0 2px rgba(15,118,110,0.12); }
+.cfg-help { font-size: 10.5px; color: var(--muted); margin-top: 4px; line-height: 1.45; word-break: break-all; }
+.cfg-status {
+  display: inline-flex; align-items: center; gap: 4px; font-size: 10px;
+  padding: 2px 6px; border-radius: 99px; margin-left: 6px; vertical-align: middle;
+}
+.cfg-status.ok { background: #DCFCE7; color: #14532D; }
+.cfg-status.bad { background: #FEE2E2; color: #991B1B; }
+.cfg-actions {
+  border-top: 1px solid var(--border); padding: 12px 20px;
+  display: flex; gap: 8px; align-items: center; flex-shrink: 0;
+}
+.cfg-save {
+  padding: 8px 14px; border: 1px solid #0F766E; border-radius: 8px;
+  background: #0F766E; color: #fff; font-size: 12px; font-weight: 800;
+  cursor: pointer;
+}
+.cfg-save:hover { background: #115E59; }
+.cfg-secondary {
+  padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); color: var(--muted); font-size: 12px; font-weight: 700;
+  cursor: pointer;
+}
+.cfg-msg { font-size: 11px; color: var(--muted); margin-left: auto; text-align: right; }
+.cfg-msg.ok { color: #047857; }
+.cfg-msg.bad { color: #DC2626; }
+
+/* ── 重建索引區塊 ── */
+.rebuild-section { border-top: 1px solid var(--border); padding-top: 16px; margin-top: 4px; }
+.rebuild-section .cfg-section-title { margin-bottom: 8px; }
+.rebuild-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 14px; border: 1.5px solid #7C3AED; border-radius: 8px;
+  background: #7C3AED; color: #fff; font-size: 12px; font-weight: 800;
+  cursor: pointer; transition: background 0.15s;
+}
+.rebuild-btn:hover:not(:disabled) { background: #6D28D9; }
+.rebuild-btn:disabled { background: #A78BFA; border-color: #A78BFA; cursor: not-allowed; }
+.rebuild-btn .rb-spinner {
+  width: 13px; height: 13px; border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite;
+  display: none;
+}
+.rebuild-btn.running .rb-spinner { display: block; }
+.rebuild-status-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 10px; font-size: 11.5px;
+}
+.rebuild-status-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  background: #CBD5E1;
+}
+.rebuild-status-dot.running  { background: #A78BFA; animation: pulse 1.2s infinite; }
+.rebuild-status-dot.success  { background: #22C55E; }
+.rebuild-status-dot.fail     { background: #EF4444; }
+.rebuild-status-text { color: var(--muted); flex: 1; }
+.rebuild-status-time { font-size: 10px; color: var(--muted); white-space: nowrap; }
+.rebuild-log {
+  margin-top: 10px; background: #0F172A; color: #94A3B8;
+  border-radius: 8px; font-size: 10.5px; font-family: monospace;
+  line-height: 1.6; padding: 10px 12px; max-height: 180px; overflow-y: auto;
+  display: none; white-space: pre-wrap; word-break: break-all;
+}
+.rebuild-log.show { display: block; }
+.rebuild-log .rb-ok   { color: #4ADE80; }
+.rebuild-log .rb-err  { color: #F87171; }
+.rebuild-log .rb-warn { color: #FCD34D; }
+.rebuild-log-toggle {
+  font-size: 10.5px; color: #7C3AED; cursor: pointer;
+  margin-top: 6px; display: none; user-select: none;
+}
+.rebuild-log-toggle:hover { text-decoration: underline; }
+.rebuild-log-toggle.show { display: inline; }
+.rebuild-progress-bar {
+  height: 3px; background: var(--border); border-radius: 99px;
+  margin-top: 10px; overflow: hidden; display: none;
+}
+.rebuild-progress-bar.show { display: block; }
+.rebuild-progress-fill {
+  height: 100%; width: 0%; background: #7C3AED;
+  border-radius: 99px; transition: width 0.4s ease;
+  animation: rb-indeterminate 1.4s ease infinite;
+}
+@keyframes rb-indeterminate {
+  0%   { transform: translateX(-100%); width: 60%; }
+  100% { transform: translateX(200%);  width: 60%; }
+}
+
+/* 詞卡進度狀態指示器 */
+.word-card { position: relative; }
+.prog-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px; border-radius: 50%; opacity: 0.85;
+}
+.prog-dot.new      { background: #94A3B8; }
+.prog-dot.learning { background: #F59E0B; }
+.prog-dot.mastered { background: #22C55E; }
+.prog-dot.due      { background: #EF4444; animation: pulse 1.5s infinite; }
+@keyframes pulse {
+  0%,100% { opacity: 0.85; transform: scale(1); }
+  50%      { opacity: 1;    transform: scale(1.3); }
+}
+
+/* ── 進度面板（側邊抽屜） ── */
+#progOverlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.2);
+  z-index: 250; display: none;
+}
+#progOverlay.show { display: block; }
+
+#progPanel {
+  position: fixed; top: 0; right: -520px; width: 500px; height: 100vh;
+  background: var(--surface); border-left: 1px solid var(--border);
+  box-shadow: -6px 0 32px rgba(0,0,0,0.15);
+  z-index: 251; display: flex; flex-direction: column;
+  transition: right 0.28s cubic-bezier(0.4,0,0.2,1);
+}
+#progPanel.open { right: 0; }
+
+.prog-panel-hdr {
+  padding: 16px 20px 14px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  background: linear-gradient(135deg, #EEF2FF 0%, #F8FAFC 100%);
+}
+.prog-panel-title { font-size: 16px; font-weight: 700; color: #3730A3; flex: 1; }
+.prog-panel-close {
+  width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; background: var(--surface);
+}
+.prog-panel-close:hover { background: #FEE2E2; border-color: #FCA5A5; }
+
+/* 統計卡片列 */
+.prog-stats-row {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+  padding: 14px 20px 10px; flex-shrink: 0;
+}
+.prog-stat-card {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 10px 8px; text-align: center;
+}
+.prog-stat-num  { font-size: 22px; font-weight: 800; line-height: 1.1; }
+.prog-stat-lbl  { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.prog-stat-card.due  .prog-stat-num { color: #EF4444; }
+.prog-stat-card.lrn  .prog-stat-num { color: #F59E0B; }
+.prog-stat-card.mast .prog-stat-num { color: #22C55E; }
+.prog-stat-card.tot  .prog-stat-num { color: #6366F1; }
+
+/* 頁籤 */
+.prog-tabs {
+  display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0;
+  padding: 0 20px;
+}
+.prog-tab {
+  padding: 10px 14px; font-size: 12.5px; cursor: pointer;
+  border-bottom: 2px solid transparent; color: var(--muted);
+  font-weight: 500;
+}
+.prog-tab.active { color: #4338CA; border-bottom-color: #6366F1; font-weight: 700; }
+.prog-tab:hover:not(.active) { color: #0F172A; background: var(--bg); }
+
+/* 面板內容捲動區 */
+.prog-body { flex: 1; overflow-y: auto; padding: 12px 20px 20px; }
+
+/* 到期詞彙清單 */
+.due-empty {
+  text-align: center; padding: 48px 20px; color: var(--muted); font-size: 13px;
+}
+.due-empty .due-icon { font-size: 40px; margin-bottom: 12px; }
+.due-empty .due-msg  { font-weight: 600; color: #0F172A; margin-bottom: 6px; }
+
+.due-list { display: flex; flex-direction: column; gap: 8px; }
+
+.due-card {
+  border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 12px 14px; background: var(--surface);
+  display: flex; align-items: center; gap: 10px;
+  transition: border-color 0.15s;
+}
+.due-card:hover { border-color: #A5B4FC; }
+.due-card.overdue { border-color: #FCA5A5; background: #FFF5F5; }
+
+.due-word { font-size: 15px; font-weight: 700; flex: 1; color: #0F172A; }
+.due-meta { font-size: 10.5px; color: var(--muted); }
+.due-interval { font-size: 10px; color: var(--muted);
+  background: var(--bg); border: 1px solid var(--border);
+  padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+
+/* 評分按鈕列 */
+.rate-row {
+  display: flex; gap: 4px; align-items: center; flex-shrink: 0;
+}
+.rate-btn {
+  width: 30px; height: 30px; border-radius: 6px; border: 1.5px solid var(--border);
+  cursor: pointer; font-size: 13px; display: flex; align-items: center;
+  justify-content: center; background: var(--surface); transition: all 0.12s;
+  font-weight: 600;
+}
+.rate-btn:hover { transform: scale(1.1); }
+.rate-btn[data-r="0"]:hover { background: #1E293B; color: #fff; border-color: #1E293B; }
+.rate-btn[data-r="1"]:hover { background: #DC2626; color: #fff; border-color: #DC2626; }
+.rate-btn[data-r="2"]:hover { background: #EA580C; color: #fff; border-color: #EA580C; }
+.rate-btn[data-r="3"]:hover { background: #CA8A04; color: #fff; border-color: #CA8A04; }
+.rate-btn[data-r="4"]:hover { background: #16A34A; color: #fff; border-color: #16A34A; }
+.rate-btn[data-r="5"]:hover { background: #15803D; color: #fff; border-color: #15803D; }
+.rate-btn.rated { opacity: 0.4; pointer-events: none; }
+
+.rate-legend {
+  font-size: 10px; color: var(--muted); margin-bottom: 8px;
+  display: flex; gap: 12px; flex-wrap: wrap;
+}
+.rate-legend span { display: flex; align-items: center; gap: 3px; }
+
+/* 全部詞彙進度表 */
+.prog-all-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.prog-all-table th {
+  text-align: left; padding: 6px 8px; font-size: 10.5px;
+  color: var(--muted); border-bottom: 1.5px solid var(--border);
+  font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+  position: sticky; top: 0; background: var(--surface); z-index: 1;
+}
+.prog-all-table td { padding: 7px 8px; border-bottom: 1px solid var(--border); }
+.prog-all-table tr:last-child td { border-bottom: none; }
+.prog-all-table tr:hover td { background: var(--bg); }
+
+.status-pip {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-right: 5px; vertical-align: middle;
+}
+.status-pip.new      { background: #94A3B8; }
+.status-pip.learning { background: #F59E0B; }
+.status-pip.mastered { background: #22C55E; }
+
+/* 進度面板內的開啟按鈕 */
+.due-open-btn {
+  padding: 4px 10px; border-radius: 6px; border: 1px solid #A5B4FC;
+  background: #EEF2FF; color: #4338CA; font-size: 11px; cursor: pointer;
+  white-space: nowrap; font-weight: 600;
+}
+.due-open-btn:hover { background: #6366F1; color: #fff; }
+
+/* ══════════════════════════════════════
+   詞彙快速預覽面板（hover/點擊觸發）
+   ══════════════════════════════════════ */
+
+#previewPanel {
+  position: fixed; top: 0; right: -380px; width: 360px; height: 100vh;
+  background: var(--surface); border-left: 1px solid var(--border);
+  box-shadow: -6px 0 28px rgba(0,0,0,0.12);
+  z-index: 200; display: flex; flex-direction: column;
+  transition: right 0.22s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+}
+#previewPanel.open {
+  right: 0;
+  pointer-events: auto;
+}
+
+/* 預覽面板頂部色條 */
+.pv-accent {
+  height: 4px; flex-shrink: 0;
+  background: linear-gradient(90deg, #2563EB, #7C3AED);
+}
+.pv-accent.type-essentials { background: linear-gradient(90deg, #059669, #0891B2); }
+.pv-accent.type-full       { background: linear-gradient(90deg, #2563EB, #7C3AED); }
+
+.pv-header {
+  padding: 14px 16px 10px; border-bottom: 1px solid var(--border);
+  flex-shrink: 0; display: flex; align-items: flex-start; gap: 10px;
+}
+.pv-word {
+  font-size: 22px; font-weight: 800; flex: 1;
+  letter-spacing: -0.3px; line-height: 1.2; word-break: break-word;
+}
+.pv-close {
+  width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--border);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; background: var(--bg); flex-shrink: 0; margin-top: 2px;
+}
+.pv-close:hover { background: #FEE2E2; border-color: #FCA5A5; }
+
+.pv-body { flex: 1; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 14px; }
+
+/* 徽章列 */
+.pv-badges { display: flex; flex-wrap: wrap; gap: 5px; }
+
+/* CEFR 區塊 */
+.pv-section-title {
+  font-size: 10px; font-weight: 700; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 5px;
+}
+.pv-cefr-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.pv-cefr-level {
+  font-size: 20px; font-weight: 800; padding: 4px 12px;
+  border-radius: 8px; line-height: 1;
+}
+.pv-cefr-detail { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.pv-cefr-reason {
+  font-size: 11px; color: var(--muted); background: var(--bg);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 6px 10px; line-height: 1.5; margin-top: 4px;
+}
+
+/* 進度區塊 */
+.pv-prog-row {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 10px;
+}
+.pv-prog-icon { font-size: 18px; }
+.pv-prog-info { flex: 1; }
+.pv-prog-status { font-size: 12.5px; font-weight: 700; }
+.pv-prog-sub    { font-size: 11px; color: var(--muted); }
+.pv-prog-row.due    { border-color: #FCA5A5; background: #FFF5F5; }
+.pv-prog-row.mastered { border-color: #86EFAC; background: #F0FDF4; }
+
+/* 標籤（高頻詞表）區塊 */
+.pv-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+
+/* 操作按鈕列 */
+.pv-actions {
+  display: flex; flex-direction: column; gap: 6px;
+  border-top: 1px solid var(--border); padding-top: 12px; flex-shrink: 0;
+  padding: 12px 16px 16px;
+}
+.pv-open-btn {
+  padding: 9px 0; border-radius: 8px; font-size: 13px; font-weight: 700;
+  cursor: pointer; text-align: center; border: none;
+  background: #0F172A; color: #fff; transition: background 0.15s;
+}
+.pv-open-btn:hover { background: #1E3A8A; }
+
+/* 預覽面板中的學習進度區塊 */
+.pv-prog-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 8px;
+  background: var(--bg); border: 1px solid var(--border);
+}
+.pv-prog-row.due      { background: #FFF5F5; border-color: #FCA5A5; }
+.pv-prog-row.mastered { background: #F0FDF4; border-color: #86EFAC; }
+.pv-prog-icon  { font-size: 18px; flex-shrink: 0; }
+.pv-prog-info  { flex: 1; min-width: 0; }
+.pv-prog-status { font-size: 12.5px; font-weight: 700; color: #0F172A; }
+.pv-prog-sub    { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+
+/* 快速評分列（面板底部） */
+.pv-rate-row {
+  display: flex; gap: 4px; align-items: center;
+}
+.pv-rate-label { font-size: 10.5px; color: var(--muted); margin-right: 2px; }
+.pv-rate-btn {
+  flex: 1; padding: 6px 0; border-radius: 6px;
+  border: 1.5px solid var(--border); cursor: pointer;
+  font-size: 13px; background: var(--surface); transition: all 0.12s;
+  text-align: center;
+}
+.pv-rate-btn:hover { transform: scale(1.08); }
+.pv-rate-btn[data-r="0"]:hover { background: #1E293B; color:#fff; border-color:#1E293B; }
+.pv-rate-btn[data-r="1"]:hover { background: #DC2626; color:#fff; border-color:#DC2626; }
+.pv-rate-btn[data-r="2"]:hover { background: #EA580C; color:#fff; border-color:#EA580C; }
+.pv-rate-btn[data-r="3"]:hover { background: #CA8A04; color:#fff; border-color:#CA8A04; }
+.pv-rate-btn[data-r="4"]:hover { background: #16A34A; color:#fff; border-color:#16A34A; }
+.pv-rate-btn[data-r="5"]:hover { background: #15803D; color:#fff; border-color:#15803D; }
+
+/* 詞卡 hover 時顯示「預覽」小標籤 */
+.word-card .pv-hint {
+  position: absolute; bottom: 6px; right: 8px;
+  font-size: 9.5px; color: #94A3B8; opacity: 0;
+  transition: opacity 0.15s; pointer-events: none;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 4px; padding: 1px 5px;
+}
+.word-card:hover .pv-hint { opacity: 1; }
+.word-card { position: relative; }
+</style>
+</head>
+<body>
+
+<!-- 頂部標題列 -->
+<div class="topbar">
+  <div>
+    <h1>英文學習菜單 ── 知識樹索引</h1>
+    <p>全維度語言學習 v4 ✦ Dolch / Fry / NGSL / CEFR A1–C2</p>
+  </div>
+  <div class="stats-bar" id="statsBar"><span class="stat-chip">載入中...</span></div>
+</div>
+
+<!-- 工具列 -->
+<div class="toolbar">
+  <!-- 全域搜尋框 + Autocomplete -->
+  <div class="search-wrap" id="searchWrap">
+    <input type="text" id="searchInput" placeholder="🔍 輸入詞彙或片語…" autocomplete="off" />
+    <span class="search-clear" id="searchClear" onclick="clearSearch()">✕</span>
+    <div id="acDropdown">
+      <div class="ac-header" id="acHeader">建議詞彙</div>
+      <div id="acList"></div>
+    </div>
+  </div>
+
+  <div class="btn-group" id="typeFilters">
+    <button class="filter-btn active" onclick="setTypeFilter('all')">全部</button>
+    <button class="filter-btn"       onclick="setTypeFilter('essentials')">🟢 Essentials</button>
+    <button class="filter-btn"       onclick="setTypeFilter('full')">🔵 Full</button>
+    <button class="filter-btn"       onclick="setTypeFilter('tagged')">🏷 高頻詞</button>
+    <button class="filter-btn"       onclick="setTypeFilter('cefr')">🎓 有CEFR</button>
+    <button class="filter-btn"       onclick="setTypeFilter('cefr-confirmed')">✅ 精確</button>
+    <button class="filter-btn"       onclick="setTypeFilter('cefr-inferred')">🔶 推導</button>
+    <button class="filter-btn"       onclick="setTypeFilter('cefr-bert')">🤖 語意</button>
+  </div>
+
+  <div class="view-toggle">
+    <button class="view-btn active" id="viewTree" onclick="setView('tree')" title="依知識樹分類">🌳 知識樹</button>
+    <button class="view-btn"        id="viewCefr" onclick="setView('cefr')" title="依CEFR分級">🎓 CEFR</button>
+    <button class="view-btn"        id="viewDash" onclick="setView('dashboard')" title="統計儀表板">▥ 統計</button>
+  </div>
+
+  <button class="config-btn" onclick="openConfigPanel()" title="設定">⚙</button>
+
+  <!-- 進度追蹤按鈕 -->
+  <button class="prog-btn" onclick="openProgPanel()" id="progBtn" title="學習進度 & 複習排程">
+    📊 複習
+    <span class="due-badge zero" id="dueBadge">0</span>
+  </button>
+
+  <!-- 匯出按鈕 -->
+  <div class="export-wrap" id="exportWrap">
+    <button class="export-btn" onclick="toggleExportMenu(event)" title="匯出目前篩選詞彙">⇩ 匯出</button>
+    <div class="export-menu" id="exportMenu">
+      <button onclick="downloadExport('anki')">
+        Anki TSV
+        <small>正面 / 背面 / 摘要 / Tags</small>
+      </button>
+      <button onclick="downloadExport('csv')">
+        CSV
+        <small>完整欄位，含 CEFR 與進度</small>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 主體 -->
+<div class="main">
+  <nav class="sidebar" id="sidebar"><div class="loading"><div class="spinner"></div>載入中...</div></nav>
+  <main class="panel"   id="panel">  <div class="loading"><div class="spinner"></div>載入索引資料...</div></main>
+</div>
+
+<!-- 心智圖面板 -->
+<div id="mmOverlay" onclick="if(event.target===this)closeMindmap()">
+  <div id="mmPanel">
+    <div class="mm-header">
+      <div>
+        <div class="mm-title" id="mmTitle">語義心智圖</div>
+        <div class="mm-subtitle" id="mmSubtitle">基於 WordNet 真實語義關係</div>
+      </div>
+      <div class="mm-controls">
+        <button class="mm-btn" onclick="mmZoomIn()">＋ 放大</button>
+        <button class="mm-btn" onclick="mmZoomOut()">－ 縮小</button>
+        <button class="mm-btn" onclick="mmReset()">⟳ 重置</button>
+      </div>
+      <div class="mm-close" onclick="closeMindmap()">✕</div>
+    </div>
+    <div class="mm-body" id="mmBody">
+      <div id="mmLoading" style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:14px;gap:10px;">
+        <div class="spinner"></div> 載入語義網絡...
+      </div>
+      <svg id="mmSvg" width="100%" height="100%" style="display:none"></svg>
+      <div class="mm-legend" id="mmLegend" style="display:none"></div>
+      <div class="mm-tooltip" id="mmTooltip"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 進度追蹤面板 -->
+<div id="progOverlay" onclick="closeProgPanel()"></div>
+<div id="progPanel">
+  <div class="prog-panel-hdr">
+    <span class="prog-panel-title">📊 學習進度 &amp; 複習排程</span>
+    <div class="prog-panel-close" onclick="closeProgPanel()">✕</div>
+  </div>
+
+  <!-- 統計卡片列 -->
+  <div class="prog-stats-row">
+    <div class="prog-stat-card due">
+      <div class="prog-stat-num" id="psDue">—</div>
+      <div class="prog-stat-lbl">今日待複習</div>
+    </div>
+    <div class="prog-stat-card lrn">
+      <div class="prog-stat-num" id="psLrn">—</div>
+      <div class="prog-stat-lbl">學習中</div>
+    </div>
+    <div class="prog-stat-card mast">
+      <div class="prog-stat-num" id="psMast">—</div>
+      <div class="prog-stat-lbl">已掌握</div>
+    </div>
+    <div class="prog-stat-card tot">
+      <div class="prog-stat-num" id="psTot">—</div>
+      <div class="prog-stat-lbl">累計學習</div>
+    </div>
+  </div>
+
+  <!-- 頁籤 -->
+  <div class="prog-tabs">
+    <div class="prog-tab active" id="ptab0" onclick="setProgTab(0)">📅 今日複習</div>
+    <div class="prog-tab"        id="ptab1" onclick="setProgTab(1)">📋 全部記錄</div>
+  </div>
+
+  <!-- 內容區 -->
+  <div class="prog-body" id="progBody">
+    <div class="due-empty"><div class="due-icon">⏳</div>載入中...</div>
+  </div>
+</div>
+
+<!-- 設定面板 -->
+<div id="configOverlay" onclick="closeConfigPanel()"></div>
+<div id="configPanel">
+  <div class="cfg-header">
+    <span class="cfg-title">⚙ 設定</span>
+    <div class="cfg-close" onclick="closeConfigPanel()">✕</div>
+  </div>
+  <div class="cfg-body">
+    <div class="cfg-section">
+      <div class="cfg-section-title">學習資料夾</div>
+      <div class="cfg-field">
+        <label>Essentials 路徑 <span id="cfgStatusEss"></span></label>
+        <input id="cfgEssentials" type="text" placeholder="C:\path\to\essentials">
+        <div class="cfg-help" id="cfgHelpEss"></div>
+      </div>
+      <div class="cfg-field">
+        <label>Full 路徑 <span id="cfgStatusFull"></span></label>
+        <input id="cfgFull" type="text" placeholder="C:\path\to\full">
+        <div class="cfg-help" id="cfgHelpFull"></div>
+      </div>
+    </div>
+
+    <div class="cfg-section">
+      <div class="cfg-section-title">高頻詞表</div>
+      <div class="cfg-field">
+        <label>Dolch TXT 路徑 <span id="cfgStatusDolch"></span></label>
+        <input id="cfgDolch" type="text" placeholder="留空使用內建精簡版">
+        <div class="cfg-help">留空時使用 build_index.py 內建資料。</div>
+      </div>
+      <div class="cfg-field">
+        <label>Fry TXT 路徑</label>
+        <input id="cfgFry" type="text" placeholder="可用 ; 分隔多個檔案，留空使用內建精簡版">
+        <div class="cfg-help">多個路徑請用分號分隔。</div>
+      </div>
+      <div class="cfg-field">
+        <label>NGSL CSV 路徑 <span id="cfgStatusNgsl"></span></label>
+        <input id="cfgNgsl" type="text" placeholder="留空使用內建精簡版">
+      </div>
+    </div>
+
+    <div class="cfg-section">
+      <div class="cfg-section-title">輸出與伺服器</div>
+      <div class="cfg-field">
+        <label>Server Port</label>
+        <input id="cfgPort" type="number" min="1" max="65535">
+        <div class="cfg-help">儲存後需重新啟動 serve.py 才會改變目前連線埠。</div>
+      </div>
+      <div class="cfg-field">
+        <label>Index JSON <span id="cfgStatusIndex"></span></label>
+        <input id="cfgOutputJson" type="text" placeholder="index.json">
+      </div>
+      <div class="cfg-field">
+        <label>Progress JSON <span id="cfgStatusProgress"></span></label>
+        <input id="cfgProgressJson" type="text" placeholder="progress.json">
+      </div>
+      <div class="cfg-field">
+        <label>CEFR Review CSV <span id="cfgStatusCefrCsv"></span></label>
+        <input id="cfgCefrCsv" type="text" placeholder="cefr_review.csv">
+      </div>
+    </div>
+  </div>
+  <div class="cfg-actions">
+    <!-- 重建索引 -->
+    <div class="rebuild-section">
+      <div class="cfg-section-title">🔧 索引重建</div>
+      <button class="rebuild-btn" id="rebuildBtn" onclick="triggerRebuild()">
+        <div class="rb-spinner"></div>
+        <span id="rebuildBtnLabel">▶ 重建索引</span>
+      </button>
+      <div class="rebuild-progress-bar" id="rebuildProgressBar">
+        <div class="rebuild-progress-fill" id="rebuildProgressFill"></div>
+      </div>
+      <div class="rebuild-status-row" id="rebuildStatusRow" style="display:none">
+        <div class="rebuild-status-dot" id="rebuildDot"></div>
+        <span class="rebuild-status-text" id="rebuildStatusText"></span>
+        <span class="rebuild-status-time" id="rebuildStatusTime"></span>
+      </div>
+      <div class="rebuild-log-toggle" id="rebuildLogToggle" onclick="toggleRebuildLog()">▶ 顯示 log</div>
+      <div class="rebuild-log" id="rebuildLog"></div>
+    </div>
+  </div>
+  <div class="cfg-actions">
+    <button class="cfg-save" onclick="saveConfig()">儲存設定</button>
+    <button class="cfg-secondary" onclick="loadConfigPanel()">重新載入</button>
+    <div class="cfg-msg" id="cfgMsg"></div>
+  </div>
+</div>
+
+<!-- D3.js v7 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+
+<script>
+// ==========================================
+// 心智圖系統
+// ==========================================
+let mmSimulation = null;
+let mmZoomBehavior = null;
+let mmCurrentWord  = '';
+
+// 節點顏色（對應 mindmap.py NODE_COLORS）
+const MM_COLORS = {
+  root:     '#0F172A',
+  sense:    '#2563EB',
+  synonym:  '#059669',
+  antonym:  '#E11D48',
+  hypernym: '#7C3AED',
+  hyponym:  '#0891B2',
+  similar:  '#D97706',
+};
+const MM_LABELS = {
+  root:     '目標詞',
+  sense:    '詞義',
+  synonym:  '同義詞',
+  antonym:  '反義詞',
+  hypernym: '上位詞',
+  hyponym:  '下位詞',
+  similar:  '相似詞',
+};
+const MM_RADIUS = {
+  root: 22, sense: 16, synonym: 12,
+  antonym: 12, hypernym: 13, hyponym: 12, similar: 11,
+};
+const LINK_COLORS = {
+  sense:    '#93C5FD',
+  synonym:  '#6EE7B7',
+  antonym:  '#FCA5A5',
+  hypernym: '#C4B5FD',
+  hyponym:  '#67E8F9',
+  similar:  '#FDE68A',
+};
+
+async function openMindmap(word) {
+  mmCurrentWord = word;
+  document.getElementById('mmTitle').textContent = `「${word}」語義心智圖`;
+  document.getElementById('mmSubtitle').textContent = '載入中...';
+  document.getElementById('mmLoading').style.display = 'flex';
+  document.getElementById('mmSvg').style.display     = 'none';
+  document.getElementById('mmLegend').style.display  = 'none';
+  document.getElementById('mmOverlay').classList.add('show');
+
+  try {
+    const res  = await fetch(`/mindmap?word=${encodeURIComponent(word)}`);
+    const data = await res.json();
+
+    if (data.error) {
+      document.getElementById('mmLoading').innerHTML =
+        `<div style="text-align:center;color:#991B1B;padding:20px">
+          ⚠️ ${data.error}
+        </div>`;
+      return;
+    }
+
+    document.getElementById('mmSubtitle').textContent =
+      `${data.stats.senses} 個詞義 · ${data.stats.total_nodes} 個節點 · ${data.stats.total_edges} 條連結  |  來源：WordNet`;
+
+    document.getElementById('mmLoading').style.display = 'none';
+    document.getElementById('mmSvg').style.display     = 'block';
+    document.getElementById('mmLegend').style.display  = 'flex';
+
+    renderMindmap(data);
+  } catch(e) {
+    document.getElementById('mmLoading').innerHTML =
+      `<div style="text-align:center;color:#991B1B;padding:20px">
+        ⚠️ 無法連線到語義服務，請確認 serve.py 正在執行。
+      </div>`;
+  }
+}
+
+function closeMindmap() {
+  document.getElementById('mmOverlay').classList.remove('show');
+  if (mmSimulation) { mmSimulation.stop(); mmSimulation = null; }
+  const svg = document.getElementById('mmSvg');
+  d3.select(svg).selectAll('*').remove();
+}
+
+function renderMindmap(data) {
+  const svg    = d3.select('#mmSvg');
+  const body   = document.getElementById('mmBody');
+  const W      = body.clientWidth;
+  const H      = body.clientHeight;
+  const tooltip= document.getElementById('mmTooltip');
+
+  svg.selectAll('*').remove();
+
+  // Zoom 行為
+  const g = svg.append('g');
+  mmZoomBehavior = d3.zoom()
+    .scaleExtent([0.2, 3])
+    .on('zoom', e => g.attr('transform', e.transform));
+  svg.call(mmZoomBehavior);
+
+  // 準備節點與連結資料
+  const nodes = data.nodes.map(d => ({...d}));
+  const links = data.edges.map(d => ({...d}));
+
+  // 力模擬
+  mmSimulation = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(links)
+      .id(d => d.id)
+      .distance(d => {
+        const rel = d.relation;
+        if (rel === 'sense')    return 100;
+        if (rel === 'hypernym') return 110;
+        if (rel === 'hyponym')  return 90;
+        return 75;
+      })
+      .strength(0.7))
+    .force('charge', d3.forceManyBody()
+      .strength(d => d.type === 'root' ? -800 : -300))
+    .force('center',  d3.forceCenter(W / 2, H / 2))
+    .force('collision', d3.forceCollide()
+      .radius(d => (MM_RADIUS[d.type] || 12) + 18));
+
+  // ── 連線 ──
+  const link = g.append('g').attr('class','links')
+    .selectAll('line')
+    .data(links)
+    .join('line')
+    .attr('stroke',       d => LINK_COLORS[d.relation] || '#CBD5E1')
+    .attr('stroke-width', d => d.relation === 'sense' ? 2 : 1.2)
+    .attr('stroke-opacity', 0.7)
+    .attr('stroke-dasharray', d =>
+      (d.relation === 'hypernym' || d.relation === 'antonym') ? '5,3' : null);
+
+  // 連線標籤
+  const linkLabel = g.append('g').attr('class','link-labels')
+    .selectAll('text')
+    .data(links.filter(d => d.relation !== 'sense'))
+    .join('text')
+    .attr('font-size', 9)
+    .attr('fill', d => LINK_COLORS[d.relation] || '#94A3B8')
+    .attr('text-anchor', 'middle')
+    .attr('dy', -3)
+    .text(d => d.label);
+
+  // ── 節點群組 ──
+  const node = g.append('g').attr('class','nodes')
+    .selectAll('g')
+    .data(nodes)
+    .join('g')
+    .attr('cursor', 'pointer')
+    .call(d3.drag()
+      .on('start', (e, d) => {
+        if (!e.active) mmSimulation.alphaTarget(0.3).restart();
+        d.fx = d.x; d.fy = d.y;
+      })
+      .on('drag', (e, d) => { d.fx = e.x; d.fy = e.y; })
+      .on('end',  (e, d) => {
+        if (!e.active) mmSimulation.alphaTarget(0);
+        d.fx = null; d.fy = null;
+      }))
+    .on('mouseenter', (e, d) => {
+      if (!d.definition && !d.pos) return;
+      const pos  = d.pos ? `[${d.pos}] ` : '';
+      const def  = d.definition || '';
+      tooltip.innerHTML = `<strong>${d.label}</strong><br>${pos}${def}`;
+      tooltip.style.opacity = '1';
+    })
+    .on('mousemove', e => {
+      const rect = body.getBoundingClientRect();
+      let x = e.clientX - rect.left + 12;
+      let y = e.clientY - rect.top  + 12;
+      if (x + 270 > W) x = x - 280;
+      if (y + 80  > H) y = y - 80;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top  = y + 'px';
+    })
+    .on('mouseleave', () => { tooltip.style.opacity = '0'; })
+    .on('click', (e, d) => {
+      e.stopPropagation();
+      if (d.type === 'root') return;
+      // 點擊非根節點：以該詞重新展開
+      closeMindmap();
+      setTimeout(() => openMindmap(d.label), 200);
+    });
+
+  // 節點圓形
+  node.append('circle')
+    .attr('r',    d => MM_RADIUS[d.type] || 12)
+    .attr('fill', d => MM_COLORS[d.type] || '#64748B')
+    .attr('stroke', '#fff')
+    .attr('stroke-width', d => d.type === 'root' ? 3 : 1.5)
+    .attr('fill-opacity', d => d.type === 'root' ? 1 : 0.85);
+
+  // 節點文字
+  node.append('text')
+    .attr('text-anchor', 'middle')
+    .attr('dy', d => (MM_RADIUS[d.type] || 12) + 13)
+    .attr('font-size', d => d.type === 'root' ? 13 : 11)
+    .attr('font-weight', d => d.type === 'root' ? '700' : '500')
+    .attr('fill', '#0F172A')
+    .text(d => d.label.length > 18 ? d.label.slice(0,16)+'…' : d.label);
+
+  // 根節點額外白色文字
+  node.filter(d => d.type === 'root')
+    .append('text')
+    .attr('text-anchor', 'middle')
+    .attr('dy', '0.35em')
+    .attr('font-size', 11)
+    .attr('font-weight', '700')
+    .attr('fill', '#fff')
+    .text(d => d.label.length > 10 ? d.label.slice(0,8)+'…' : d.label);
+
+  // ── Tick ──
+  mmSimulation.on('tick', () => {
+    link
+      .attr('x1', d => d.source.x)
+      .attr('y1', d => d.source.y)
+      .attr('x2', d => d.target.x)
+      .attr('y2', d => d.target.y);
+
+    linkLabel
+      .attr('x', d => (d.source.x + d.target.x) / 2)
+      .attr('y', d => (d.source.y + d.target.y) / 2);
+
+    node.attr('transform', d => `translate(${d.x},${d.y})`);
+  });
+
+  // ── Legend ──
+  const usedTypes = [...new Set(nodes.map(n => n.type))];
+  const legend    = document.getElementById('mmLegend');
+  legend.innerHTML = usedTypes.map(t => `
+    <div class="mm-legend-item">
+      <div class="mm-legend-dot" style="background:${MM_COLORS[t]}"></div>
+      <span>${MM_LABELS[t] || t}</span>
+    </div>`).join('') +
+    `<div class="mm-legend-item" style="margin-left:8px;font-size:10px;color:#94A3B8">
+      💡 點擊節點可展開該詞的語義圖
+    </div>`;
+
+  // ── 初始縮放至適合大小 ──
+  setTimeout(() => {
+    svg.transition().duration(600)
+      .call(mmZoomBehavior.transform,
+        d3.zoomIdentity.translate(W/2, H/2).scale(0.85).translate(-W/2, -H/2));
+  }, 800);
+}
+
+// 縮放控制
+function mmZoomIn()  {
+  d3.select('#mmSvg').transition().duration(250)
+    .call(mmZoomBehavior.scaleBy, 1.35);
+}
+function mmZoomOut() {
+  d3.select('#mmSvg').transition().duration(250)
+    .call(mmZoomBehavior.scaleBy, 0.74);
+}
+function mmReset() {
+  const body = document.getElementById('mmBody');
+  d3.select('#mmSvg').transition().duration(400)
+    .call(mmZoomBehavior.transform, d3.zoomIdentity
+      .translate(body.clientWidth/2, body.clientHeight/2)
+      .scale(0.85)
+      .translate(-body.clientWidth/2, -body.clientHeight/2));
+}
+</script>
+<!-- 詞彙快速預覽面板 -->
+<div id="previewPanel">
+  <div class="pv-accent" id="pvAccent"></div>
+  <div class="pv-header">
+    <div class="pv-word" id="pvWord">—</div>
+    <div class="pv-close" onclick="closePreview()">✕</div>
+  </div>
+  <div class="pv-body" id="pvBody">
+    <div style="color:var(--muted);font-size:13px">載入中…</div>
+  </div>
+  <div class="pv-actions" id="pvActions"></div>
+</div>
+
+<div id="semOverlay" onclick="closeSemPanel()"></div>
+<div id="semPanel">
+  <div class="sem-header">
+    <span class="sem-word" id="semWord">—</span>
+    <div class="sem-close" onclick="closeSemPanel()">✕</div>
+  </div>
+  <div class="sem-tabs">
+    <div class="sem-tab active" id="semTab0" onclick="setSemTab(0)">① 片語動詞</div>
+    <div class="sem-tab"        id="semTab1" onclick="setSemTab(1)">② 搭配詞</div>
+    <div class="sem-tab"        id="semTab2" onclick="setSemTab(2)">③ 詞形家族</div>
+  </div>
+  <div class="sem-body" id="semBody"></div>
+</div>
+
+<script>
+// ==========================================
+// 狀態
+// ==========================================
+let DATA        = null;
+let currentView = 'tree';     // 'tree' | 'cefr' | 'dashboard'
+let allSemItems = [];         // 語義面板用：渲染期間收集所有 item 備查
+let activeGroup = null;
+let activeCat   = null;
+let activeCefr  = null;       // 目前選中的 CEFR 等級
+let typeFilter  = 'all';      // all|essentials|full|tagged|cefr
+let searchQuery = '';
+
+// ── 進度追蹤狀態 ──
+let PROG        = {};   // { word: {status, due, ease, interval, repetitions, ...} }
+let progTabIdx  = 0;    // 0=今日複習 1=全部記錄
+
+// Group 色彩（與 v4.html 同步）
+const GC = {
+  '0': { base:'#4F46E5', bg:'#E0E7FF', text:'#312E81' },
+  'A': { base:'#E11D48', bg:'#FFE4E6', text:'#9F1239' },
+  'B': { base:'#059669', bg:'#D1FAE5', text:'#064E3B' },
+  'C': { base:'#2563EB', bg:'#DBEAFE', text:'#1E3A8A' },
+  'D': { base:'#DB2777', bg:'#FCE7F3', text:'#831843' },
+  'E': { base:'#7C3AED', bg:'#EDE9FE', text:'#4C1D95' },
+  'F': { base:'#D97706', bg:'#FEF3C7', text:'#78350F' },
+  'G': { base:'#0891B2', bg:'#ECFEFF', text:'#164E63' },
+  'H': { base:'#16A34A', bg:'#DCFCE7', text:'#14532D' },
+  '?': { base:'#64748B', bg:'#F1F5F9', text:'#334155' },
+};
+const gc = id => GC[id] || GC['?'];
+
+// CEFR 等級順序
+const CEFR_ORDER = ['A1','A1-A2','A2','B1','B1-B2','B2','B2-C1','C1','C2','CEFR-Academic','CEFR-Idiom'];
+
+function fmtNum(n) {
+  return Number(n || 0).toLocaleString();
+}
+
+function pct(part, total) {
+  return total ? Math.round((part / total) * 100) : 0;
+}
+
+function dashEsc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  }[ch]));
+}
+
+// ==========================================
+// 載入
+// ==========================================
+async function loadIndex() {
+  try {
+    const res = await fetch('/index.json');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    DATA = await res.json();
+    if (DATA.error) { showError(DATA.error); return; }
+    renderStats();
+    renderSidebar();
+    // 預設選第一個有資料的類別
+    const fg = DATA.tree[0];
+    const fc = fg?.children?.find(c => c.total > 0);
+    if (fc) selectCat(fg.id, fc.id);
+  } catch(e) {
+    showError(`無法載入 index.json：${e.message}<br>請確認已執行：<code>python build_index.py</code>`);
+  }
+  // 同時載入進度（獨立非阻塞）
+  loadProgress();
+}
+
+// ==========================================
+// 統計列
+// ==========================================
+function renderStats() {
+  const m = DATA.meta;
+  document.getElementById('statsBar').innerHTML = [
+    `<span class="stat-chip">📄 Ess: ${m.total_essentials.toLocaleString()}</span>`,
+    `<span class="stat-chip">📘 Full: ${m.total_full.toLocaleString()}</span>`,
+    `<span class="stat-chip">✅ 已分類: ${m.classified.toLocaleString()}</span>`,
+    `<span class="stat-chip">🏷 高頻: ${m.tagged.toLocaleString()}</span>`,
+    `<span class="stat-chip">🎓 CEFR: ${m.cefr_tagged.toLocaleString()}</span>`,
+    m.unclassified > 0 ? `<span class="stat-chip" style="color:#991B1B">❓ 未分類: ${m.unclassified}</span>` : '',
+  ].join('');
+}
+
+// ==========================================
+// 左側 — 知識樹模式
+// ==========================================
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  if (currentView === 'dashboard') { renderDashboardSidebar(); return; }
+  if (currentView === 'cefr') { renderCefrSidebar(); return; }
+
+  let html = '';
+  for (const group of DATA.tree) {
+    const c = gc(group.id);
+    const total = group.children.reduce((s,c)=>s+c.total,0);
+    if (!total && group.id !== '?') continue;
+    html += `<div class="group-header" style="color:${c.text}">${group.label}</div>`;
+    for (const cat of group.children) {
+      if (!cat.total) continue;
+      const isA = activeCat === cat.id;
+      html += `<div class="cat-item ${isA?'active':''}"
+        style="--ac:${c.base};--ab:${c.bg}"
+        onclick="selectCat('${group.id}','${cat.id}')">
+        <div class="cat-dot" style="background:${c.base}"></div>
+        <span class="cat-label">${cat.label}</span>
+        <span class="cat-count">${cat.total}</span>
+      </div>`;
+    }
+  }
+  sb.innerHTML = html;
+}
+
+function renderDashboardSidebar() {
+  const sb = document.getElementById('sidebar');
+  if (!DATA) {
+    sb.innerHTML = `<div class="loading"><div class="spinner"></div>載入中...</div>`;
+    return;
+  }
+  const m = DATA.meta || {};
+  const total = m.total || (DATA.all_items?.length || 0);
+  const learned = Object.keys(PROG || {}).length;
+  const due = Object.values(PROG || {}).filter(e =>
+    e.due <= new Date().toISOString().slice(0,10) && e.status !== 'new'
+  ).length;
+  sb.innerHTML = `
+    <div class="group-header">統計總覽</div>
+    <div class="cat-item active" style="--ac:#0F766E;--ab:#CCFBF1">
+      <div class="cat-dot" style="background:#0F766E"></div>
+      <span class="cat-label">資料概況</span>
+      <span class="cat-count">${fmtNum(total)}</span>
+    </div>
+    <div class="group-header">學習狀態</div>
+    <div class="cat-item" style="cursor:default">
+      <div class="cat-dot" style="background:#F59E0B"></div>
+      <span class="cat-label">已記錄</span>
+      <span class="cat-count">${fmtNum(learned)}</span>
+    </div>
+    <div class="cat-item" style="cursor:default">
+      <div class="cat-dot" style="background:#EF4444"></div>
+      <span class="cat-label">待複習</span>
+      <span class="cat-count">${fmtNum(due)}</span>
+    </div>
+    <div class="group-header">覆蓋率</div>
+    <div class="cat-item" style="cursor:default">
+      <div class="cat-dot" style="background:#2563EB"></div>
+      <span class="cat-label">已分類</span>
+      <span class="cat-count">${pct(m.classified || 0, total)}%</span>
+    </div>
+    <div class="cat-item" style="cursor:default">
+      <div class="cat-dot" style="background:#7C3AED"></div>
+      <span class="cat-label">CEFR</span>
+      <span class="cat-count">${pct(m.cefr_tagged || 0, total)}%</span>
+    </div>`;
+}
+
+// ==========================================
+// 左側 — CEFR 模式
+// ==========================================
+function renderCefrSidebar() {
+  const sb = document.getElementById('sidebar');
+  const meta = DATA.cefr_level_meta || {};
+  const counts = DATA.meta.cefr_counts || {};
+
+  // 主等級 vs 子標籤分組
+  const mainLevels = ['A1','A1-A2','A2','B1','B1-B2','B2','B2-C1','C1','C2'];
+  const subLevels  = ['CEFR-Academic','CEFR-Idiom'];
+
+  let html = `<div class="cefr-section">
+    <div class="cefr-group-hdr">CEFR 主等級</div>`;
+
+  for (const lvl of mainLevels) {
+    const m = meta[lvl] || {};
+    const cnt = counts[lvl] || 0;
+    if (!cnt) continue;
+    const isA = activeCefr === lvl;
+    html += `<div class="cefr-item ${isA?'active':''}"
+      style="color:${m.color||'#64748B'}"
+      onclick="selectCefr('${lvl}')">
+      <span class="cefr-pill badge badge-${CSS.escape(lvl)}">${lvl}</span>
+      <span class="cefr-name">${(m.label||lvl).replace(/^[A-Z0-9\-]+ /,'')}</span>
+      <span class="cefr-cnt">${cnt}</span>
+    </div>`;
+  }
+
+  html += `<div class="cefr-group-hdr" style="margin-top:10px">子標籤</div>`;
+  for (const lvl of subLevels) {
+    const m = meta[lvl] || {};
+    const cnt = counts[lvl] || 0;
+    if (!cnt) continue;
+    const isA = activeCefr === lvl;
+    html += `<div class="cefr-item ${isA?'active':''}"
+      style="color:${m.color||'#64748B'}"
+      onclick="selectCefr('${lvl}')">
+      <span class="cefr-pill badge badge-${CSS.escape(lvl)}">${lvl.replace('CEFR-','')}</span>
+      <span class="cefr-name">${m.label||lvl}</span>
+      <span class="cefr-cnt">${cnt}</span>
+    </div>`;
+  }
+  html += '</div>';
+  sb.innerHTML = html;
+}
+
+// ==========================================
+// 選中知識樹類別
+// ==========================================
+function selectCat(groupId, catId) {
+  activeGroup = groupId; activeCat = catId; activeCefr = null;
+  renderSidebar();
+  const group = DATA.tree.find(g=>g.id===groupId);
+  const cat   = group?.children.find(c=>c.id===catId);
+  if (!cat) return;
+  renderPanel([...cat.essentials,...cat.full], cat.label, group);
+}
+
+// ==========================================
+// 選中 CEFR 等級
+// ==========================================
+function selectCefr(level) {
+  activeCefr = level; activeGroup = null; activeCat = null;
+  renderCefrSidebar();
+  const meta = (DATA.cefr_level_meta||{})[level] || {};
+  // 過濾：主等級用 cefr_level，子標籤用 cefr_subtags
+  let items;
+  if (level.startsWith('CEFR-')) {
+    items = DATA.all_items.filter(i => i.cefr_subtags && i.cefr_subtags.includes(level));
+  } else {
+    items = DATA.all_items.filter(i => i.cefr_level === level);
+  }
+  const fakeGroup = { id: '?', label: meta.label || level };
+  renderPanel(items, meta.label || level, fakeGroup, meta);
+}
+
+// ==========================================
+// 右側詞彙面板
+// ==========================================
+function renderPanel(items, catLabel='', group=null, cefrMeta=null) {
+  const panel = document.getElementById('panel');
+  const c = cefrMeta
+    ? { text: cefrMeta.text||'#0F172A', base: cefrMeta.color||'#64748B' }
+    : group ? gc(group.id) : gc('?');
+
+  const filtered = applyFilters(items);
+  const eCount   = items.filter(i=>i.file_type==='essentials').length;
+  const fCount   = items.filter(i=>i.file_type==='full').length;
+  const tagCount = items.filter(i=>i.tags&&i.tags.length).length;
+  const cefrCount= items.filter(i=>i.cefr_level).length;
+
+  let html = `
+    <div class="panel-header">
+      <span class="panel-title" style="color:${c.text}">${catLabel||'請選擇左側類別'}</span>
+      <span class="panel-sub">共 ${items.length} 個詞彙 ／ Ess:${eCount} Full:${fCount} 高頻:${tagCount} CEFR:${cefrCount}</span>
+    </div>`;
+
+  if (items.length > 0) {
+    html += `<div class="type-tabs">
+      <span class="type-tab ${typeFilter==='all'?'active':''}"       onclick="setTypeFilter('all')">全部 ${items.length}</span>
+      <span class="type-tab ${typeFilter==='essentials'?'active':''}" onclick="setTypeFilter('essentials')">🟢 Essentials ${eCount}</span>
+      <span class="type-tab ${typeFilter==='full'?'active':''}"       onclick="setTypeFilter('full')">🔵 Full ${fCount}</span>
+      <span class="type-tab ${typeFilter==='tagged'?'active':''}"     onclick="setTypeFilter('tagged')">🏷 高頻 ${tagCount}</span>
+      <span class="type-tab ${typeFilter==='cefr'?'active':''}"       onclick="setTypeFilter('cefr')">🎓 CEFR ${cefrCount}</span>
+    </div>`;
+  }
+
+  if (!filtered.length) {
+    html += `<div class="empty-state"><div class="empty-icon">🔍</div>
+      <div class="empty-text">${searchQuery?`沒有符合「${searchQuery}」的詞彙`:'此類別目前沒有檔案'}</div></div>`;
+  } else {
+    allSemItems = [];   // 每次重新渲染時清空
+    html += `<div class="word-grid">`;
+    for (const item of filtered) {
+      // 高頻標籤
+      const freqBadges = (item.tags||[]).map(t=>`<span class="badge badge-${t}">${t.toUpperCase()}</span>`).join('');
+      // CEFR 主等級 + 信心徽章
+      const confIcon = {'confirmed':'✅','inferred':'🔶','bert':'🤖','unknown':''}[item.cefr_confidence||'']||'';
+      const confTitle = item.cefr_reason ? `推算依據：${item.cefr_reason}` : '';
+      const cefrBadge = item.cefr_level
+        ? `<span class="badge badge-${item.cefr_level}" title="${confTitle}">${item.cefr_level} ${confIcon}</span>` : '';
+      // CEFR 子標籤
+      const subBadges = (item.cefr_subtags||[]).map(s=>`<span class="badge badge-${s}">${s.replace('CEFR-','')}</span>`).join('');
+      const typeBadge = `<span class="badge badge-${item.file_type}">${item.file_type}</span>`;
+      const enc = encodeURIComponent(item.path);
+      // 語義展開按鈕
+      const sem    = item.semantic_links || {};
+      const hasSem = (sem.phrasal_verbs?.length||0) + (sem.collocations?.length||0) + (sem.word_family?.length||0);
+      const idx    = allSemItems.length;
+      allSemItems.push(item);
+      const semBtn = hasSem
+        ? `<span class="sem-btn" onclick="event.preventDefault();event.stopPropagation();_openSem(${idx})">🔗 展開</span>`
+        : '';
+      // 心智圖按鈕（單字才有）
+      const mmBtn = item.core_word.includes(' ') ? ''
+        : `<span class="mm-trigger" onclick="event.preventDefault();event.stopPropagation();openMindmap('${item.core_word.replace(/'/g,"\\'")}')">🧠 心智圖</span>`;
+      // 進度狀態點
+      const progEntry = PROG[item.core_word.toLowerCase()];
+      const today = new Date().toISOString().slice(0,10);
+      let dotClass = '';
+      if (progEntry) {
+        if (progEntry.due <= today && progEntry.status !== 'new') dotClass = 'due';
+        else dotClass = progEntry.status;
+      }
+      const progDot = dotClass ? `<div class="prog-dot ${dotClass}" title="${{due:'待複習',learning:'學習中',mastered:'已掌握',new:'新詞'}[dotClass]||''}"></div>` : '';
+
+      const safeWord = item.core_word.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      const itemIdx  = allSemItems.length - 1;   // 已 push，取最後一個
+
+      html += `<div class="word-card type-${item.file_type}"
+          title="點擊預覽 · 按 Ctrl/Cmd+點擊直接開啟"
+          onmouseenter="schedulePreview(${itemIdx})"
+          onmouseleave="cancelPreview()"
+          onclick="openPreview(${itemIdx})">
+        ${progDot}
+        <div class="word-name">${item.core_word}${semBtn}${mmBtn}</div>
+        <div class="word-meta">${typeBadge}${cefrBadge}${subBadges}${freqBadges}</div>
+        <span class="pv-hint">點擊預覽</span>
+      </div>`;
+    }
+    html += `</div>`;
+  }
+  panel.innerHTML = html;
+}
+
+// ==========================================
+// 過濾
+// ==========================================
+function applyFilters(items) {
+  let r = items;
+  if      (typeFilter==='essentials')    r = r.filter(i=>i.file_type==='essentials');
+  else if (typeFilter==='full')          r = r.filter(i=>i.file_type==='full');
+  else if (typeFilter==='tagged')        r = r.filter(i=>i.tags&&i.tags.length);
+  else if (typeFilter==='cefr')          r = r.filter(i=>i.cefr_level);
+  else if (typeFilter==='cefr-confirmed')r = r.filter(i=>i.cefr_confidence==='confirmed');
+  else if (typeFilter==='cefr-inferred') r = r.filter(i=>i.cefr_confidence==='inferred');
+  else if (typeFilter==='cefr-bert')     r = r.filter(i=>i.cefr_confidence==='bert');
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    r = r.filter(i=>i.core_word.toLowerCase().includes(q)||i.filename.toLowerCase().includes(q));
+  }
+  return r;
+}
+
+function setTypeFilter(type) {
+  typeFilter = type;
+  const types = ['all','essentials','full','tagged','cefr','cefr-confirmed','cefr-inferred','cefr-bert'];
+  document.querySelectorAll('#typeFilters .filter-btn').forEach((b,i)=>{
+    b.classList.toggle('active', types[i]===type);
+  });
+  // 重新渲染目前面板
+  if (currentView==='cefr' && activeCefr) { selectCefr(activeCefr); return; }
+  if (activeCat) {
+    const group = DATA?.tree.find(g=>g.id===activeGroup);
+    const cat   = group?.children.find(c=>c.id===activeCat);
+    if (cat) renderPanel([...cat.essentials,...cat.full], cat.label, group);
+  }
+}
+
+// ==========================================
+// 視圖切換
+// ==========================================
+function setView(v) {
+  currentView = v;
+  document.getElementById('viewTree').classList.toggle('active', v==='tree');
+  document.getElementById('viewCefr').classList.toggle('active', v==='cefr');
+  document.getElementById('viewDash').classList.toggle('active', v==='dashboard');
+  activeCat = null; activeCefr = null;
+  renderSidebar();
+  if (v === 'dashboard') {
+    renderDashboard();
+    return;
+  }
+  document.getElementById('panel').innerHTML =
+    `<div class="empty-state"><div class="empty-icon">${v==='cefr'?'🎓':'🌳'}</div>
+     <div class="empty-text">請選擇左側${v==='cefr'?'CEFR 等級':'類別'}</div></div>`;
+}
+
+function dashBarRows(rows, maxValue, colorFn) {
+  if (!rows.length) return `<div class="dash-empty-note">尚無資料</div>`;
+  const max = Math.max(1, maxValue || Math.max(...rows.map(r => r.value), 1));
+  return `<div class="dash-bars">` + rows.map((r, i) => {
+    const w = Math.max(2, Math.round((r.value / max) * 100));
+    const color = colorFn ? colorFn(r, i) : '#2563EB';
+    return `<div class="dash-bar-row">
+      <div class="dash-bar-label" title="${dashEsc(r.label)}">${dashEsc(r.label)}</div>
+      <div class="dash-bar-track"><div class="dash-bar-fill" style="width:${w}%;background:${color}"></div></div>
+      <div class="dash-bar-val">${fmtNum(r.value)}</div>
+    </div>`;
+  }).join('') + `</div>`;
+}
+
+function dashDonut(parts) {
+  const total = parts.reduce((s, p) => s + p.value, 0);
+  let start = 0;
+  const segments = total ? parts.map(p => {
+    const deg = (p.value / total) * 360;
+    const seg = `${p.color} ${start.toFixed(2)}deg ${(start + deg).toFixed(2)}deg`;
+    start += deg;
+    return seg;
+  }) : ['#CBD5E1 0deg 360deg'];
+  return `<div class="dash-donut" style="background:conic-gradient(${segments.join(',')})">
+    <div class="dash-donut-center">
+      <div class="dash-donut-num">${fmtNum(total)}</div>
+      <div class="dash-donut-lbl">已追蹤</div>
+    </div>
+  </div>`;
+}
+
+function buildDashboardData() {
+  const items = DATA?.all_items || [];
+  const meta = DATA?.meta || {};
+  const total = meta.total || items.length;
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0,10);
+  const progEntries = Object.values(PROG || {});
+  const progressWords = new Set(progEntries.map(e => (e.word || '').toLowerCase()));
+  const dueCount = progEntries.filter(e => e.due <= todayStr && e.status !== 'new').length;
+
+  const status = [
+    {label:'待複習', value:dueCount, color:'#EF4444'},
+    {label:'學習中', value:progEntries.filter(e => e.status === 'learning' && !(e.due <= todayStr)).length, color:'#F59E0B'},
+    {label:'已掌握', value:progEntries.filter(e => e.status === 'mastered' && !(e.due <= todayStr)).length, color:'#22C55E'},
+    {label:'新詞記錄', value:progEntries.filter(e => e.status === 'new').length, color:'#94A3B8'},
+  ];
+  const unseen = Math.max(0, total - progressWords.size);
+
+  const cefrRows = CEFR_ORDER
+    .filter(l => !l.startsWith('CEFR-'))
+    .map(lvl => ({
+      label: lvl,
+      value: (meta.cefr_counts || {})[lvl] || 0,
+      color: (DATA.cefr_level_meta || {})[lvl]?.color || '#2563EB'
+    }))
+    .filter(r => r.value > 0);
+
+  const typeParts = [
+    {label:'Essentials', value:meta.total_essentials || items.filter(i=>i.file_type==='essentials').length, color:'#059669'},
+    {label:'Full', value:meta.total_full || items.filter(i=>i.file_type==='full').length, color:'#2563EB'},
+  ];
+
+  const confidenceRows = Object.entries(meta.cefr_confidence || {})
+    .map(([label, value]) => ({label, value}))
+    .filter(r => r.value > 0);
+
+  const topCats = [];
+  for (const group of DATA?.tree || []) {
+    for (const cat of group.children || []) {
+      if (cat.total > 0) topCats.push({
+        label: cat.label,
+        group: group.id,
+        value: cat.total,
+        color: gc(group.id).base
+      });
+    }
+  }
+  topCats.sort((a,b) => b.value - a.value);
+
+  const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    const iso = d.toISOString().slice(0,10);
+    const label = i === 0 ? '今天' : `${d.getMonth()+1}/${d.getDate()}`;
+    const value = progEntries.filter(e =>
+      e.status !== 'new' && (i === 0 ? e.due <= iso : e.due === iso)
+    ).length;
+    days.push({label, value});
+  }
+
+  return {items, meta, total, status, unseen, cefrRows, typeParts, confidenceRows, topCats, days};
+}
+
+function renderDashboard() {
+  const panel = document.getElementById('panel');
+  if (!DATA) {
+    panel.innerHTML = `<div class="loading"><div class="spinner"></div>載入統計資料...</div>`;
+    return;
+  }
+  const d = buildDashboardData();
+  const learned = Object.keys(PROG || {}).length;
+  const maxDay = Math.max(1, ...d.days.map(x => x.value));
+  const classified = d.meta.classified || 0;
+  const tagged = d.meta.tagged || 0;
+  const cefrTagged = d.meta.cefr_tagged || 0;
+  const lastUpdated = (PROG && Object.keys(PROG).length)
+    ? Object.values(PROG).map(e=>e.last_seen || e.first_seen || '').sort().at(-1)
+    : '';
+
+  const donutParts = [
+    ...d.status,
+    {label:'未開始', value:d.unseen, color:'#E2E8F0'}
+  ];
+
+  panel.innerHTML = `
+    <div class="dash-view">
+      <section class="dash-hero">
+        <div>
+          <div class="dash-title">統計儀表板</div>
+          <div class="dash-sub">詞彙索引、CEFR 覆蓋與 SM-2 複習狀態</div>
+        </div>
+        <div class="dash-updated">${lastUpdated ? `最近學習 ${lastUpdated}` : '尚無學習記錄'}</div>
+      </section>
+
+      <section class="dash-kpis">
+        <div class="dash-kpi"><div class="dash-kpi-num">${fmtNum(d.total)}</div><div class="dash-kpi-lbl">總詞彙</div></div>
+        <div class="dash-kpi"><div class="dash-kpi-num">${fmtNum(classified)}</div><div class="dash-kpi-lbl">已分類</div></div>
+        <div class="dash-kpi"><div class="dash-kpi-num">${fmtNum(cefrTagged)}</div><div class="dash-kpi-lbl">CEFR 標記</div></div>
+        <div class="dash-kpi"><div class="dash-kpi-num">${fmtNum(tagged)}</div><div class="dash-kpi-lbl">高頻詞</div></div>
+        <div class="dash-kpi"><div class="dash-kpi-num">${fmtNum(learned)}</div><div class="dash-kpi-lbl">已學習記錄</div></div>
+      </section>
+
+      <section class="dash-grid">
+        <div class="dash-card">
+          <div class="dash-card-hdr">
+            <div class="dash-card-title">CEFR 分布</div>
+            <div class="dash-card-note">${fmtNum(cefrTagged)} / ${fmtNum(d.total)}</div>
+          </div>
+          ${dashBarRows(d.cefrRows, Math.max(...d.cefrRows.map(r=>r.value), 1), r => r.color)}
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-hdr">
+            <div class="dash-card-title">學習狀態</div>
+            <div class="dash-card-note">${pct(learned, d.total)}% started</div>
+          </div>
+          <div class="dash-donut-wrap">
+            ${dashDonut(donutParts)}
+            <div class="dash-legend">
+              ${donutParts.map(p => `<div class="dash-legend-item">
+                <span class="dash-legend-dot" style="background:${p.color}"></span>
+                <span>${dashEsc(p.label)}</span>
+                <span class="dash-legend-val">${fmtNum(p.value)}</span>
+              </div>`).join('')}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="dash-grid">
+        <div class="dash-card">
+          <div class="dash-card-hdr">
+            <div class="dash-card-title">覆蓋率</div>
+            <div class="dash-card-note">index.json meta</div>
+          </div>
+          <div class="dash-coverage">
+            ${[
+              ['分類', classified, d.total, '#2563EB'],
+              ['CEFR', cefrTagged, d.total, '#7C3AED'],
+              ['高頻標籤', tagged, d.total, '#D97706'],
+            ].map(([label,val,total,color]) => `<div class="dash-meter">
+              <div class="dash-meter-label">${label}</div>
+              <div class="dash-meter-value" style="color:${color}">${pct(val,total)}%</div>
+              <div class="dash-meter-track"><div class="dash-meter-fill" style="width:${pct(val,total)}%;background:${color}"></div></div>
+            </div>`).join('')}
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-hdr">
+            <div class="dash-card-title">索引組成</div>
+            <div class="dash-card-note">Essentials / Full</div>
+          </div>
+          ${dashBarRows(d.typeParts, Math.max(...d.typeParts.map(r=>r.value), 1), r => r.color)}
+        </div>
+      </section>
+
+      <section class="dash-grid">
+        <div class="dash-card">
+          <div class="dash-card-hdr">
+            <div class="dash-card-title">未來 7 天複習量</div>
+            <div class="dash-card-note">今天含逾期</div>
+          </div>
+          <div class="dash-timeline">
+            ${d.days.map(day => {
+              const h = Math.max(3, Math.round((day.value / maxDay) * 92));
+              return `<div class="dash-day">
+                <div class="dash-day-bar-wrap"><div class="dash-day-bar" style="height:${h}px"></div></div>
+                <div class="dash-day-count">${fmtNum(day.value)}</div>
+                <div class="dash-day-label">${day.label}</div>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-hdr">
+            <div class="dash-card-title">CEFR 信心來源</div>
+            <div class="dash-card-note">confirmed / inferred / bert</div>
+          </div>
+          ${dashBarRows(d.confidenceRows, Math.max(...d.confidenceRows.map(r=>r.value), 1), (r) => ({
+            confirmed:'#059669', inferred:'#D97706', bert:'#7C3AED', unknown:'#64748B'
+          }[r.label] || '#2563EB'))}
+        </div>
+      </section>
+
+      <section class="dash-card">
+        <div class="dash-card-hdr">
+          <div class="dash-card-title">最大分類</div>
+          <div class="dash-card-note">Top 8</div>
+        </div>
+        <table class="dash-table">
+          <thead><tr><th>分類</th><th>群組</th><th style="text-align:right">詞彙</th></tr></thead>
+          <tbody>
+            ${d.topCats.slice(0,8).map(c => `<tr>
+              <td><span class="dash-legend-dot" style="background:${c.color};display:inline-block;margin-right:7px"></span>${dashEsc(c.label)}</td>
+              <td>${dashEsc(c.group)}</td>
+              <td style="text-align:right;font-weight:800">${fmtNum(c.value)}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </section>
+    </div>`;
+}
+
+// ==========================================
+// 搜尋
+// ==========================================
+// ==========================================
+// 全域搜尋 + Autocomplete + 高亮
+// ==========================================
+let searchTimer  = null;
+let acFocusIdx   = -1;   // 鍵盤導航用
+let acItems      = [];   // 目前下拉清單的 items
+
+const searchInput = document.getElementById('searchInput');
+const acDropdown  = document.getElementById('acDropdown');
+const acList      = document.getElementById('acList');
+const acHeader    = document.getElementById('acHeader');
+const searchClear = document.getElementById('searchClear');
+
+// 關閉下拉
+function closeDropdown() {
+  acDropdown.classList.remove('show');
+  acFocusIdx = -1;
+}
+
+// 清空搜尋
+function clearSearch() {
+  searchInput.value = '';
+  searchQuery = '';
+  searchClear.style.display = 'none';
+  closeDropdown();
+  // 回到原本的類別視圖
+  if (currentView === 'cefr' && activeCefr) {
+    selectCefr(activeCefr);
+  } else if (activeCat) {
+    const group = DATA?.tree.find(g => g.id === activeGroup);
+    const cat   = group?.children.find(c => c.id === activeCat);
+    if (cat) renderPanel([...cat.essentials, ...cat.full], cat.label, group);
+  } else {
+    document.getElementById('panel').innerHTML =
+      `<div class="empty-state"><div class="empty-icon">🔍</div>
+       <div class="empty-text">請選擇左側類別或輸入搜尋詞彙</div></div>`;
+  }
+}
+
+// 建立 autocomplete 候選詞（即時，無防抖）
+function buildAcList(q) {
+  if (!DATA || !q) { closeDropdown(); return; }
+  const ql = q.toLowerCase();
+
+  // 找所有以 q 開頭 或 包含 q 的詞（開頭優先）
+  const starts  = [];
+  const contains = [];
+  const seen    = new Set();
+
+  for (const item of DATA.all_items) {
+    const w = item.core_word.toLowerCase();
+    if (seen.has(item.core_word)) continue;
+    if (w.startsWith(ql))        { starts.push(item);   seen.add(item.core_word); }
+    else if (w.includes(ql))     { contains.push(item); seen.add(item.core_word); }
+  }
+
+  // 合併，以開頭匹配優先，各最多 40 個，總計 60 個
+  const combined = [
+    ...starts.slice(0, 40),
+    ...contains.slice(0, 20),
+  ];
+  acItems = combined;
+
+  if (!combined.length) {
+    acList.innerHTML = `<div class="ac-empty">找不到「${q}」相關詞彙</div>`;
+    acHeader.textContent = '無結果';
+    acDropdown.classList.add('show');
+    return;
+  }
+
+  // 統計 essentials / full 分布
+  const eSet = new Set(DATA.all_items.filter(i=>i.file_type==='essentials').map(i=>i.core_word));
+  const fSet = new Set(DATA.all_items.filter(i=>i.file_type==='full').map(i=>i.core_word));
+
+  acHeader.textContent = `找到 ${combined.length} 個相關詞彙`;
+
+  let html = '';
+  for (let i = 0; i < combined.length; i++) {
+    const item = combined[i];
+    const w    = item.core_word;
+    const wl   = w.toLowerCase();
+
+    // 高亮：找到 q 在 w 中的位置，輸入部分藍底，其餘灰色
+    const matchStart = wl.indexOf(ql);
+    let highlighted  = '';
+    if (matchStart >= 0) {
+      const before = w.slice(0, matchStart);
+      const match  = w.slice(matchStart, matchStart + q.length);
+      const after  = w.slice(matchStart + q.length);
+      highlighted  = `${before}<span class="ac-match">${match}</span><span class="ac-rest">${after}</span>`;
+    } else {
+      highlighted = w;
+    }
+
+    // 類型徽章
+    const inE = eSet.has(w), inF = fSet.has(w);
+    const badgeClass = (inE && inF) ? 'both' : inE ? 'essentials' : 'full';
+    const badgeLabel = (inE && inF) ? 'E+F' : inE ? 'Ess' : 'Full';
+
+    html += `<div class="ac-item" data-idx="${i}"
+      onmousedown="event.preventDefault()" onclick="selectAcItem(${i})">
+      <span>${highlighted}</span>
+      <span class="ac-badge ${badgeClass}">${badgeLabel}</span>
+    </div>`;
+  }
+
+  acList.innerHTML = html;
+  acDropdown.classList.add('show');
+}
+
+// 選取 autocomplete 項目
+function selectAcItem(idx) {
+  const item = acItems[idx];
+  if (!item) return;
+  searchInput.value = item.core_word;
+  searchQuery = item.core_word;
+  searchClear.style.display = 'block';
+  closeDropdown();
+  runSearch(item.core_word);
+}
+
+// 執行搜尋並高亮卡片
+function runSearch(q) {
+  if (!q || !DATA) return;
+  const ql  = q.toLowerCase();
+  const all = DATA.all_items.filter(i =>
+    i.core_word.toLowerCase().includes(ql) || i.filename.toLowerCase().includes(ql)
+  );
+  renderPanelWithHighlight(applyFilters(all), `搜尋：「${q}」`, q);
+}
+
+// 帶高亮的面板渲染
+function renderPanelWithHighlight(items, catLabel, query) {
+  const panel = document.getElementById('panel');
+  const ql    = query.toLowerCase();
+
+  let html = `
+    <div class="panel-header">
+      <span class="panel-title">${catLabel}</span>
+      <span class="panel-sub">共 ${items.length} 個詞彙</span>
+    </div>`;
+
+  if (!items.length) {
+    html += `<div class="empty-state"><div class="empty-icon">🔍</div>
+      <div class="empty-text">找不到「${query}」相關詞彙</div></div>`;
+    panel.innerHTML = html;
+    return;
+  }
+
+  allSemItems = [];
+  html += `<div class="word-grid">`;
+  for (const item of items) {
+    const w    = item.core_word;
+    const wl   = w.toLowerCase();
+    const matchStart = wl.indexOf(ql);
+
+    // 詞名高亮：<mark> 標記
+    let wordHtml = '';
+    if (matchStart >= 0) {
+      const before = w.slice(0, matchStart);
+      const match  = w.slice(matchStart, matchStart + query.length);
+      const after  = w.slice(matchStart + query.length);
+      wordHtml = `${before}<mark>${match}</mark>${after}`;
+    } else {
+      wordHtml = w;
+    }
+
+    const isExact = wl === ql;
+
+    // 徽章
+    const freqBadges = (item.tags||[]).map(t=>
+      `<span class="badge badge-${t}">${t.toUpperCase()}</span>`).join('');
+    const confIcon = {'confirmed':'✅','inferred':'🔶','bert':'🤖','unknown':''}[item.cefr_confidence||'']||'';
+    const cefrBadge = item.cefr_level
+      ? `<span class="badge badge-${item.cefr_level}">${item.cefr_level} ${confIcon}</span>` : '';
+    const typeBadge = `<span class="badge badge-${item.file_type}">${item.file_type}</span>`;
+    const enc = encodeURIComponent(item.path);
+
+    // 語義展開
+    const sem    = item.semantic_links || {};
+    const hasSem = (sem.phrasal_verbs?.length||0)+(sem.collocations?.length||0)+(sem.word_family?.length||0);
+    const idx    = allSemItems.length;
+    allSemItems.push(item);
+    const semBtn = hasSem
+      ? `<span class="sem-btn" onclick="event.preventDefault();event.stopPropagation();_openSem(${idx})">🔗 展開</span>`
+      : '';
+    // 心智圖按鈕（單字才有）
+    const mmBtn = item.core_word.includes(' ') ? ''
+      : `<span class="mm-trigger" onclick="event.preventDefault();event.stopPropagation();openMindmap('${item.core_word.replace(/'/g,"\\'")}')">🧠 心智圖</span>`;
+
+    html += `<a class="word-card type-${item.file_type} ${isExact ? 'search-match' : ''}"
+        href="/file?path=${enc}" target="_blank">
+      <div class="word-name">${wordHtml}${semBtn}${mmBtn}</div>
+      <div class="word-meta">${typeBadge}${cefrBadge}${freqBadges}</div>
+    </a>`;
+  }
+  html += '</div>';
+  panel.innerHTML = html;
+}
+
+// Input 事件：即時 autocomplete（無防抖） + 延遲搜尋（有防抖）
+searchInput.addEventListener('input', e => {
+  const q = e.target.value;
+  searchClear.style.display = q ? 'block' : 'none';
+  buildAcList(q);   // 即時補全，無防抖
+
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    searchQuery = q.trim();
+    if (searchQuery) {
+      runSearch(searchQuery);
+    } else {
+      clearSearch();
+    }
+  }, 280);
+});
+
+// 鍵盤導航
+searchInput.addEventListener('keydown', e => {
+  const items = acList.querySelectorAll('.ac-item');
+  if (!items.length) return;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    acFocusIdx = Math.min(acFocusIdx + 1, items.length - 1);
+    items.forEach((el, i) => el.classList.toggle('focused', i === acFocusIdx));
+    items[acFocusIdx]?.scrollIntoView({ block: 'nearest' });
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    acFocusIdx = Math.max(acFocusIdx - 1, 0);
+    items.forEach((el, i) => el.classList.toggle('focused', i === acFocusIdx));
+    items[acFocusIdx]?.scrollIntoView({ block: 'nearest' });
+  } else if (e.key === 'Enter') {
+    if (acFocusIdx >= 0) {
+      e.preventDefault();
+      selectAcItem(acFocusIdx);
+    } else {
+      closeDropdown();
+      runSearch(searchInput.value.trim());
+    }
+  } else if (e.key === 'Escape') {
+    closeDropdown();
+  }
+});
+
+searchInput.addEventListener('focus', () => {
+  if (searchInput.value) buildAcList(searchInput.value);
+});
+
+// 點擊外部關閉下拉
+document.addEventListener('click', e => {
+  if (!document.getElementById('searchWrap').contains(e.target)) {
+    closeDropdown();
+  }
+});
+
+// ==========================================
+// 錯誤
+// ==========================================
+function showError(msg) {
+  document.getElementById('sidebar').innerHTML='';
+  document.getElementById('panel').innerHTML=`<div class="error-box">⚠️ ${msg}<br><br>
+    <strong>執行步驟：</strong><br>
+    1. 確認 <code>config.json</code> 路徑設定正確<br>
+    2. 執行 <code>python build_index.py</code><br>
+    3. 重新整理此頁面</div>`;
+  document.getElementById('statsBar').innerHTML=
+    `<span class="stat-chip" style="color:#991B1B">⚠️ 索引未載入</span>`;
+}
+
+// ==========================================
+// 語義網絡面板
+// ==========================================
+let semData   = null;
+let semTabIdx = 0;
+
+function _openSem(idx) {
+  const item  = allSemItems[idx];
+  if (!item) return;
+  const links = item.semantic_links || {};
+  if (!links.phrasal_verbs?.length && !links.collocations?.length && !links.word_family?.length) return;
+  semData = { word: item.core_word, links, item };
+  semTabIdx = 0;
+  document.getElementById('semWord').textContent = item.core_word;
+  document.getElementById('semPanel').classList.add('open');
+  document.getElementById('semOverlay').classList.add('show');
+  [0,1,2].forEach(i => document.getElementById(`semTab${i}`).classList.toggle('active', i===0));
+  renderSemTab(0);
+}
+
+function closeSemPanel() {
+  document.getElementById('semPanel').classList.remove('open');
+  document.getElementById('semOverlay').classList.remove('show');
+}
+
+function setSemTab(idx) {
+  semTabIdx = idx;
+  [0,1,2].forEach(i => document.getElementById(`semTab${i}`).classList.toggle('active', i===idx));
+  renderSemTab(idx);
+}
+
+function renderSemTab(idx) {
+  if (!semData) return;
+  const body   = document.getElementById('semBody');
+  const keys   = ['phrasal_verbs','collocations','word_family'];
+  const labels = ['片語動詞 / 相關片語','搭配詞 Collocations','詞形家族 Word Family'];
+  const items  = semData.links[keys[idx]] || [];
+
+  if (!items.length) {
+    body.innerHTML = `<div class="sem-empty">此詞暫無「${labels[idx]}」資料</div>`;
+    return;
+  }
+
+  const inList  = items.filter(x => x.in_list);
+  const notList = items.filter(x => !x.in_list);
+
+  let html = '';
+  if (inList.length) {
+    html += `<div class="sem-section-title">✅ 清單中可直接開啟（${inList.length} 個）</div><div class="sem-chips">`;
+    for (const x of inList) {
+      const esc = x.word.replace(/'/g,"\\'");
+      html += `<div class="sem-chip in-list" onclick="openLinkedWord('${esc}')">
+        <span class="chip-label">${x.word}</span><span class="chip-open">開啟</span></div>`;
+    }
+    html += '</div>';
+  }
+  if (notList.length) {
+    html += `<div class="sem-section-title">○ 延伸參考（${notList.length} 個）</div><div class="sem-chips">`;
+    for (const x of notList) {
+      const esc = x.word.replace(/'/g,"\\'");
+      html += `<div class="sem-chip" onclick="triggerSearch('${esc}')">
+        <span class="chip-label">${x.word}</span><span class="chip-open">搜尋</span></div>`;
+    }
+    html += '</div>';
+  }
+  body.innerHTML = html;
+}
+
+function openLinkedWord(word) {
+  if (!DATA) return;
+  const found = DATA.all_items.find(i => i.core_word === word);
+  if (found) window.open(`/file?path=${encodeURIComponent(found.path)}`, '_blank');
+}
+
+function triggerSearch(word) {
+  const input = document.getElementById('searchInput');
+  input.value = word;
+  input.dispatchEvent(new Event('input'));
+  closeSemPanel();
+}
+
+// ==========================================
+// 詞彙快速預覽面板
+// ==========================================
+
+let _pvTimer   = null;   // hover 延遲計時器
+let _pvCurrent = -1;     // 目前預覽的 allSemItems index
+const PV_DELAY = 280;    // hover 停留幾 ms 後觸發（避免滑過時閃爍）
+
+/** hover 後延遲開啟（避免快速滑過觸發） */
+function schedulePreview(idx) {
+  cancelPreview();
+  _pvTimer = setTimeout(() => openPreview(idx), PV_DELAY);
+}
+
+function cancelPreview() {
+  clearTimeout(_pvTimer);
+  _pvTimer = null;
+}
+
+/** 開啟預覽面板，填入指定 item 的資訊 */
+function openPreview(idx) {
+  cancelPreview();
+  const item = allSemItems[idx];
+  if (!item) return;
+  _pvCurrent = idx;
+
+  // 色條
+  const accent = document.getElementById('pvAccent');
+  accent.className = `pv-accent type-${item.file_type}`;
+
+  // 詞彙名稱
+  document.getElementById('pvWord').textContent = item.core_word;
+
+  // body 渲染
+  document.getElementById('pvBody').innerHTML = buildPvBody(item);
+
+  // 底部操作列
+  document.getElementById('pvActions').innerHTML = buildPvActions(item);
+
+  document.getElementById('previewPanel').classList.add('open');
+}
+
+function closePreview() {
+  document.getElementById('previewPanel').classList.remove('open');
+  _pvCurrent = -1;
+}
+
+/** 組裝預覽面板主體 HTML */
+function buildPvBody(item) {
+  let html = '';
+
+  // ── 徽章列 ──────────────────────────────────
+  const typeBadge  = `<span class="badge badge-${item.file_type}">${item.file_type}</span>`;
+  const confIcon   = {'confirmed':'✅','inferred':'🔶','bert':'🤖','unknown':''}[item.cefr_confidence||'']||'';
+  const cefrBadge  = item.cefr_level
+    ? `<span class="badge badge-${item.cefr_level}">${item.cefr_level} ${confIcon}</span>` : '';
+  const subBadges  = (item.cefr_subtags||[]).map(s=>`<span class="badge badge-${s}">${s.replace('CEFR-','')}</span>`).join('');
+  const freqBadges = (item.tags||[]).map(t=>`<span class="badge badge-${t}">${t.toUpperCase()}</span>`).join('');
+
+  html += `<div class="pv-badges">${typeBadge}${cefrBadge}${subBadges}${freqBadges}</div>`;
+
+  // ── CEFR 資訊區塊 ────────────────────────────
+  if (item.cefr_level) {
+    const cefrColors = {
+      'A1':'#14532D','A2':'#1E3A8A','B1':'#4C1D95','B2':'#831843','C1':'#78350F','C2':'#164E63'
+    };
+    const baseLevel = item.cefr_level.split('-')[0];
+    const clr = cefrColors[baseLevel] || '#334155';
+    const bg  = item.cefr_level.startsWith('A') ? '#DCFCE7'
+              : item.cefr_level.startsWith('B') ? '#EDE9FE'
+              : '#FEF3C7';
+
+    const confLabel = {
+      'confirmed': '字典確認',
+      'inferred':  'Tier 2 推算',
+      'bert':      'BERT 推算',
+      'unknown':   '未確認',
+    }[item.cefr_confidence||''] || '';
+
+    html += `<div>
+      <div class="pv-section-title">CEFR 程度</div>
+      <div class="pv-cefr-row">
+        <span class="pv-cefr-level" style="background:${bg};color:${clr}">${item.cefr_level}</span>
+        <div class="pv-cefr-detail">
+          ${confLabel ? `<div>${confLabel}</div>` : ''}
+          ${(item.cefr_subtags||[]).length ? `<div>${item.cefr_subtags.join('・')}</div>` : ''}
+        </div>
+      </div>
+      ${item.cefr_reason ? `<div class="pv-cefr-reason">📌 ${item.cefr_reason}</div>` : ''}
+    </div>`;
+  } else {
+    html += `<div>
+      <div class="pv-section-title">CEFR 程度</div>
+      <div style="font-size:12px;color:var(--muted)">尚未標注 CEFR 等級</div>
+    </div>`;
+  }
+
+  // ── 高頻詞表 ─────────────────────────────────
+  if ((item.tags||[]).length) {
+    const tagLabels = { dolch:'Dolch 基礎詞', fry:'Fry 高頻詞', ngsl:'NGSL 核心詞' };
+    html += `<div>
+      <div class="pv-section-title">高頻詞表</div>
+      <div class="pv-tags">${
+        item.tags.map(t=>`<span class="badge badge-${t}" style="font-size:11px;padding:3px 9px">${tagLabels[t]||t}</span>`).join('')
+      }</div>
+    </div>`;
+  }
+
+  // ── 語義連結摘要 ─────────────────────────────
+  const sem    = item.semantic_links || {};
+  const pvCount = (sem.phrasal_verbs?.length||0) + (sem.collocations?.length||0) + (sem.word_family?.length||0);
+  if (pvCount) {
+    const parts = [];
+    if (sem.phrasal_verbs?.length) parts.push(`片語 ${sem.phrasal_verbs.length}`);
+    if (sem.collocations?.length)  parts.push(`搭配 ${sem.collocations.length}`);
+    if (sem.word_family?.length)   parts.push(`詞形 ${sem.word_family.length}`);
+    html += `<div>
+      <div class="pv-section-title">語義連結</div>
+      <div style="font-size:12px;color:var(--muted)">${parts.join('・')}</div>
+    </div>`;
+  }
+
+  // ── 學習進度 ─────────────────────────────────
+  const pe    = PROG[item.core_word.toLowerCase()];
+  const today = new Date().toISOString().slice(0,10);
+  let progHtml = '';
+  if (!pe) {
+    progHtml = `<div class="pv-prog-row">
+      <span class="pv-prog-icon">📖</span>
+      <div class="pv-prog-info">
+        <div class="pv-prog-status">尚未學習</div>
+        <div class="pv-prog-sub">開啟後會自動記錄</div>
+      </div>
+    </div>`;
+  } else {
+    const isDue    = pe.due <= today && pe.status !== 'new';
+    const rowCls   = isDue ? 'due' : pe.status === 'mastered' ? 'mastered' : '';
+    const icon     = isDue ? '⚡' : pe.status === 'mastered' ? '🏆' : pe.status === 'learning' ? '📝' : '👀';
+    const statusTx = isDue ? '待複習' : {mastered:'已掌握',learning:'學習中',new:'已見過'}[pe.status]||'';
+    const sub      = `複習 ${pe.repetitions} 次 · 易度 ${pe.ease.toFixed(1)} · 下次 ${pe.due}`;
+    progHtml = `<div class="pv-prog-row ${rowCls}">
+      <span class="pv-prog-icon">${icon}</span>
+      <div class="pv-prog-info">
+        <div class="pv-prog-status">${statusTx}</div>
+        <div class="pv-prog-sub">${sub}</div>
+      </div>
+    </div>`;
+  }
+  html += `<div>
+    <div class="pv-section-title">學習進度</div>
+    ${progHtml}
+  </div>`;
+
+  // ── 檔案資訊 ─────────────────────────────────
+  html += `<div>
+    <div class="pv-section-title">檔案</div>
+    <div style="font-size:11px;color:var(--muted);word-break:break-all">${item.filename}</div>
+  </div>`;
+
+  return html;
+}
+
+/** 組裝底部操作按鈕 */
+function buildPvActions(item) {
+  const enc = encodeURIComponent(item.path);
+  const w   = item.core_word;
+
+  // 評分列（只在已有進度時顯示）
+  const pe = PROG[w.toLowerCase()];
+  const ratingRow = pe && pe.status !== 'new' ? `
+    <div style="margin-bottom:4px">
+      <div class="pv-section-title" style="margin-bottom:4px">複習評分</div>
+      <div class="pv-rate-row">
+        ${[['🫥',0,'完全忘記'],['😰',1,'很難'],['😕',2,'困難'],['😐',3,'記得'],['😊',4,'容易'],['🤩',5,'完全']].map(([e,r,t])=>
+          `<button class="pv-rate-btn" data-r="${r}" title="${t}"
+            onclick="pvRate('${w.replace(/'/g,"\\'")}',${r},this)">${e}</button>`
+        ).join('')}
+      </div>
+    </div>` : '';
+
+  return `${ratingRow}
+    <button class="pv-open-btn"
+      onclick="pvOpen('${w.replace(/'/g,"\\'")}','${enc}')">
+      📖 開啟學習頁面
+    </button>
+    <div style="display:flex;gap:6px">
+      ${(item.semantic_links && ((item.semantic_links.phrasal_verbs?.length||0)+(item.semantic_links.collocations?.length||0)+(item.semantic_links.word_family?.length||0))) ?
+        `<button onclick="pvOpenSem(${allSemItems.indexOf(item)})" style="flex:1;padding:6px 0;border-radius:7px;border:1px solid #C7D2FE;background:#EEF2FF;color:#3730A3;font-size:12px;cursor:pointer;font-weight:600">🔗 語義展開</button>` : ''}
+      ${!w.includes(' ') ?
+        `<button onclick="closePreview();openMindmap('${w.replace(/'/g,"\\'")}');" style="flex:1;padding:6px 0;border-radius:7px;border:1px solid #C7D2FE;background:#EEF2FF;color:#3730A3;font-size:12px;cursor:pointer;font-weight:600">🧠 心智圖</button>` : ''}
+    </div>`;
+}
+
+/** 從預覽面板開啟學習頁面 */
+function pvOpen(word, enc) {
+  markSeen(word);
+  window.open(`/file?path=${enc}`, '_blank');
+}
+
+/** 從預覽面板觸發語義展開 */
+function pvOpenSem(idx) {
+  closePreview();
+  _openSem(idx);
+}
+
+/** 從預覽面板評分 */
+async function pvRate(word, rating, btn) {
+  btn.style.opacity = '0.4';
+  btn.style.pointerEvents = 'none';
+  await rateWord(word, rating);
+  // 重新渲染 body 讓進度狀態即時更新
+  const item = allSemItems.find(i => i.core_word === word);
+  if (item) {
+    document.getElementById('pvBody').innerHTML   = buildPvBody(item);
+    document.getElementById('pvActions').innerHTML = buildPvActions(item);
+  }
+}
+
+// ==========================================
+// 進度追蹤 & SM-2 複習排程
+// ==========================================
+
+/** 載入所有進度到 PROG，並更新徽章 */
+async function loadProgress() {
+  try {
+    const r = await fetch('/progress/all');
+    if (!r.ok) return;
+    PROG = await r.json();
+    refreshDueBadge();
+    if (currentView === 'dashboard') {
+      renderDashboardSidebar();
+      renderDashboard();
+    }
+  } catch(e) { /* 伺服器未啟動時忽略 */ }
+}
+
+/** 更新工具列上的待複習數字 */
+function refreshDueBadge() {
+  const today = new Date().toISOString().slice(0,10);
+  const count = Object.values(PROG).filter(
+    e => e.due <= today && e.status !== 'new'
+  ).length;
+  const badge = document.getElementById('dueBadge');
+  if (badge) {
+    badge.textContent = count;
+    badge.className   = 'due-badge' + (count === 0 ? ' zero' : '');
+  }
+}
+
+/** 點擊詞卡時自動標記已學習（status→new，第一次看）*/
+async function markSeen(word) {
+  const key = word.toLowerCase();
+  if (PROG[key]) return;   // 已有記錄，不重複送
+  try {
+    const r = await fetch('/progress/seen', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({word: key})
+    });
+    if (r.ok) {
+      const d = await r.json();
+      if (d.ok) {
+        PROG[key] = d.entry;
+        refreshDueBadge();
+        if (currentView === 'dashboard') {
+          renderDashboardSidebar();
+          renderDashboard();
+        }
+      }
+    }
+  } catch(e) {}
+}
+
+/** 給詞彙評分（0-5），更新 SM-2 */
+async function rateWord(word, rating) {
+  const key = word.toLowerCase();
+  try {
+    const r = await fetch('/progress/rate', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({word: key, rating})
+    });
+    if (!r.ok) return;
+    const d = await r.json();
+    if (d.ok) {
+      PROG[key] = d.entry;
+      refreshDueBadge();
+      // 如果面板開著，重新渲染
+      if (document.getElementById('progPanel').classList.contains('open')) {
+        renderProgTab(progTabIdx);
+        renderProgStats(await fetchProgSummary());
+      }
+      if (currentView === 'dashboard') {
+        renderDashboardSidebar();
+        renderDashboard();
+      }
+    }
+  } catch(e) {}
+}
+
+async function fetchProgSummary() {
+  try {
+    const r = await fetch('/progress');
+    return r.ok ? await r.json() : null;
+  } catch(e) { return null; }
+}
+
+// ── 進度面板開關 ──────────────────────────────────────
+
+function openProgPanel() {
+  document.getElementById('progPanel').classList.add('open');
+  document.getElementById('progOverlay').classList.add('show');
+  setProgTab(0);
+  fetchProgSummary().then(renderProgStats);
+}
+
+function closeProgPanel() {
+  document.getElementById('progPanel').classList.remove('open');
+  document.getElementById('progOverlay').classList.remove('show');
+}
+
+function setProgTab(idx) {
+  progTabIdx = idx;
+  [0,1].forEach(i => {
+    document.getElementById(`ptab${i}`).classList.toggle('active', i===idx);
+  });
+  renderProgTab(idx);
+}
+
+function renderProgStats(summary) {
+  if (!summary) return;
+  const set = (id, val) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = val ?? '—';
+  };
+  set('psDue',  summary.due      ?? 0);
+  set('psLrn',  summary.learning ?? 0);
+  set('psMast', summary.mastered ?? 0);
+  set('psTot',  summary.total    ?? 0);
+}
+
+function renderProgTab(idx) {
+  const body = document.getElementById('progBody');
+  if (!body) return;
+  if (idx === 0) renderDueList(body);
+  else           renderAllList(body);
+}
+
+// ── 今日複習清單 ──────────────────────────────────────
+
+function renderDueList(body) {
+  const today = new Date().toISOString().slice(0,10);
+  const due   = Object.values(PROG)
+    .filter(e => e.due <= today && e.status !== 'new')
+    .sort((a,b) => a.due.localeCompare(b.due));
+
+  if (!due.length) {
+    body.innerHTML = `
+      <div class="due-empty">
+        <div class="due-icon">🎉</div>
+        <div class="due-msg">今天沒有待複習的詞彙！</div>
+        <div>繼續學習新詞，之後會在這裡安排複習。</div>
+      </div>`;
+    return;
+  }
+
+  // 評分說明
+  const ratingLabels = [
+    {r:0, emoji:'🫥', tip:'完全忘記'},
+    {r:1, emoji:'😰', tip:'很難想起'},
+    {r:2, emoji:'😕', tip:'有些困難'},
+    {r:3, emoji:'😐', tip:'剛好記得'},
+    {r:4, emoji:'😊', tip:'比較容易'},
+    {r:5, emoji:'🤩', tip:'完全記得'},
+  ];
+
+  let html = `
+    <div class="rate-legend">
+      ${ratingLabels.map(l=>`<span>${l.emoji} ${l.tip}</span>`).join('')}
+    </div>
+    <div class="due-list">`;
+
+  for (const entry of due) {
+    const word     = entry.word;
+    const isOver   = entry.due < today;
+    const dayDiff  = Math.round((new Date(today)-new Date(entry.due))/(86400000));
+    const overTxt  = isOver ? `（逾期 ${dayDiff} 天）` : '今日到期';
+    const repTxt   = `第 ${entry.repetitions} 次 · ${entry.interval}d 間隔`;
+
+    // 找到對應 item 取得開啟路徑
+    const itemData = DATA?.all_items?.find(i => i.core_word.toLowerCase() === word);
+    const openBtn  = itemData
+      ? `<button class="due-open-btn" onclick="event.stopPropagation();window.open('/file?path=${encodeURIComponent(itemData.path)}','_blank');markSeen('${word}')">開啟複習</button>`
+      : '';
+
+    const rateBtns = ratingLabels.map(l =>
+      `<button class="rate-btn" data-r="${l.r}" title="${l.tip}"
+        onclick="event.stopPropagation();handleRate('${word}',${l.r},this)">${l.emoji}</button>`
+    ).join('');
+
+    html += `
+      <div class="due-card ${isOver?'overdue':''}">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span class="due-word">${word}</span>
+            <span class="due-interval">${repTxt}</span>
+          </div>
+          <div class="due-meta">${overTxt} · 易度 ${entry.ease.toFixed(1)}</div>
+        </div>
+        ${openBtn}
+        <div class="rate-row">${rateBtns}</div>
+      </div>`;
+  }
+  html += `</div>`;
+  body.innerHTML = html;
+}
+
+/** 點評分按鈕後的處理：視覺回饋 + 送出評分 */
+function handleRate(word, rating, btn) {
+  // 鎖住同卡其他按鈕
+  const card = btn.closest('.due-card');
+  card.querySelectorAll('.rate-btn').forEach(b => b.classList.add('rated'));
+  btn.classList.remove('rated');
+  btn.style.opacity = '1';
+
+  // 視覺縮小消失
+  card.style.transition = 'all 0.4s';
+  card.style.opacity    = '0.4';
+  card.style.transform  = 'scaleY(0.6)';
+  card.style.maxHeight  = '0';
+  card.style.overflow   = 'hidden';
+  card.style.marginBottom = '0';
+  card.style.padding    = '0';
+
+  rateWord(word, rating).then(() => {
+    setTimeout(() => {
+      card.remove();
+      // 如果全部評完，重新渲染空狀態
+      const body = document.getElementById('progBody');
+      if (body && !body.querySelector('.due-card')) {
+        renderDueList(body);
+      }
+    }, 350);
+  });
+}
+
+// ── 全部進度列表 ──────────────────────────────────────
+
+function renderAllList(body) {
+  const entries = Object.values(PROG).sort((a,b) => {
+    const statusOrder = {due:0, learning:1, new:2, mastered:3};
+    return (statusOrder[a.status]??9) - (statusOrder[b.status]??9) ||
+           a.word.localeCompare(b.word);
+  });
+
+  if (!entries.length) {
+    body.innerHTML = `
+      <div class="due-empty">
+        <div class="due-icon">📚</div>
+        <div class="due-msg">尚無學習記錄</div>
+        <div>點擊詞彙卡片開啟學習，系統會自動記錄。</div>
+      </div>`;
+    return;
+  }
+
+  const today     = new Date().toISOString().slice(0,10);
+  const statusLbl = {new:'新詞', learning:'學習中', mastered:'已掌握'};
+
+  let html = `
+    <table class="prog-all-table">
+      <thead><tr>
+        <th>詞彙</th>
+        <th>狀態</th>
+        <th>複習次數</th>
+        <th>下次複習</th>
+        <th>易度</th>
+        <th></th>
+      </tr></thead>
+      <tbody>`;
+
+  for (const e of entries) {
+    const isDue     = e.due <= today && e.status !== 'new';
+    const dueClass  = isDue ? 'style="color:#EF4444;font-weight:700"' : '';
+    const pipClass  = isDue ? 'due' : (e.status||'new');
+    const lbl       = isDue ? '⚡ 待複習' : (statusLbl[e.status]||'新詞');
+
+    html += `
+      <tr>
+        <td style="font-weight:700">${e.word}</td>
+        <td><span class="status-pip ${pipClass}"></span>${lbl}</td>
+        <td style="text-align:center">${e.repetitions ?? 0}</td>
+        <td ${dueClass}>${e.due||'—'}</td>
+        <td>${(e.ease||2.5).toFixed(1)}</td>
+        <td>
+          <button class="due-open-btn"
+            onclick="resetAndRefresh('${e.word}')"
+            style="background:#FEF2F2;border-color:#FCA5A5;color:#DC2626"
+            title="重置此詞彙的學習進度">↺</button>
+        </td>
+      </tr>`;
+  }
+
+  html += `</tbody></table>`;
+  body.innerHTML = html;
+}
+
+async function resetAndRefresh(word) {
+  if (!confirm(`確定要重置「${word}」的學習進度嗎？`)) return;
+  try {
+    await fetch('/progress/reset', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({word})
+    });
+    delete PROG[word.toLowerCase()];
+    refreshDueBadge();
+    renderProgTab(progTabIdx);
+    fetchProgSummary().then(renderProgStats);
+    if (currentView === 'dashboard') {
+      renderDashboardSidebar();
+      renderDashboard();
+    }
+  } catch(e) {}
+}
+
+// ── 設定面板 ──────────────────────────────────────────
+
+let CONFIG_DATA = null;
+
+function cfgSetMsg(text, cls='') {
+  const el = document.getElementById('cfgMsg');
+  if (!el) return;
+  el.textContent = text || '';
+  el.className = 'cfg-msg' + (cls ? ` ${cls}` : '');
+}
+
+function cfgStatusHtml(info, expect='any') {
+  if (!info || !info.path) return `<span class="cfg-status bad">未設定</span>`;
+  const ok = expect === 'dir' ? info.is_dir : expect === 'file' ? info.is_file : info.exists;
+  return `<span class="cfg-status ${ok ? 'ok' : 'bad'}">${ok ? '存在' : '找不到'}</span>`;
+}
+
+function cfgVal(id, value='') {
+  const el = document.getElementById(id);
+  if (el) el.value = value ?? '';
+}
+
+function cfgGet(id) {
+  return document.getElementById(id)?.value?.trim() ?? '';
+}
+
+function renderConfigPanel(data) {
+  CONFIG_DATA = data || {};
+  const cfg = CONFIG_DATA.config || {};
+  const st  = CONFIG_DATA.status || {};
+
+  cfgVal('cfgEssentials', cfg.essentials_path || '');
+  cfgVal('cfgFull', cfg.full_path || '');
+  cfgVal('cfgDolch', cfg.dolch_txt_path || '');
+  cfgVal('cfgFry', Array.isArray(cfg.fry_txt_paths) ? cfg.fry_txt_paths.join('; ') : (cfg.fry_txt_paths || ''));
+  cfgVal('cfgNgsl', cfg.ngsl_csv_path || '');
+  cfgVal('cfgPort', cfg.server_port || 8080);
+  cfgVal('cfgOutputJson', cfg.output_json || 'index.json');
+  cfgVal('cfgProgressJson', cfg.progress_json || 'progress.json');
+  cfgVal('cfgCefrCsv', cfg.cefr_review_csv || 'cefr_review.csv');
+
+  document.getElementById('cfgStatusEss').innerHTML = cfgStatusHtml(st.essentials_path, 'dir');
+  document.getElementById('cfgStatusFull').innerHTML = cfgStatusHtml(st.full_path, 'dir');
+  document.getElementById('cfgStatusDolch').innerHTML = cfgStatusHtml(st.dolch_txt_path, 'file');
+  document.getElementById('cfgStatusNgsl').innerHTML = cfgStatusHtml(st.ngsl_csv_path, 'file');
+  document.getElementById('cfgStatusIndex').innerHTML = cfgStatusHtml(st.output_json, 'file');
+  document.getElementById('cfgStatusProgress').innerHTML = cfgStatusHtml(st.progress_json, 'file');
+  document.getElementById('cfgStatusCefrCsv').innerHTML = cfgStatusHtml(st.cefr_review_csv, 'file');
+
+  document.getElementById('cfgHelpEss').textContent = st.essentials_path?.path || '';
+  document.getElementById('cfgHelpFull').textContent = st.full_path?.path || '';
+}
+
+async function loadConfigPanel() {
+  cfgSetMsg('載入中...');
+  try {
+    const r = await fetch('/config');
+    const data = await r.json();
+    if (data.error) throw new Error(data.error);
+    renderConfigPanel(data);
+    cfgSetMsg(`設定檔：${data.config_path || 'config.json'}`, 'ok');
+  } catch(e) {
+    cfgSetMsg(`無法載入設定：${e.message}`, 'bad');
+  }
+}
+
+function closeConfigPanel() {
+  document.getElementById('configPanel').classList.remove('open');
+  document.getElementById('configOverlay').classList.remove('show');
+}
+
+async function saveConfig() {
+  cfgSetMsg('儲存中...');
+  const fryRaw = cfgGet('cfgFry');
+  const payload = {
+    essentials_path: cfgGet('cfgEssentials'),
+    full_path: cfgGet('cfgFull'),
+    dolch_txt_path: cfgGet('cfgDolch') || null,
+    fry_txt_paths: fryRaw ? fryRaw.split(';').map(s => s.trim()).filter(Boolean) : null,
+    ngsl_csv_path: cfgGet('cfgNgsl') || null,
+    server_port: Number(cfgGet('cfgPort') || 8080),
+    output_json: cfgGet('cfgOutputJson') || 'index.json',
+    progress_json: cfgGet('cfgProgressJson') || 'progress.json',
+    cefr_review_csv: cfgGet('cfgCefrCsv') || 'cefr_review.csv',
+  };
+
+  try {
+    const r = await fetch('/config', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await r.json();
+    if (!data.ok) throw new Error(data.error || '儲存失敗');
+    renderConfigPanel(data);
+    cfgSetMsg('已儲存。若修改 port，請重啟 serve.py。', 'ok');
+  } catch(e) {
+    cfgSetMsg(`儲存失敗：${e.message}`, 'bad');
+  }
+}
+
+// ── 重建索引 ───────────────────────────────────────────
+
+let _rebuildPolling = null;
+let _rebuildLogVisible = false;
+
+function toggleRebuildLog() {
+  _rebuildLogVisible = !_rebuildLogVisible;
+  const log    = document.getElementById('rebuildLog');
+  const toggle = document.getElementById('rebuildLogToggle');
+  log.classList.toggle('show', _rebuildLogVisible);
+  toggle.textContent = (_rebuildLogVisible ? '▼ 隱藏 log' : '▶ 顯示 log');
+}
+
+function _colorizeLog(line) {
+  if (/✅|成功|完成|ok|INFO/i.test(line))  return `<span class="rb-ok">${_escHtml(line)}</span>`;
+  if (/❌|錯誤|失敗|error|Error/i.test(line)) return `<span class="rb-err">${_escHtml(line)}</span>`;
+  if (/⚠|警告|warn|WARN/i.test(line))  return `<span class="rb-warn">${_escHtml(line)}</span>`;
+  return _escHtml(line);
+}
+
+function _escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function _setRebuildUI({ running, success, message, log, last_start, last_end }) {
+  const btn      = document.getElementById('rebuildBtn');
+  const label    = document.getElementById('rebuildBtnLabel');
+  const dot      = document.getElementById('rebuildDot');
+  const statusTx = document.getElementById('rebuildStatusText');
+  const statusTm = document.getElementById('rebuildStatusTime');
+  const statusRw = document.getElementById('rebuildStatusRow');
+  const logEl    = document.getElementById('rebuildLog');
+  const logTgl   = document.getElementById('rebuildLogToggle');
+  const bar      = document.getElementById('rebuildProgressBar');
+
+  // 按鈕狀態
+  btn.disabled = running;
+  btn.classList.toggle('running', running);
+  label.textContent = running ? '重建中...' : '▶ 重建索引';
+
+  // 進度條（執行中顯示動畫）
+  bar.classList.toggle('show', running);
+
+  // 狀態列
+  if (message || last_start) {
+    statusRw.style.display = 'flex';
+    dot.className = 'rebuild-status-dot' + (running ? ' running' : success === true ? ' success' : success === false ? ' fail' : '');
+    statusTx.textContent = message || '';
+    const t = running ? last_start : last_end;
+    statusTm.textContent = t ? t.replace('T', ' ') : '';
+  }
+
+  // Log
+  if (log && log.length > 0) {
+    logTgl.classList.add('show');
+    logEl.innerHTML = log.map(_colorizeLog).join('\n');
+    if (_rebuildLogVisible) {
+      logEl.classList.add('show');
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+  }
+}
+
+async function _pollRebuildStatus() {
+  try {
+    const r = await fetch('/rebuild/status');
+    const data = await r.json();
+    _setRebuildUI(data);
+    if (!data.running) {
+      clearInterval(_rebuildPolling);
+      _rebuildPolling = null;
+      // 若重建成功，提示使用者重新載入索引
+      if (data.success === true) {
+        cfgSetMsg('索引重建完成！請重新載入頁面以更新資料。', 'ok');
+      } else if (data.success === false) {
+        cfgSetMsg('重建失敗，請展開 log 查看詳情。', 'bad');
+      }
+    }
+  } catch(e) {
+    // 伺服器可能暫時無回應，保持輪詢
+  }
+}
+
+async function triggerRebuild() {
+  if (document.getElementById('rebuildBtn').disabled) return;
+
+  // 先查目前狀態，避免重複觸發
+  try {
+    const chk = await fetch('/rebuild/status');
+    const s = await chk.json();
+    if (s.running) {
+      cfgSetMsg('重建已在執行中...', 'ok');
+      _startRebuildPolling();
+      return;
+    }
+  } catch(e) {}
+
+  cfgSetMsg('');
+  try {
+    const r = await fetch('/rebuild', { method: 'POST' });
+    const data = await r.json();
+    if (!data.ok) throw new Error(data.error || '啟動失敗');
+    // 顯示啟動狀態
+    _setRebuildUI({ running: true, message: '重建啟動中...', log: [], last_start: new Date().toISOString().replace('T',' ').slice(0,19) });
+    _startRebuildPolling();
+  } catch(e) {
+    cfgSetMsg(`重建失敗：${e.message}`, 'bad');
+  }
+}
+
+function _startRebuildPolling() {
+  if (_rebuildPolling) return;
+  _rebuildPolling = setInterval(_pollRebuildStatus, 1200);
+}
+
+// 開啟設定面板時也順便查詢上次重建狀態
+const _origOpenConfigPanel = openConfigPanel;
+// （覆寫 openConfigPanel 以附加查狀態）
+function openConfigPanel() {
+  document.getElementById('configPanel').classList.add('open');
+  document.getElementById('configOverlay').classList.add('show');
+  loadConfigPanel();
+  // 查詢上次重建狀態（若正在執行中也自動接回輪詢）
+  fetch('/rebuild/status').then(r => r.json()).then(data => {
+    _setRebuildUI(data);
+    if (data.running) _startRebuildPolling();
+  }).catch(() => {});
+}
+
+// ── 匯出目前篩選詞彙 ───────────────────────────────────
+
+function toggleExportMenu(event) {
+  event.stopPropagation();
+  document.getElementById('exportWrap')?.classList.toggle('open');
+}
+
+function buildExportUrl(format) {
+  const params = new URLSearchParams();
+  params.set('format', format);
+  params.set('type', typeFilter || 'all');
+
+  const q = (searchQuery || searchInput?.value || '').trim();
+  if (q) params.set('q', q);
+
+  if (currentView === 'cefr' && activeCefr) {
+    params.set('cefr', activeCefr);
+  } else {
+    if (activeGroup) params.set('group', activeGroup);
+    if (activeCat) params.set('category', activeCat);
+  }
+
+  return `/export?${params.toString()}`;
+}
+
+function downloadExport(format) {
+  document.getElementById('exportWrap')?.classList.remove('open');
+  window.location.href = buildExportUrl(format);
+}
+
+document.addEventListener('click', (event) => {
+  const wrap = document.getElementById('exportWrap');
+  if (wrap && !wrap.contains(event.target)) wrap.classList.remove('open');
+});
+
+// ==========================================
+// 啟動
+// ==========================================
+loadIndex();
+</script>
+<script src="advanced_dict_ui.js"></script>
+<script src="/tts_extension.js?v=7.1"></script>
+</body>
+</html>
